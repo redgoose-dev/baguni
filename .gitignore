@@ -1,5 +1,12 @@
 # directories
 .idea/
 node_modules/
+.AppleDouble/
+dist/
 
 # files
+.DS_Store
+.env.local
+bun.lockb
+docker-compose.yml
+cmd.sh

@@ -1,0 +1,10 @@
+# directories
+/dist
+/node_modules
+/.idea
+/.git
+
+# files
+.editorconfig
+.gitignore
+bun.lockb
