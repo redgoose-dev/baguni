@@ -1,6 +1,5 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
-import { createServer } from 'vite'
 import { isDev, openServerMessage } from './libs/util.js'
 import routes from './routes/main.js'
 
@@ -11,6 +10,7 @@ import routes from './routes/main.js'
  */
 async function development(app)
 {
+  const { createServer } = await import('vite')
   const vite = await createServer({
     mode: 'development',
     appType: 'custom',
