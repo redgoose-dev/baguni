@@ -1,4 +1,4 @@
-import { build } from 'esbuild'
+import { build } from 'esbuild-wasm'
 
 function vitePluginCreateServiceWorker()
 {

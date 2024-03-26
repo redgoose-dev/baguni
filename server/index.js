@@ -22,7 +22,7 @@ async function development(app)
   // extend routes
   routes(app)
   // global route
-  app.use('*', async (req, res, _next) => {
+  app.get('*', async (req, res, _next) => {
     try
     {
       const url = req.originalUrl
@@ -64,7 +64,7 @@ function production(app)
     redirect: false,
   }))
   // service route
-  app.use(async (req, res, _next) => {
+  app.get('*', async (req, res, _next) => {
     const distDir = `${process.cwd()}/${VITE_OUT_DIR}`
     let template = Bun.file(Bun.resolveSync('./index.html', distDir))
     template = await template.text()

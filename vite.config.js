@@ -1,6 +1,5 @@
 import { defineConfig, loadEnv } from 'vite'
-import preprocess from 'svelte-preprocess'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
+import vue from '@vitejs/plugin-vue'
 import createServiceWorkerPlugin from './plugins/create-service-worker.js'
 
 const config = defineConfig(async ({ mode }) => {
@@ -37,22 +36,11 @@ const config = defineConfig(async ({ mode }) => {
     },
     define: {},
     plugins: [
-      svelte({
-        preprocess: preprocess(),
-        extensions: [ '.svelte' ],
-        compilerOptions: {},
-        onwarn(warning, defaultHandler) {
-          switch (warning.code)
-          {
-            case 'css-unused-selector':
-            case 'a11y-label-has-associated-control':
-            case 'unused-export-let':
-              return
-          }
-          defaultHandler(warning)
+      vue({
+        template: {
+          compilerOptions: {},
         },
       }),
-      // TODO: 서비스워커 플러그인
       // createServiceWorkerPlugin(),
     ],
   }
