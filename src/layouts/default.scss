@@ -1,0 +1,8 @@
+.layout {
+  display: grid;
+  grid-template-rows: var(--size-header-height) auto;
+}
+
+.container {
+  margin: 36px 0 72px;
+}

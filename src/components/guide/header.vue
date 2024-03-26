@@ -1,0 +1,46 @@
+<template>
+<header class="header">
+  <h1 class="title">
+    <RouterLink to="/guide">
+      <strong>바구니</strong>
+      <small>프로젝트 가이드</small>
+    </RouterLink>
+  </h1>
+  <nav class="menus">
+    <details open>
+      <summary>
+        <span>Forms</span>
+      </summary>
+      <ul>
+        <li><RouterLink to="/guide/forms/input-text">input-text</RouterLink></li>
+        <li><RouterLink to="/guide/forms/multiple-input-text">multiple-input-text</RouterLink></li>
+        <li><RouterLink to="/guide/forms/select">select</RouterLink></li>
+        <li><RouterLink to="/guide/forms/checkbox-and-radio">checkbox & radio</RouterLink></li>
+        <li><RouterLink to="/guide/forms/switch">switch</RouterLink></li>
+      </ul>
+    </details>
+    <details open>
+      <summary>
+        <span>Navigation</span>
+      </summary>
+      <ul>
+        <li><RouterLink to="/guide/navigation/button">button</RouterLink></li>
+      </ul>
+    </details>
+    <details open>
+      <summary>
+        <span>Asset</span>
+      </summary>
+      <ul>
+        <li><RouterLink to="/guide/asset/icons">icons</RouterLink></li>
+      </ul>
+    </details>
+  </nav>
+</header>
+</template>
+
+<script setup>
+import {} from 'vue-router'
+</script>
+
+<style src="./header.scss" lang="scss" scoped></style>

@@ -83,6 +83,39 @@ const auth = [
   {
     path: '/login',
     name: 'login',
+    component: () => import('../pages/auth/login.vue'),
+    meta: {
+      active: 'auth',
+      layout: 'blank',
+    },
+  },
+]
+
+const guide = [
+  {
+    path: '/guide',
+    name: 'guide',
+    component: () => import('../pages/guide/index.vue'),
+    meta: {
+      active: 'guide',
+    },
+    children: [
+      {
+        path: 'forms/input-text',
+        name: 'guide-forms-input-text',
+        component: () => import('../pages/guide//forms/input-text.vue'),
+      },
+      {
+        path: 'navigation/button',
+        name: 'guide-navigation-button',
+        component: () => import('../pages/guide/navigation/button.vue'),
+      },
+      {
+        path: 'asset/icons',
+        name: 'guide-asset-icons',
+        component: () => import('../pages/guide/asset/icons.vue'),
+      },
+    ],
   },
 ]
 
@@ -91,7 +124,7 @@ export default [
   ...collections,
   ...about,
   ...auth,
-  //
+  ...guide,
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',

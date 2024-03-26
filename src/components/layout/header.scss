@@ -1,0 +1,67 @@
+@use '../../assets/scss/mixins';
+
+.layout-header {
+  position: sticky;
+  top: 0;
+  box-sizing: border-box;
+  @include mixins.background-blur(16px);
+  background: color-mix(in hsl, var(--color-bg), transparent 25%);
+  //background: color-mix(in hsl, red, transparent 75%);
+  padding: 0 var(--size-side-padding);
+  &__wrap {
+    display: grid;
+    grid-template-areas: 'symbol menus side';
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    max-width: var(--size-content-width);
+    margin: 0 auto;
+    height: 100%;
+    box-sizing: border-box;
+  }
+}
+
+.symbol {
+  grid-area: symbol;
+  margin: 0;
+  user-select: none;
+  a {
+    display: block;
+  }
+  img {
+    display: block;
+  }
+}
+
+.menus {
+  grid-area: menus;
+  margin: 0 0 0 32px;
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    gap: 0 4px;
+    user-select: none;
+  }
+  a {
+    display: block;
+    padding: 16px 12px;
+    font-size: 16px;
+    text-decoration: none;
+    color: var(--color-base);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -.5px;
+    &.router-link-active {
+      cursor: default;
+      color: var(--color-key-1);
+    }
+    &:hover:not(.router-link-active) {
+      opacity: .5;
+    }
+  }
+}
+
+.side-nav {
+  grid-area: side;
+}

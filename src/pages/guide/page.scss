@@ -1,0 +1,77 @@
+.page {
+  //
+}
+
+.page-header {
+  display: grid;
+  user-select: none;
+  h1 {
+    margin: 0;
+    padding: 0;
+    small {
+      display: block;
+      font-size: 13px;
+      line-height: 1.05;
+      font-weight: 400;
+    }
+    strong {
+      display: block;
+      margin: 0;
+      font-size: 36px;
+      line-height: 1;
+      letter-spacing: -.5px;
+    }
+  }
+  p {
+    margin: 4px 0 0;
+    font-size: 11px;
+    line-height: 1.15;
+  }
+}
+
+.page-content {
+  margin: 42px 0 0;
+  display: grid;
+  gap: 48px 0;
+}
+
+.page-section {
+  > header {
+    margin: 0 0 16px;
+    user-select: none;
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.05;
+      font-weight: 700;
+    }
+    p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--color-weak);
+
+    }
+  }
+  > p {
+    margin: 16px 0;
+    font-size: 13px;
+    line-height: 1.42;
+    & + p {
+      margin-top: -4px;
+    }
+  }
+}
+
+.page-example {
+  margin: 16px 0;
+  padding: 20px 24px;
+  background: var(--color-bg);
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 .5px hsla(0 0% 0% / 15%),
+    0 4px 48px 0 hsla(0 0% 0% / 15%),
+    0 4px 12px 0 hsla(0 0% 0% / 15%);
+}
+
+.page-flex {}
+.page-grid {}

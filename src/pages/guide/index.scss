@@ -1,0 +1,27 @@
+.guide {
+  --guide-header-width: 200px;
+  margin: 0 auto;
+  padding: 0 var(--size-side-padding);
+  box-sizing: border-box;
+  &__wrap {
+    display: grid;
+    grid-template-columns: var(--guide-header-width) 1fr;
+    grid-template-areas: 'header container';
+    gap: 0 30px;
+    max-width: var(--size-content-width);
+    margin: 0 auto;
+  }
+  &__header {
+    grid-area: header;
+    box-sizing: border-box;
+  }
+  &__container {
+    grid-area: container;
+    box-sizing: border-box;
+  }
+}
+
+.contents {
+  //max-width: var(--size-content-width);
+  //margin: 0 auto;
+}

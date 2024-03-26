@@ -21,9 +21,9 @@ const config = defineConfig(async ({ mode }) => {
             {
               ext = 'images/'
             }
-            else if (/woff|woff2/.test(ext))
+            else if (/css/.test(ext))
             {
-              ext = 'fonts/'
+              ext = 'css/'
             }
             else
             {

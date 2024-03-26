@@ -9,7 +9,7 @@
 <script setup>
 import { ref, computed, watch, onErrorCaptured } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import LayoutDefault from './layouts/default.vue'
+import { LayoutDefault } from './layouts'
 import ErrorApp from './pages/error/500.vue'
 
 const { DEV } = import.meta.env

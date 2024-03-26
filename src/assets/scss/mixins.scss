@@ -1,0 +1,48 @@
+// responsive
+@mixin responsive($range)
+{
+  @if $range == tablet
+  {
+    @media (min-width: 768px) { @content; }
+  }
+  @else if $range == desktop
+  {
+    @media (min-width: 1024px) { @content; }
+  }
+  @else if $range == max
+  {
+    @media (min-width: 1440px) { @content; }
+  }
+}
+
+// gradient
+@mixin color-linear-gradient($matt-color, $start, $end, $direction:'vertical')
+{
+  background: $matt-color;
+  @if $direction == 'horizontal'
+  {
+    background: linear-gradient(to right, #{$start}, #{$end});
+  }
+  @else
+  {
+    background: linear-gradient(to bottom, #{$start}, #{$end});
+  }
+}
+
+// background blur
+@mixin background-blur($size: 8px)
+{
+  @supports (backdrop-filter: blur(#{$size})) or (-webkit-backdrop-filter: blur(#{$size})) {
+    backdrop-filter: blur(#{$size});
+    -webkit-backdrop-filter: blur(#{$size});
+    @content;
+  }
+}
+
+// single line text
+@mixin single-line-text()
+{
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-x: clip;
+}

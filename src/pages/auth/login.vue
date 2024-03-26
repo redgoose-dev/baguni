@@ -6,3 +6,5 @@
 
 <script setup>
 </script>
+
+<style src="./login.scss" lang="scss" scoped></style>
