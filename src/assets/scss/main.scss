@@ -1,6 +1,7 @@
 @use 'mixins';
 @import 'normalize';
 @import 'fonts';
+@import 'keyframes';
 
 :root {
   // fonts
@@ -11,12 +12,12 @@
   --color-bg: hsl(0 0% 100%);
   --color-base: hsl(0 0% 13%);
   --color-weak: hsl(0 0% 47%);
-  --color-light: hsl(0 0% 100%);
   --color-key-1: hsl(176 51% 61%);
   --color-key-2: hsl(186 68% 46%);
   --color-key-3: hsl(243 68% 57%);
   --color-success: hsl(93 54% 45%);
   --color-danger: hsl(0 67% 47%);
+  --color-light: hsl(0 0% 100%);
   --color-dark: hsl(0 0% 13%);
   // size
   --size-content-width: 900px;

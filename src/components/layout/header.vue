@@ -23,16 +23,43 @@
       </ul>
     </nav>
     <nav class="side-nav">
-      <RouterLink to="/asset/create">등록하기</RouterLink>
-      <span>로그인</span>
-      <span>회원정보 드롭다운</span>
+      <template v-if="isLogin">
+        <div>
+          <ButtonBasic
+            href="/asset/create"
+            size="small"
+            color="key-1">
+            등록하기
+          </ButtonBasic>
+        </div>
+        <div>
+          <ButtonBasic
+            size="small"
+            right-icon="chevron-down">
+            foo@bar.com
+          </ButtonBasic>
+        </div>
+      </template>
+      <template v-else>
+        <div>
+          <ButtonBasic
+            href="/asset/create"
+            size="small"
+            color="key-1">
+            로그인
+          </ButtonBasic>
+        </div>
+      </template>
     </nav>
   </div>
 </header>
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import ButtonBasic from '../buttons/button-basic.vue'
 
+const isLogin = ref(true)
 </script>
 
 <style src="./header.scss" lang="scss" scoped></style>

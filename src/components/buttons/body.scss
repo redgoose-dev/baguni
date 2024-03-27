@@ -1,0 +1,25 @@
+.button-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
+  height: 100%;
+  &__icon {
+    @-webkit-keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+    animation: var(--icon-animation, none);
+    &:is(:first-child) {}
+    &:is(:last-child) {}
+  }
+  &__label {
+    display: block;
+    font-style: normal;
+    font-weight: 600;
+    font-size: var(--body-font-size, 16px);
+    line-height: normal;
+    letter-spacing: -.25px;
+    color: var(--body-color, var(--color-base));
+  }
+}

@@ -103,12 +103,37 @@ const guide = [
       {
         path: 'forms/input-text',
         name: 'guide-forms-input-text',
-        component: () => import('../pages/guide//forms/input-text.vue'),
+        component: () => import('../pages/guide/forms/input-text.vue'),
+      },
+      {
+        path: 'forms/select',
+        name: 'guide-forms-select',
+        component: () => import('../pages/guide/forms/select.vue'),
+      },
+      {
+        path: 'forms/checkbox-and-radio',
+        name: 'guide-forms-checkbox-and-radio',
+        component: () => import('../pages/guide/forms/checkbox-and-radio.vue'),
+      },
+      {
+        path: 'forms/switch',
+        name: 'guide-forms-switch',
+        component: () => import('../pages/guide/forms/switch.vue'),
+      },
+      {
+        path: 'forms/tag',
+        name: 'guide-forms-tag',
+        component: () => import('../pages/guide/forms/tag.vue'),
       },
       {
         path: 'navigation/button',
         name: 'guide-navigation-button',
         component: () => import('../pages/guide/navigation/button.vue'),
+      },
+      {
+        path: 'asset/colors',
+        name: 'guide-asset-colors',
+        component: () => import('../pages/guide/asset/colors.vue'),
       },
       {
         path: 'asset/icons',

@@ -3,9 +3,9 @@
   <header class="page-header">
     <h1>
       <small>Forms</small>
-      <strong>Input Text</strong>
+      <strong>Tag</strong>
     </h1>
-    <p>글자를 작성하는 입력폼 컴포넌트 사용법과 예시를 제공합니다.</p>
+    <p>키워드 태그 컴포넌트 사용법과 예시를 제공합니다.</p>
   </header>
   <div class="page-content">
     <section class="page-section">

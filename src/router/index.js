@@ -6,6 +6,11 @@ const { VITE_BASE_URL } = import.meta.env
 const router = createRouter({
   history: createWebHistory(VITE_BASE_URL || '/'),
   routes: map,
+  scrollBehavior(to, from, savePosition)
+  {
+    if (savePosition) return savePosition
+    window.scrollTo(0, 0)
+  },
 })
 
 // route hook - before

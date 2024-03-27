@@ -12,7 +12,7 @@
       display: block;
       font-size: 13px;
       line-height: 1.05;
-      font-weight: 400;
+      font-weight: 500;
     }
     strong {
       display: block;
@@ -24,7 +24,7 @@
   }
   p {
     margin: 4px 0 0;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.15;
   }
 }
@@ -41,12 +41,12 @@
     user-select: none;
     h1 {
       margin: 0;
-      font-size: 24px;
+      font-size: 22px;
       line-height: 1.05;
       font-weight: 700;
     }
     p {
-      margin: 0;
+      margin: 2px 0 0;
       font-size: 12px;
       color: var(--color-weak);
 
@@ -64,14 +64,38 @@
 
 .page-example {
   margin: 16px 0;
-  padding: 20px 24px;
+  padding: 24px;
   background: var(--color-bg);
   border-radius: 8px;
-  box-shadow:
-    0 0 0 .5px hsla(0 0% 0% / 15%),
-    0 4px 48px 0 hsla(0 0% 0% / 15%),
-    0 4px 12px 0 hsla(0 0% 0% / 15%);
+  border: 1px dashed color-mix(in hsl, var(--color-weak), transparent 65%);
 }
 
-.page-flex {}
-.page-grid {}
+.page-flex {
+  display: flex;
+  gap: var(--gap, 16px);
+  align-items: var(--v-align, unset);
+  justify-content: var(--h-align, unset);
+}
+.page-grid {
+  display: grid;
+  gap: var(--gap, 16px);
+  grid-template-columns: repeat(var(--column), 1fr);
+  align-items: var(--v-align, unset);
+  justify-content: var(--h-align, unset);
+}
+
+.page-details {
+  > summary {
+    font-size: 14px;
+    line-height: 1.25;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 600;
+    &:active {
+      opacity: .5;
+    }
+  }
+  > *:not(summary) {
+    margin-top: 12px;
+  }
+}

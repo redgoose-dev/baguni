@@ -14,7 +14,8 @@
   font-weight: 100;
   user-select: none;
   a {
-    display: block;
+    display: grid;
+    gap: 4px;
     text-decoration: none;
     color: var(--color-base);
   }
@@ -25,9 +26,8 @@
   }
   small {
     display: block;
-    margin: 2px 0 0;
     font-size: 11px;
-    font-weight: 700;
+    font-weight: 400;
   }
 }
 

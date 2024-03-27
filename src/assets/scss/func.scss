@@ -1,0 +1,5 @@
+// color-mix with alpha
+@function alpha-mix($color, $alpha: 100%)
+{
+  @return color-mix(in hsl, $color, transparent $alpha);
+}

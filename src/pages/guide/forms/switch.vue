@@ -3,9 +3,9 @@
   <header class="page-header">
     <h1>
       <small>Forms</small>
-      <strong>Input Text</strong>
+      <strong>Switch</strong>
     </h1>
-    <p>글자를 작성하는 입력폼 컴포넌트 사용법과 예시를 제공합니다.</p>
+    <p>끄고 켜는 컴포넌트 사용법과 예시를 제공합니다.</p>
   </header>
   <div class="page-content">
     <section class="page-section">
