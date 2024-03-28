@@ -145,7 +145,7 @@ function onClickIconLabel(e)
     display: grid;
     place-content: center;
     aspect-ratio: 1 / 1;
-    background: func.alpha-mix(var(--color-base), 95%);
+    background: func.alpha-mix(var(--color-base), 5%);
     text-align: center;
   }
   svg {

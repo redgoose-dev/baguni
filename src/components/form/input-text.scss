@@ -1,0 +1,60 @@
+@use '../../assets/scss/func';
+@use '../../assets/scss/mixins';
+
+.input-text {
+  position: relative;
+  display: block;
+  width: var(--input-text-wdith, 100%);
+  height: var(--input-text-height, 36px);
+  box-sizing: border-box;
+  border: none;
+  border-radius: var(--size-form-radius);
+  padding: var(--input-padding, (0 16px));
+  background: var(--input-text-bg, var(--color-bg));
+  color: var(--input-text-color, var(--color-base));
+  font-size: var(--input-text-size, 14px);
+  transition: box-shadow var(--input-text-transition-speed, (160ms)) ease-out;
+  box-shadow: var(--input-text-outline, (inset 0 0 0 1px #{func.alpha-mix(var(--color-forms-outline), 100%)}));
+  &::-webkit-input-placeholder {
+    color: var(--input-text-placeholder, func.alpha-mix(var(--color-base), 45%));
+  }
+  &:read-only {
+    background: var(--input-text-readonly, func.alpha-mix(var(--color-base), 4%));
+  }
+  &:disabled {
+    cursor: not-allowed;
+    opacity: .5;
+    background: var(--input-text-bg, var(--color-bg));
+    user-select: none;
+  }
+  &:focus {
+    --input-text-outline: inset 0 0 0 2px #{func.alpha-mix(var(--color-key-1), 100%)};
+  }
+  &:focus:not([disabled]) {
+    outline: 0;
+  }
+}
+
+// size
+.input-text {
+  &--small {
+    --input-text-height: 28px;
+    --input-text-size: 12px;
+    --input-padding: 0 12px;
+  }
+}
+
+// color
+.input-text {
+  &--error {
+    --input-text-outline: inset 0 0 0 1px var(--color-danger);
+    --input-text-color: var(--color-danger);
+  }
+}
+
+// extra
+.input-text[type=date]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 6px;
+  margin: 0;
+}

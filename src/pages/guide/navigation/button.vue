@@ -106,8 +106,8 @@
 
 <script setup>
 import ButtonBasic from '../../../components/buttons/button-basic.vue'
-import ButtonGroup from '../../../components/buttons/button-group.vue'
 import ButtonIcon from '../../../components/buttons/button-icon.vue'
+import ButtonGroup from '../../../components/buttons/group.vue'
 </script>
 
 <style lang="scss" scoped>

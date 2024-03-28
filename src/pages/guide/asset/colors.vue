@@ -93,7 +93,7 @@
     aspect-ratio: 1/1;
     border-radius: 50%;
     box-shadow:
-      inset 0 0 0 .5px func.alpha-mix(var(--color-dark), 85%),
+      inset 0 0 0 .5px func.alpha-mix(var(--color-dark), 15%),
       0 0 32px hsla(0 0% 0% / 12%),
       0 0 12px hsla(0 0% 0% / 8%);
     background-color: var(--color);

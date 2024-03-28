@@ -3,7 +3,7 @@
   margin: var(--button-margin, 0);
   width: var(--button-width, unset);
   height: var(--button-height, 36px);
-  padding: var(--button-padding, (0 16px));
+  padding: var(--button-padding, (0 24px));
   border-radius: calc(var(--button-height, 36px) * .5);
   text-align: center;
   box-sizing: border-box;
@@ -22,8 +22,14 @@
     0 2px 8px var(--button-shadow-1, hsla(0 0% 0% / 8%)),
     0 8px 24px var(--button-shadow-2, hsla(0 0% 0% / 12%));
   filter: brightness(var(--button-brightness, 100%));
-  --icon-size: 14px;
+  --icon-size: 16px;
   --icon-stroke: 3;
+}
+
+// focus
+.button:focus-visible {
+  outline: 2px solid var(--button-focus-color, unset);
+  outline-offset: -2px;
 }
 
 // href
@@ -66,47 +72,55 @@
 
 // color
 .button {
+  --button-focus-color: var(--color-key-1);
   &--key-1 {
     --button-color-bg: var(--color-key-1);
     --body-color: var(--color-light);
     --button-brightness-active: 110%;
     --icon-color: var(--color-light);
+    --button-focus-color: var(--color-dark);
   }
   &--key-2 {
     --button-color-bg: var(--color-key-2);
     --body-color: var(--color-light);
     --button-brightness-active: 110%;
     --icon-color: var(--color-light);
+    --button-focus-color: var(--color-dark);
   }
   &--key-3 {
     --button-color-bg: var(--color-key-3);
     --body-color: var(--color-light);
     --button-brightness-active: 120%;
     --icon-color: var(--color-light);
+    --button-focus-color: var(--color-dark);
   }
   &--success {
     --button-color-bg: var(--color-success);
     --body-color: var(--color-light);
     --button-brightness-active: 120%;
     --icon-color: var(--color-light);
+    --button-focus-color: var(--color-dark);
   }
   &--danger {
     --button-color-bg: var(--color-danger);
     --body-color: var(--color-light);
     --button-brightness-active: 120%;
     --icon-color: var(--color-light);
+    --button-focus-color: var(--color-dark);
   }
   &--dark {
     --button-color-bg: var(--color-dark);
     --body-color: var(--color-light);
     --button-brightness-active: 220%;
     --icon-color: var(--color-light);
+    --button-focus-color: var(--color-key-1);
   }
   &--weak {
     --button-color-bg: var(--color-weak);
     --body-color: var(--color-light);
     --button-brightness-active: 120%;
     --icon-color: var(--color-light);
+    --button-focus-color: var(--color-dark);
   }
 }
 

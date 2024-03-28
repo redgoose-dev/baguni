@@ -10,9 +10,21 @@
   <div class="page-content">
     <section class="page-section">
       <header>
-        <h1>basic</h1>
-        <p>기본적으로 사용하는 모습입니다.</p>
+        <h1>checkbox</h1>
+        <p>여러항목을 선택하는 체크박스 컴포넌트</p>
       </header>
+      <div class="page-example">
+        <pre class="page-example-result">...</pre>
+      </div>
+    </section>
+    <section class="page-section">
+      <header>
+        <h1>radio</h1>
+        <p>여러항목 중 하나를 선택하는 라디오 컴포넌트</p>
+      </header>
+      <div class="page-example">
+        <pre class="page-example-result">...</pre>
+      </div>
     </section>
   </div>
 </article>

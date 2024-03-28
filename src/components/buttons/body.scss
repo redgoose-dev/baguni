@@ -10,8 +10,12 @@
       100% { transform: rotate(360deg); }
     }
     animation: var(--icon-animation, none);
-    &:is(:first-child) {}
-    &:is(:last-child) {}
+    &:is(:first-child) {
+      margin-left: -4px;
+    }
+    &:is(:last-child) {
+      margin-right: -4px;
+    }
   }
   &__label {
     display: block;

@@ -8,6 +8,7 @@
 
 <style lang="scss" scoped>
 .layout-footer {
+  padding: 0 0 16px;
   &__wrap {
     display: grid;
     max-width: var(--size-content-width);

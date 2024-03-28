@@ -19,10 +19,15 @@
   --color-danger: hsl(0 67% 47%);
   --color-light: hsl(0 0% 100%);
   --color-dark: hsl(0 0% 13%);
+  --color-forms-outline: hsl(0 0% 77%);
   // size
   --size-content-width: 900px;
   --size-side-padding: 60px;
   --size-header-height: 64px;
+  --size-form-radius: 6px;
+  --size-form-height-small: 28px;
+  --size-form-height-normal: 36px;
+  --size-form-height-big: 44px;
 }
 
 html {

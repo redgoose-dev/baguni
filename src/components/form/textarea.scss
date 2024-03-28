@@ -1,0 +1,51 @@
+@use '../../assets/scss/func';
+
+.textarea {
+  display: block;
+  box-sizing: border-box;
+  border: none;
+  border-radius: var(--size-form-radius);
+  width: var(--textarea-wdith, 100%);
+  height: var(--textarea-height, auto);
+  padding: var(--textarea-padding, 16px);
+  background: var(--textarea-bg, var(--color-bg));
+  transition: box-shadow var(--textarea-transition-speed, (160ms)) ease-out;
+  box-shadow: var(--textarea-outline, (inset 0 0 0 1px #{func.alpha-mix(var(--color-forms-outline), 100%)}));
+  color: var(--textarea-text-color, var(--color-base));
+  font-size: var(--textarea-text-size, 14px);
+  line-height: 1.42;
+  &::-webkit-input-placeholder {
+    color: var(--textarea-placeholder, func.alpha-mix(var(--color-base), 45%));
+  }
+  &:read-only {
+    background: var(--textarea-readonly, func.alpha-mix(var(--color-base), 4%));
+  }
+  &:disabled {
+    cursor: not-allowed;
+    opacity: .5;
+    background: var(--textarea-bg, var(--color-bg));
+    user-select: none;
+  }
+  &:focus {
+    --textarea-outline: inset 0 0 0 2px #{func.alpha-mix(var(--color-key-1), 100%)};
+  }
+  &:focus:not([disabled]) {
+    outline: 0;
+  }
+}
+
+// size
+.textarea {
+  &--small {
+    --textarea-text-size: 12px;
+    --textarea-padding: 16px 12px;
+  }
+}
+
+// color
+.textarea {
+  &--error {
+    --textarea-outline: inset 0 0 0 1px var(--color-danger);
+    --textarea-text-color: var(--color-danger);
+  }
+}
