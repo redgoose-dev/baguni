@@ -1,0 +1,139 @@
+@use '../../assets/scss/func';
+
+.switch {
+  --switch-width: 48px;
+  --switch-height: 24px;
+  --switch-handle-padding: 4px;
+  --switch-radius: calc(var(--switch-height) * .5);
+  --switch-transition-speed: 100ms;
+  --switch-handle-active-offset: 2px;
+  display: flex;
+  gap: 0 6px;
+  align-items: center;
+}
+
+.switch-label {
+  display: block;
+  font-size: var(--switch-text-size, 13px);
+  user-select: none;
+  color: var(--switch-text-color, var(--color-base));
+  font-weight: 500;
+}
+
+.switch-body {
+  display: block;
+  position: relative;
+  width: var(--switch-width);
+  height: var(--switch-height);
+  box-sizing: border-box;
+}
+
+// trigger
+.trigger {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
+  background: none;
+  appearance: none;
+  border: none;
+  border-radius: var(--switch-radius);
+  outline: none;
+  box-shadow: inset 0 0 0 1px var(--switch-outline, var(--color-forms-outline));
+  transition: box-shadow 160ms ease-out;
+  &:is(input) {}
+  &:is(button) {
+    font-size: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  &:focus {
+    outline: 2px solid var(--color-key-1);
+    outline-offset: -2px;
+  }
+}
+
+// handle
+.handle {
+  --handle-size: calc(var(--switch-height) - (var(--switch-handle-padding) * 2));
+  display: block;
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  top: 50%;
+  translate: var(--handle-x, var(--switch-handle-padding)) var(--handle-y, -50%);
+  width: var(--handle-size);
+  height: var(--handle-size);
+  background-color: var(--handle-color, var(--color-forms-outline));
+  border-radius: calc(var(--handle-size) * .5);
+  transition:
+    translate var(--switch-transition-speed) ease-out,
+    background-color var(--switch-transition-speed) ease-out;
+}
+
+// disabled
+.switch--disabled {
+  .switch-label {
+    opacity: .5;
+    cursor: not-allowed;
+  }
+  .trigger {
+    opacity: .5;
+    cursor: not-allowed;
+    & + .handle {
+      opacity: .5;
+    }
+  }
+}
+
+// readonly
+.switch--readonly {
+  .trigger {
+    cursor: default;
+    background-color: func.alpha-mix(var(--color-forms-outline), 20%);
+  }
+}
+
+// checked
+.trigger:is([data-checked=true], :checked) {
+  & + .handle {
+    --handle-x: calc(var(--switch-width) - var(--handle-size) - var(--switch-handle-padding));
+    --handle-color: var(--color-key-1);
+  }
+}
+
+// active
+.trigger:active:not(:disabled) {
+  & + .handle {
+    --handle-x: calc(var(--switch-handle-padding) + var(--switch-handle-active-offset));
+    transition-duration: calc(var(--switch-transition-speed) + 100ms);
+  }
+  &:is([data-checked=true], :checked) + .handle {
+    --handle-x: calc(var(--switch-width) - var(--handle-size) - var(--switch-handle-padding) - var(--switch-handle-active-offset));
+  }
+}
+
+// hover
+.trigger:hover:not(:disabled) {
+  --switch-outline: var(--color-weak);
+}
+
+// size
+.switch {
+  &--small {
+    --switch-width: 40px;
+    --switch-height: 20px;
+    --switch-text-size: 12px;
+  }
+  &--big {
+    --switch-width: 56px;
+    --switch-height: 28px;
+    --switch-text-size: 14px;
+  }
+}

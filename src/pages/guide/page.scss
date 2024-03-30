@@ -95,14 +95,16 @@
   display: flex;
   gap: var(--gap, 16px);
   align-items: var(--v-align, unset);
-  justify-content: var(--h-align, unset);
+  justify-content: var(--h-content, unset);
 }
 .page-grid {
   display: grid;
   gap: var(--gap, 16px);
   grid-template-columns: repeat(var(--column), 1fr);
   align-items: var(--v-align, unset);
-  justify-content: var(--h-align, unset);
+  justify-content: var(--h-content, unset);
+  justify-items: var(--h-items, unset);
+  place-content: var(--p-content, unset);
 }
 
 .page-details {

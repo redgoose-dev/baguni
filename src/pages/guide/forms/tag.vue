@@ -13,6 +13,9 @@
         <h1>basic</h1>
         <p>기본적으로 사용하는 모습입니다.</p>
       </header>
+      <div class="page-example">
+        ...
+      </div>
     </section>
   </div>
 </article>
