@@ -13,7 +13,11 @@
     border-radius: 6px;
     background-color: var(--checkbox-bg, var(--color-bg));
     box-shadow: inset 0 0 0 1px var(--checkbox-outline-color, var(--color-forms-outline));
-    transition: box-shadow var(--input-text-transition-speed, (160ms)) ease-out;
+    transition:
+      box-shadow var(--checkbox-transition-speed, (160ms)) ease-out,
+      outline var(--checkbox-transition-speed, (160ms)) ease-out;
+    outline: 2px solid transparent;
+    outline-offset: -2px;
     &:before {
       content: '';
       position: absolute;
@@ -24,7 +28,7 @@
       height: var(--checkbox-unit-size, 13px);
       border-radius: 3px;
       background-color: var(--checkbox-unit-color, #{func.alpha-mix(var(--color-forms-outline), 50%)});
-      transition: background-color var(--input-text-transition-speed, (160ms)) ease-out;
+      transition: background-color var(--checkbox-transition-speed, (160ms)) ease-out;
       transform-origin: 50% 50%;
       translate: -50% -50%;
     }
@@ -42,8 +46,7 @@
     opacity: 0;
     cursor: pointer;
     &:focus-visible:not([disabled]) + i {
-      outline: 2px solid var(--color-key-1);
-      outline-offset: -2px;
+      outline-color: var(--color-key-1);
     }
     &:checked {
       & + i:before {
@@ -69,7 +72,7 @@
     --icon-size: 10px;
     --icon-stroke: 5;
     --icon-color: var(--color-light);
-    transition: opacity var(--input-text-transition-speed, (160ms)) ease-out;
+    transition: opacity var(--checkbox-transition-speed, (160ms)) ease-out;
   }
 }
 

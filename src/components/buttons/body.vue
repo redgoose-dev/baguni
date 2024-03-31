@@ -1,7 +1,5 @@
 <template>
-<span :class="[
-  'button-body',
-]">
+<span class="button-body">
   <IconFeather
     v-if="!!props.leftIcon"
     :name="props.leftIcon"

@@ -64,7 +64,6 @@
   display: block;
   pointer-events: none;
   position: absolute;
-  z-index: 2;
   left: 0;
   top: 50%;
   translate: var(--handle-x, var(--switch-handle-padding)) var(--handle-y, -50%);

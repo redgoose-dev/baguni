@@ -101,6 +101,16 @@ const guide = [
     },
     children: [
       {
+        path: 'asset/colors',
+        name: 'guide-asset-colors',
+        component: () => import('../pages/guide/asset/colors.vue'),
+      },
+      {
+        path: 'asset/icons',
+        name: 'guide-asset-icons',
+        component: () => import('../pages/guide/asset/icons.vue'),
+      },
+      {
         path: 'forms/input-text',
         name: 'guide-forms-input-text',
         component: () => import('../pages/guide/forms/input-text.vue'),
@@ -131,14 +141,9 @@ const guide = [
         component: () => import('../pages/guide/navigation/button.vue'),
       },
       {
-        path: 'asset/colors',
-        name: 'guide-asset-colors',
-        component: () => import('../pages/guide/asset/colors.vue'),
-      },
-      {
-        path: 'asset/icons',
-        name: 'guide-asset-icons',
-        component: () => import('../pages/guide/asset/icons.vue'),
+        path: 'navigation/context',
+        name: 'guide-navigation-context',
+        component: () => import('../pages/guide/navigation/context.vue'),
       },
     ],
   },

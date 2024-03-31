@@ -13,8 +13,12 @@
   background: var(--input-text-bg, var(--color-bg));
   color: var(--input-text-color, var(--color-base));
   font-size: var(--input-text-size, 14px);
-  transition: box-shadow var(--input-text-transition-speed, (160ms)) ease-out;
+  transition:
+    box-shadow var(--input-text-transition-speed, (160ms)) ease-out,
+    outline var(--input-text-transition-speed, (160ms)) ease-out;
   box-shadow: var(--input-text-outline, (inset 0 0 0 1px #{func.alpha-mix(var(--color-forms-outline), 100%)}));
+  outline: 2px solid transparent;
+  outline-offset: -2px;
   &::-webkit-input-placeholder {
     color: var(--input-text-placeholder, func.alpha-mix(var(--color-base), 45%));
   }
@@ -27,11 +31,8 @@
     background: var(--input-text-bg, var(--color-bg));
     user-select: none;
   }
-  &:focus {
-    --input-text-outline: inset 0 0 0 2px #{func.alpha-mix(var(--color-key-1), 100%)};
-  }
   &:focus:not([disabled]) {
-    outline: 0;
+    outline-color: var(--color-key-1);
   }
 }
 

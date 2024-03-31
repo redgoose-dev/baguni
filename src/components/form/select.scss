@@ -15,22 +15,26 @@
     padding: var(--select-padding, 0 36px 0 16px);
     border-radius: var(--size-form-radius);
     box-sizing: border-box;
-    outline: none;
     border: none;
     -webkit-appearance: none;
-    transition: box-shadow var(--select-transition-speed, (160ms)) ease-out;
+    transition:
+      box-shadow var(--select-transition-speed, (160ms)) ease-out,
+      outline var(--select-transition-speed, (160ms)) ease-out;
     box-shadow: var(--select-outline, (inset 0 0 0 1px #{func.alpha-mix(var(--color-forms-outline), 100%)}));
     background: var(--select-bg, var(--color-bg));
     font-size: var(--select-text-size, 14px);
     color: var(--select-text-color, var(--color-base));
-
+    outline: 2px solid transparent;
+    outline-offset: -2px;
     &:disabled {
       cursor: not-allowed;
       opacity: .5;
       background: var(--select-bg, var(--color-bg));
       user-select: none;
     }
-    &:focus:not([disabled]) {}
+    &:focus:not([disabled]) {
+      outline-color: var(--color-key-1);
+    }
   }
   i {
     display: block;

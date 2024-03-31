@@ -45,7 +45,6 @@
       <ul>
         <li><RouterLink to="/guide/navigation/button">button</RouterLink></li>
         <li><RouterLink to="/guide/navigation/context">context</RouterLink></li>
-        <li><RouterLink to="/guide/navigation/dropdown">dropdown</RouterLink></li>
       </ul>
     </details>
   </nav>
