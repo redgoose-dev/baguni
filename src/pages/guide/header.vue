@@ -22,7 +22,7 @@
         <span>Content</span>
       </summary>
       <ul>
-        <li><RouterLink to="/guide/asset/modal">modal</RouterLink></li>
+        <li><RouterLink to="/guide/content/modal">modal</RouterLink></li>
       </ul>
     </details>
 

@@ -17,7 +17,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import Header from '../../components/guide/header.vue'
+import Header from './header.vue'
 import Introduce from './introduce.vue'
 
 const route = useRoute()
