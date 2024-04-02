@@ -30,6 +30,7 @@ const $dialog = ref()
 const props = defineProps({
   open: Boolean,
   full: Boolean,
+  useShortcut: Boolean,
 })
 const emits = defineEmits([ 'close' ])
 
@@ -43,24 +44,22 @@ function controlDialog(sw)
 {
   if (sw)
   {
-    $dialog.value.showModal()
     window.addEventListener('keydown', onKeydownWindow)
+    $dialog.value.showModal()
   }
   else
   {
-    $dialog.value.close()
     window.removeEventListener('keydown', onKeydownWindow)
+    $dialog.value.close()
     emits('close')
   }
 }
 
 function onKeydownWindow(e)
 {
-  if (e.key === 'Escape')
-  {
-    controlDialog(false)
-    window.removeEventListener('keydown', onKeydownWindow)
-  }
+  if (e.key !== 'Escape') return
+  if (!props.useShortcut) return e.preventDefault()
+  controlDialog(false)
 }
 
 onMounted(() => {

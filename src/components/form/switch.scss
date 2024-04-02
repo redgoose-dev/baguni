@@ -14,10 +14,11 @@
 
 .switch-label {
   display: block;
-  font-size: var(--switch-text-size, 13px);
+  font-size: var(--switch-text-size, 12px);
   user-select: none;
   color: var(--switch-text-color, var(--color-base));
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: -.25px;
 }
 
 .switch-body {

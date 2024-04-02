@@ -116,6 +116,11 @@ const guide = [
         component: () => import('../pages/guide/content/modal.vue'),
       },
       {
+        path: 'content/image',
+        name: 'guide-content-image',
+        component: () => import('../pages/guide/content/image.vue'),
+      },
+      {
         path: 'forms/input-text',
         name: 'guide-forms-input-text',
         component: () => import('../pages/guide/forms/input-text.vue'),

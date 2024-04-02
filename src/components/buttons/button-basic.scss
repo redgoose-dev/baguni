@@ -38,10 +38,16 @@
 }
 
 // type
-.button[type] {
-  --button-width: 100%;
-  border: 0;
-  -webkit-appearance: button;
+.button {
+  &:where([type]) {
+    --button-width: 100%;
+    border: 0;
+    -webkit-appearance: button;
+  }
+  &--text {
+    cursor: text;
+    user-select: unset;
+  }
 }
 
 // active
@@ -61,12 +67,14 @@
   &--small {
     --button-height: 28px;
     --body-font-size: 12px;
-    --icon-size: 14px;
+    --icon-size: 12px;
+    --icon-stroke: 3.5;
   }
   &--big {
     --button-height: 44px;
     --body-font-size: 16px;
-    --icon-size: 16px;
+    --icon-size: 20px;
+    --icon-stroke: 2.5;
   }
 }
 
@@ -124,8 +132,11 @@
   }
 }
 
-// type=text
-.button--text {
-  cursor: text;
-  user-select: unset;
+// theme
+.button {
+  &--circle {
+    --button-width: auto;
+    --button-padding: 0;
+    aspect-ratio: 1 / 1;
+  }
 }

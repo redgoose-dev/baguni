@@ -1,0 +1,24 @@
+@use '../../assets/scss/mixins';
+
+.explorer {
+  padding: 0 60px;
+  &__wrap {
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+  &__body {
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    gap: 0 40px;
+    margin: 30px 0 0;
+  }
+  &__content {
+    //
+  }
+  &__index {
+    margin: 12px 0 0;
+  }
+  &__filter {
+    //
+  }
+}

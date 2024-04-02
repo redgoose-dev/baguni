@@ -55,16 +55,19 @@
       color: var(--color-weak);
     }
   }
+  > h2 {
+    margin: 16px 0 -4px;
+    line-height: 1.05;
+    font-size: 16px;
+    font-weight: 700;
+  }
   > p {
     margin: 16px 0;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1.42;
     & + p {
       margin-top: -4px;
     }
-  }
-  > p + .page-example {
-    margin-top: -8px;
   }
 }
 

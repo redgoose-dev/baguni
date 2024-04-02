@@ -18,9 +18,11 @@ const props = defineProps({
   disabled: Boolean,
   size: String, // small,big
   color: String, // key-1,key-2,key-3,success,danger,dark,weak
+  icon: String,
   leftIcon: String,
   rightIcon: String,
   rotateIcon: Boolean,
+  theme: String, // circle
 })
 
 const type = computed(() => {
@@ -62,10 +64,12 @@ const wrapProps = computed(() => {
   }
   if (props.size) attr.class.push(`button--${props.size}`)
   if (props.color) attr.class.push(`button--${props.color}`)
+  if (props.theme) attr.class.push(`button--${props.theme}`)
   return attr
 })
 const bodyProps = computed(() => {
   return {
+    icon: props.icon,
     leftIcon: props.leftIcon,
     rightIcon: props.rightIcon,
     rotateIcon: props.rotateIcon,

@@ -23,6 +23,7 @@
       </summary>
       <ul>
         <li><RouterLink to="/guide/content/modal">modal</RouterLink></li>
+        <li><RouterLink to="/guide/content/image">image</RouterLink></li>
       </ul>
     </details>
 

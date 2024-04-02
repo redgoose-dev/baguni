@@ -5,10 +5,7 @@
   gap: 6px;
   box-sizing: border-box;
   height: 100%;
-  &__icon {
-    @-webkit-keyframes spin {
-      100% { transform: rotate(360deg); }
-    }
+  &__side {
     animation: var(--icon-animation, none);
     &:is(:first-child) {
       margin-left: -4px;
@@ -16,6 +13,9 @@
     &:is(:last-child) {
       margin-right: -4px;
     }
+  }
+  &__icon {
+    animation: var(--icon-animation, none);
   }
   &__label {
     display: block;

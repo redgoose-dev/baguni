@@ -24,9 +24,9 @@
       </header>
       <div class="page-example">
         <div class="page-grid" style="--column:3; --v-align:center;">
-          <ButtonBasic size="small">small</ButtonBasic>
-          <ButtonBasic>normal</ButtonBasic>
-          <ButtonBasic size="big">big</ButtonBasic>
+          <ButtonBasic size="small" left-icon="cloud">small</ButtonBasic>
+          <ButtonBasic left-icon="cloud">normal</ButtonBasic>
+          <ButtonBasic size="big" left-icon="cloud">big</ButtonBasic>
         </div>
       </div>
     </section>
@@ -88,15 +88,16 @@
     </section>
     <section class="page-section">
       <header>
-        <h1>only icon</h1>
-        <p>아이콘만 사용할때</p>
+        <h1>theme</h1>
+        <p>버튼의 다른 스타일들</p>
       </header>
+      <h2>circle</h2>
+      <p>원 형태의 아이콘 버튼으로 사용됩니다.</p>
       <div class="page-example">
-        <div class="page-flex" style="--h-align:center;--v-align:center;">
-          <ButtonIcon icon="cloud" color="key-1" size="small"/>
-          <ButtonIcon icon="save"/>
-          <ButtonIcon icon="sun" color="key-2"/>
-          <ButtonIcon icon="feather" color="key-3" size="big"/>
+        <div class="page-flex" style="--h-content:center;--v-align:center;">
+          <ButtonBasic theme="circle" icon="cloud" size="small"/>
+          <ButtonBasic theme="circle" icon="cloud-drizzle"/>
+          <ButtonBasic theme="circle" icon="cloud-lightning" size="big"/>
         </div>
       </div>
     </section>
@@ -106,7 +107,6 @@
 
 <script setup>
 import ButtonBasic from '../../../components/buttons/button-basic.vue'
-import ButtonIcon from '../../../components/buttons/button-icon.vue'
 import ButtonGroup from '../../../components/buttons/group.vue'
 </script>
 

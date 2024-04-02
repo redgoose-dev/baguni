@@ -52,6 +52,7 @@
   <Modal
     :open="modalFullSize"
     :full="true"
+    :use-shortcut="true"
     @close="modalFullSize = false">
     <article class="modal-content full">
       <h1>Full screen modal</h1>

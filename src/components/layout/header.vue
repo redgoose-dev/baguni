@@ -33,11 +33,21 @@
           </ButtonBasic>
         </div>
         <div>
-          <ButtonBasic
-            size="small"
-            right-icon="chevron-down">
-            foo@bar.com
-          </ButtonBasic>
+          <ContextDropdown ref="$profileDropdown" position="right">
+            <template #trigger>
+              <ButtonBasic
+                size="small"
+                right-icon="chevron-down">
+                foo@bar.com
+              </ButtonBasic>
+            </template>
+            <Context
+              :items="[
+                { key: 'account', label: '계정정보', icon: 'user' },
+                { key: 'logout', label: '로그아웃', icon: 'log-out', color: 'danger' },
+              ]"
+              @select="onSelectProfileDropdown"/>
+          </ContextDropdown>
         </div>
       </template>
       <template v-else>
@@ -58,8 +68,22 @@
 <script setup>
 import { ref } from 'vue'
 import ButtonBasic from '../buttons/button-basic.vue'
+import ContextDropdown from '../navigation/context-dropdown.vue'
+import Context from '../navigation/context.vue'
 
+const $profileDropdown = ref()
 const isLogin = ref(true)
+
+function onSelectProfileDropdown({ key })
+{
+  switch (key)
+  {
+    case 'account':
+      break
+    case 'logout':
+      break
+  }
+}
 </script>
 
 <style src="./header.scss" lang="scss" scoped></style>

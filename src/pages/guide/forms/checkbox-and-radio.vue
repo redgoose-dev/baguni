@@ -101,6 +101,36 @@
         </div>
       </div>
     </section>
+    <section class="page-section">
+      <header>
+        <h1>radio button</h1>
+        <p>여러항목 중 하나를 선택하는 컴포넌트 버튼 스타일</p>
+      </header>
+      <div class="page-example">
+        <div class="page-grid">
+          <RadioButton
+            size="small"
+            :options="[
+              { value: 'apple', label: 'Apple', icon: 'cloud' },
+              { value: 'banana', label: '바나나', icon: 'cloud-rain' },
+              { value: 'mango', label: '망고', icon: 'cloud-snow' },
+            ]"/>
+          <RadioButton
+            :options="[
+              { value: 'apple', label: 'Apple', icon: 'cloud' },
+              { value: 'banana', label: '바나나', icon: 'cloud-rain' },
+              { value: 'mango', label: '망고', icon: 'cloud-snow' },
+            ]"/>
+          <RadioButton
+            size="big"
+            :options="[
+              { value: 'apple', label: 'Apple', icon: 'cloud' },
+              { value: 'banana', label: '바나나', icon: 'cloud-rain' },
+              { value: 'mango', label: '망고', icon: 'cloud-snow' },
+            ]"/>
+        </div>
+      </div>
+    </section>
   </div>
 </article>
 </template>
@@ -110,6 +140,7 @@ import { ref } from 'vue'
 import Checkbox from '../../../components/form/checkbox.vue'
 import Radio from '../../../components/form/radio.vue'
 import Label from '../../../components/form/label.vue'
+import RadioButton from '../../../components/form/radio-button.vue'
 
 const checkboxValue = ref({ apple: false, banana: false, mango: false })
 const radioValue = ref('apple')
