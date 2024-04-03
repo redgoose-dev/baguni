@@ -38,6 +38,8 @@ const props = defineProps({
 const emits = defineEmits([ 'update' ])
 const open = ref(false)
 
+// TODO: open 값을 v-model 로 사용하는것이 더 낫겠다. 외부에서도 값을 공유하면 더 유연하게 사용할 수 있을듯하다.
+
 function onClickTrigger()
 {
   controlContext(!open.value)
@@ -69,4 +71,4 @@ defineExpose({
 })
 </script>
 
-<style src="./context-dropdown.scss" lang="scss" scoped></style>
+<style src="./dropdown.scss" lang="scss" scoped></style>

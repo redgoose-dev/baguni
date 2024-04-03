@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0 16px;
+  gap: 0 12px;
 }
 
 .column {
@@ -12,7 +12,7 @@
   label {
     display: block;
     white-space: nowrap;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
     line-height: 1.15;
   }

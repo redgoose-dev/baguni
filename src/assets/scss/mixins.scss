@@ -1,3 +1,5 @@
+// MIXINS
+
 // responsive
 @mixin responsive($range)
 {
@@ -45,4 +47,13 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow-x: clip;
+}
+
+
+// FUNCTIONS
+
+// color-mix with alpha
+@function mix-alpha($color, $alpha: 100%)
+{
+  @return color-mix(in hsl, $color $alpha, transparent);
 }

@@ -1,3 +1,131 @@
+@use '../../assets/scss/mixins';
+
 .radio-button {
-  //
+  --radio-button-fill: var(--color-base);
+  position: relative;
+  display: flex;
+  gap: 0 1px;
+  height: var(--radio-button-height, 36px);
+  box-sizing: border-box;
+  border-radius: var(--size-form-radius);
+  background: var(--radi-button-bg, var(--color-bg));
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+    border-radius: var(--size-form-radius);
+    box-shadow: var(--shadow-outline);
+    --shadow-outline: inset 0 0 0 1px var(--color-forms-outline);
+  }
+  &.disabled {}
+}
+
+label {
+  --color-item-bg: transparent;
+  --color-item-fill: var(--color-base);
+  --color-item-middle-line: transparent;
+  --color-item-outline: transparent;
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
+  user-select: none;
+  --icon-size: var(--radio-button-icon-size, 16px);
+  --icon-stroke: var(--radio-button-icon-stroke, 2.5);
+  --icon-color: var(--color-item-fill);
+  &:first-child span {
+    border-top-left-radius: var(--size-form-radius);
+    border-bottom-left-radius: var(--size-form-radius);
+  }
+  &:last-child span {
+    border-top-right-radius: var(--size-form-radius);
+    border-bottom-right-radius: var(--size-form-radius);
+  }
+  &:nth-child(n+2) span {
+    box-shadow: -1px 0 0 #{mixins.mix-alpha(var(--color-forms-outline), 50%)};
+  }
+  &:has(input:checked) {
+    --color-item-bg: var(--color-key-1);
+    --color-item-fill: var(--color-light);
+    cursor: default;
+  }
+  &:has(input:focus-visible) {
+    --color-item-outline: var(--color-key-3);
+  }
+}
+
+input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  padding: var(--radio-button-padding, (0 20px));
+  box-sizing: border-box;
+  color: var(--color-item-fill, var(--color-base));
+  outline: 2px solid var(--color-item-outline);
+  outline-offset: -2px;
+  background-color: var(--color-item-bg, transparent);
+  transition: outline 160ms ease-out;
+  white-space: nowrap;
+  em {
+    display: block;
+    font-style: normal;
+    font-size: var(--radio-button-text-size, 14px);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -.25px;
+  }
+}
+
+// size
+.size {
+  &--small {
+    --radio-button-height: 28px;
+    --radio-button-text-size: 12px;
+    --radio-button-icon-size: 13px;
+    --radio-button-padding: 0 16px;
+  }
+  &--big {
+    --radio-button-height: 44px;
+    --radio-button-text-size: 16px;
+    --radio-button-icon-size: 18px;
+    --radio-button-padding: 0 32px;
+  }
+}
+
+// icon mode
+.icon {
+  --radio-button-padding: 0 14px;
+  --radio-button-icon-size: 18px;
+  span {
+    gap: 0;
+    em {
+      font-size: 0;
+    }
+  }
+  &.size {
+    &--small {
+      --radio-button-padding: 0 12px;
+      --radio-button-icon-size: 16px;
+    }
+    &--big {
+      --radio-button-padding: 0 16px;
+      --radio-button-icon-size: 22px;
+      --radio-button-icon-stroke: 2;
+    }
+  }
 }

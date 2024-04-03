@@ -107,24 +107,27 @@
         <p>여러항목 중 하나를 선택하는 컴포넌트 버튼 스타일</p>
       </header>
       <div class="page-example">
-        <div class="page-grid">
+        <div class="page-flex">
           <RadioButton
-            size="small"
+            name="radio-button"
+            v-model="radioButtonValue"
             :options="[
               { value: 'apple', label: 'Apple', icon: 'cloud' },
-              { value: 'banana', label: '바나나', icon: 'cloud-rain' },
+              { value: 'banana', label: '바나나' },
               { value: 'mango', label: '망고', icon: 'cloud-snow' },
             ]"/>
+        </div>
+        <pre class="page-example-result">{{radioButtonValue}}</pre>
+      </div>
+      <p>아이콘만 사용할때의 모습</p>
+      <div class="page-example">
+        <div class="page-flex">
           <RadioButton
+            name="radio-button-icon"
+            v-model="radioButtonIconValue"
+            :only-icon="true"
             :options="[
-              { value: 'apple', label: 'Apple', icon: 'cloud' },
-              { value: 'banana', label: '바나나', icon: 'cloud-rain' },
-              { value: 'mango', label: '망고', icon: 'cloud-snow' },
-            ]"/>
-          <RadioButton
-            size="big"
-            :options="[
-              { value: 'apple', label: 'Apple', icon: 'cloud' },
+              { value: 'apple', label: '사과', icon: 'cloud' },
               { value: 'banana', label: '바나나', icon: 'cloud-rain' },
               { value: 'mango', label: '망고', icon: 'cloud-snow' },
             ]"/>
@@ -144,6 +147,8 @@ import RadioButton from '../../../components/form/radio-button.vue'
 
 const checkboxValue = ref({ apple: false, banana: false, mango: false })
 const radioValue = ref('apple')
+const radioButtonValue = ref('apple')
+const radioButtonIconValue = ref('apple')
 </script>
 
 <style lang="scss" scoped>

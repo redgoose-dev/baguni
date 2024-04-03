@@ -31,7 +31,7 @@
       <div class="page-example">
         <div class="page-grid" style="--column:2;--h-items:center">
           <div>
-            <ContextDropdown ref="$dropdown1" position="right">
+            <Dropdown ref="$dropdown1" position="right">
               <Context
                 :items="[
                   { key: 'context-1', label: 'context #1' },
@@ -39,10 +39,10 @@
                   { key: 'context-3', label: 'context #3', icon: 'image' },
                 ]"
                 @select="onSelectDropdown"/>
-            </ContextDropdown>
+            </Dropdown>
           </div>
           <div>
-            <ContextDropdown ref="$dropdown2">
+            <Dropdown ref="$dropdown2">
               <template #trigger>
                 <ButtonBasic size="small" right-icon="chevron-down">
                   트리거 버튼
@@ -55,7 +55,7 @@
                   { key: 'context-3', label: 'context #3', icon: 'image' },
                 ]"
                 @select="onSelectDropdown"/>
-            </ContextDropdown>
+            </Dropdown>
           </div>
         </div>
       </div>
@@ -67,7 +67,7 @@
 <script setup>
 import { ref } from 'vue'
 import Context from '../../../components/navigation/context.vue'
-import ContextDropdown from '../../../components/navigation/context-dropdown.vue'
+import Dropdown from '../../../components/navigation/dropdown.vue'
 import ButtonBasic from '../../../components/buttons/button-basic.vue'
 
 const $dropdown1 = ref()

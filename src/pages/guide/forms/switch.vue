@@ -50,7 +50,7 @@
         <p>스위치의 사이즈</p>
       </header>
       <div class="page-example">
-        <div class="page-grid" style="--gap:8px">
+        <div class="page-flex" style="--h-content:center;--gap:24px">
           <Switch
             v-model="sizeValue.small"
             size="small"

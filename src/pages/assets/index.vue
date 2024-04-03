@@ -13,9 +13,7 @@
             <li>item</li>
           </ul>
         </div>
-        <nav>
-          // TODO: paginate
-        </nav>
+        <Paginate/>
       </div>
       <div class="explorer__filter">
         <Filter/>
@@ -29,6 +27,7 @@
 import PageHeader from '../../components/content/page-header.vue'
 import Filter from './components/filter.vue'
 import IndexFilter from './components/index-filter.vue'
+import Paginate from '../../components/navigation/paginate.vue'
 </script>
 
 <style src="./index.scss" lang="scss" scoped></style>

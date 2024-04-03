@@ -86,35 +86,35 @@
     --body-color: var(--color-light);
     --button-brightness-active: 110%;
     --icon-color: var(--color-light);
-    --button-focus-color: var(--color-dark);
+    --button-focus-color: var(--color-key-3);
   }
   &--key-2 {
     --button-color-bg: var(--color-key-2);
     --body-color: var(--color-light);
     --button-brightness-active: 110%;
     --icon-color: var(--color-light);
-    --button-focus-color: var(--color-dark);
+    --button-focus-color: var(--color-key-3);
   }
   &--key-3 {
     --button-color-bg: var(--color-key-3);
     --body-color: var(--color-light);
     --button-brightness-active: 120%;
     --icon-color: var(--color-light);
-    --button-focus-color: var(--color-dark);
+    --button-focus-color: var(--color-key-1);
   }
   &--success {
     --button-color-bg: var(--color-success);
     --body-color: var(--color-light);
     --button-brightness-active: 120%;
     --icon-color: var(--color-light);
-    --button-focus-color: var(--color-dark);
+    --button-focus-color: var(--color-key-3);
   }
   &--danger {
     --button-color-bg: var(--color-danger);
     --body-color: var(--color-light);
     --button-brightness-active: 120%;
     --icon-color: var(--color-light);
-    --button-focus-color: var(--color-dark);
+    --button-focus-color: var(--color-key-3);
   }
   &--dark {
     --button-color-bg: var(--color-dark);

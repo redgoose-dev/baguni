@@ -33,7 +33,7 @@
           </ButtonBasic>
         </div>
         <div>
-          <ContextDropdown ref="$profileDropdown" position="right">
+          <Dropdown ref="$profileDropdown" position="right">
             <template #trigger>
               <ButtonBasic
                 size="small"
@@ -47,7 +47,7 @@
                 { key: 'logout', label: '로그아웃', icon: 'log-out', color: 'danger' },
               ]"
               @select="onSelectProfileDropdown"/>
-          </ContextDropdown>
+          </Dropdown>
         </div>
       </template>
       <template v-else>
@@ -68,7 +68,7 @@
 <script setup>
 import { ref } from 'vue'
 import ButtonBasic from '../buttons/button-basic.vue'
-import ContextDropdown from '../navigation/context-dropdown.vue'
+import Dropdown from '../navigation/dropdown.vue'
 import Context from '../navigation/context.vue'
 
 const $profileDropdown = ref()

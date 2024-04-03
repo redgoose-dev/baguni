@@ -11,13 +11,21 @@
       size="small"/>
   </div>
   <div class="column">
-    // TODO: 목록테마(라디오 탭 스타일 컴포넌트)
+    <RadioButton
+      name="index-theme"
+      size="small"
+      :only-icon="true"
+      :options="[
+        { value: 'list', label: '목록', icon: 'menu' },
+        { value: 'thumbnail', label: '썸네일', icon: 'grid' },
+      ]"/>
   </div>
 </form>
 </template>
 
 <script setup>
 import Select from '../../../components/form/select.vue'
+import RadioButton from '../../../components/form/radio-button.vue'
 </script>
 
 <style src="./index-filter.scss" lang="scss" scoped></style>

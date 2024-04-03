@@ -1,23 +1,36 @@
 <template>
-<fieldset
-  :disabled="props.disabled"
-  class="radio-button">
-  <legend v-if="props.legend">{{props.legend}}</legend>
-  <label v-for="o in props.options">
-    .label
+<nav :class="[
+  'radio-button',
+  props.disabled && 'disabled',
+  props.size && `size--${props.size}`,
+  props.onlyIcon && 'icon',
+]">
+  <label
+    v-for="item in props.options"
+    type="button">
+    <input
+      type="radio"
+      :name="props.name"
+      :value="item.value"
+      :checked="props.modelValue === item.value"
+      @change="emits('update:modelValue', $event.target.value)">
+    <span>
+      <IconFeather v-if="item.icon" :name="item.icon"/>
+      <em>{{item.label}}</em>
+    </span>
   </label>
-</fieldset>
+</nav>
 </template>
 
 <script setup>
+import IconFeather from '../../components/icons/feather.vue'
+
 const props = defineProps({
-  legend: String,
-  name: String,
-  id: String,
+  name: { type: String, required: true },
   options: { type: Array, required: true },
   modelValue: [ String, Number, Boolean ],
-  required: Boolean,
   disabled: Boolean,
+  onlyIcon: Boolean,
   size: String, // small,big
 })
 const emits = defineEmits([ 'update:modelValue' ])

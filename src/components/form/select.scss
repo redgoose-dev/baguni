@@ -7,6 +7,9 @@
   box-sizing: border-box;
   font-size: 0;
   width: var(--select-width, 100%);
+  --icon-size: 14px;
+  --icon-stroke: 3;
+  --icon-color: var(--color-weak);
   select {
     display: block;
     width: 100%;
@@ -16,7 +19,6 @@
     border-radius: var(--size-form-radius);
     box-sizing: border-box;
     border: none;
-    -webkit-appearance: none;
     transition:
       box-shadow var(--select-transition-speed, (160ms)) ease-out,
       outline var(--select-transition-speed, (160ms)) ease-out;
@@ -26,6 +28,7 @@
     color: var(--select-text-color, var(--color-base));
     outline: 2px solid transparent;
     outline-offset: -2px;
+    -webkit-appearance: none;
     &:disabled {
       cursor: not-allowed;
       opacity: .5;
@@ -43,9 +46,6 @@
     top: 50%;
     pointer-events: none;
     transform: translateY(-50%) rotate(90deg);
-    --icon-size: 14px;
-    --icon-stroke: 3;
-    --icon-color: var(--color-weak);
   }
 }
 
@@ -55,32 +55,22 @@
     --select-height: 28px;
     --select-text-size: 12px;
     --select-padding: 0 32px 0 12px;
-    i {
-      --icon-size: 12px;
-      --icon-stroke: 3.2;
-    }
+    --icon-size: 12px;
+    --icon-stroke: 3.2;
   }
 }
 
 // placeholder
 .select--placeholder {
-  select {
-    --select-text-color: #{func.alpha-mix(var(--color-base), 50%)};
-  }
-  i {
-    --icon-color: #{func.alpha-mix(var(--color-base), 35%)};
-  }
+  --select-text-color: #{func.alpha-mix(var(--color-base), 50%)};
+  --icon-color: #{func.alpha-mix(var(--color-base), 35%)};
 }
 
 // color
 .select {
   &--error {
-    select {
-      --select-outline: inset 0 0 0 1px var(--color-danger);
-      --select-text-color: var(--color-danger);
-    }
-    i {
-      --icon-color: var(--color-danger);
-    }
+    --select-outline: inset 0 0 0 1px var(--color-danger);
+    --select-text-color: var(--color-danger);
+    --icon-color: var(--color-danger);
   }
 }
