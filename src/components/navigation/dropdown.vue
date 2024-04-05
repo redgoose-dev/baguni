@@ -10,13 +10,13 @@
       type="button"
       :class="[
         'trigger-button',
-        open && 'open',
+        computedOpen && 'open',
       ]">
       <IconFeather :name="props.icon"/>
     </button>
   </div>
   <div
-    v-if="open"
+    v-if="computedOpen"
     :class="[
       'body',
       props.position && `body--${props.position}`,
@@ -27,22 +27,26 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import IconFeather from '../icons/feather.vue'
 
 const $root = ref()
 const props = defineProps({
   position: String, // right
   icon: { type: String, default: 'more-horizontal' },
+  modelValue: Boolean,
+  useValue: Boolean,
 })
-const emits = defineEmits([ 'update' ])
 const open = ref(false)
+const emits = defineEmits([ 'update:modelValue' ])
 
-// TODO: open 값을 v-model 로 사용하는것이 더 낫겠다. 외부에서도 값을 공유하면 더 유연하게 사용할 수 있을듯하다.
+const computedOpen = computed(() => {
+  return props.useValue ? open.value : props.modelValue
+})
 
 function onClickTrigger()
 {
-  controlContext(!open.value)
+  controlContext(!computedOpen.value)
 }
 
 function controlContext(sw)
@@ -50,14 +54,19 @@ function controlContext(sw)
   if (sw)
   {
     window.addEventListener('click', onClickWindow)
-    open.value = true
   }
   else
   {
     window.removeEventListener('click', onClickWindow)
-    open.value = false
   }
-  emits('update', open.value)
+  if (props.useValue)
+  {
+    open.value = sw
+  }
+  else
+  {
+    emits('update:modelValue', sw)
+  }
 }
 
 function onClickWindow(e)

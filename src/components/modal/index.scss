@@ -1,4 +1,3 @@
-@use '../../assets/scss/func';
 @use '../../assets/scss/mixins';
 
 .modal {
@@ -17,7 +16,7 @@
       0 4.5px 4.5px 0 hsla(0 0% 0% / 4%),
       0 0 0 .5px hsla(0 0% 0% / 10%);
     &::backdrop {
-      background-color: func.alpha-mix(var(--color-bg), 65%);
+      background-color: mixins.mix-alpha(var(--color-bg), 65%);
       @include mixins.background-blur(16px);
       cursor: zoom-out;
     }

@@ -14,7 +14,7 @@ const props = defineProps({
 </script>
 
 <style lang="scss" scoped>
-@use '../../assets/scss/func';
+@use '../../assets/scss/mixins';
 .button-group {
   --button-group-height: var(--size-form-height-normal);
   --button-group-radius: calc(var(--button-group-height) * .5);
@@ -40,7 +40,7 @@ const props = defineProps({
       border-bottom-right-radius: var(--button-group-radius);
     }
     &:nth-child(n+2) {
-      border-left: .5px solid func.alpha-mix(var(--color-dark), 35%);
+      border-left: .5px solid mixins.mix-alpha(var(--color-dark), 35%);
     }
     &:focus-visible {
       outline: 2px solid var(--button-focus-color, unset);

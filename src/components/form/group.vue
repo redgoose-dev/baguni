@@ -18,7 +18,7 @@ const props = defineProps({
 </script>
 
 <style lang="scss" scoped>
-@use '../../assets/scss/func';
+@use '../../assets/scss/mixins';
 
 .form-group {
   --form-group-height: var(--size-form-height-normal);
@@ -28,7 +28,6 @@ const props = defineProps({
   height: var(--form-group-height);
   background: var(--form-group-bg, var(--color-bg));
   border-radius: var(--size-form-radius);
-
   :slotted(.input-text) {
     border-radius: 0;
     background: none;
@@ -39,7 +38,6 @@ const props = defineProps({
     border-radius: 0;
     height: 100%;
   }
-
   &:is(.is-left) {
     grid-template-columns: auto 1fr;
   }
@@ -49,7 +47,6 @@ const props = defineProps({
   &:is(.is-left.is-right) {
     grid-template-columns: auto 1fr auto;
   }
-
   :slotted(:first-child) {
     border-top-left-radius: var(--size-form-radius);
     border-bottom-left-radius: var(--size-form-radius);
@@ -58,7 +55,6 @@ const props = defineProps({
     border-top-right-radius: var(--size-form-radius);
     border-bottom-right-radius: var(--size-form-radius);
   }
-
   // size
   &--small {
     --form-group-height: var(--size-form-height-small);

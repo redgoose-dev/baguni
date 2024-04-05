@@ -18,7 +18,7 @@ const props = defineProps({
 </script>
 
 <style lang="scss" scoped>
-@use '../../assets/scss/func';
+@use '../../assets/scss/mixins';
 .label {
   display: flex;
   align-items: center;
@@ -35,7 +35,7 @@ const props = defineProps({
 .label--disabled {
   user-select: none;
   span {
-    color: func.alpha-mix(var(--color-base), 50%);
+    color: mixins.mix-alpha(var(--color-base), 50%);
     cursor: not-allowed;
   }
 }

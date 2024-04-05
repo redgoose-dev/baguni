@@ -1,4 +1,4 @@
-@use '../../assets/scss/func';
+@use '../../assets/scss/mixins';
 
 .page {
   //
@@ -89,7 +89,7 @@
     font-family: var(--font-code);
     line-height: 1.42;
     font-size: 12px;
-    background: func.alpha-mix(var(--color-weak), 8%);
+    background: mixins.mix-alpha(var(--color-weak), 8%);
     border-radius: 2px;
     color: var(--color-weak);
   }

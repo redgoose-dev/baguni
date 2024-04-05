@@ -1,4 +1,4 @@
-@use '../../assets/scss/func';
+@use '../../assets/scss/mixins';
 
 .switch {
   --switch-width: 48px;
@@ -96,7 +96,7 @@
 .switch--readonly {
   .trigger {
     cursor: default;
-    background-color: func.alpha-mix(var(--color-forms-outline), 20%);
+    background-color: mixins.mix-alpha(var(--color-forms-outline), 20%);
   }
 }
 

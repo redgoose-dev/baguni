@@ -1,4 +1,4 @@
-@use '../../assets/scss/func';
+@use '../../assets/scss/mixins';
 
 .select {
   display: block;
@@ -22,7 +22,7 @@
     transition:
       box-shadow var(--select-transition-speed, (160ms)) ease-out,
       outline var(--select-transition-speed, (160ms)) ease-out;
-    box-shadow: var(--select-outline, (inset 0 0 0 1px #{func.alpha-mix(var(--color-forms-outline), 100%)}));
+    box-shadow: var(--select-outline, (inset 0 0 0 1px #{mixins.mix-alpha(var(--color-forms-outline), 100%)}));
     background: var(--select-bg, var(--color-bg));
     font-size: var(--select-text-size, 14px);
     color: var(--select-text-color, var(--color-base));
@@ -62,8 +62,8 @@
 
 // placeholder
 .select--placeholder {
-  --select-text-color: #{func.alpha-mix(var(--color-base), 50%)};
-  --icon-color: #{func.alpha-mix(var(--color-base), 35%)};
+  --select-text-color: #{mixins.mix-alpha(var(--color-base), 50%)};
+  --icon-color: #{mixins.mix-alpha(var(--color-base), 35%)};
 }
 
 // color

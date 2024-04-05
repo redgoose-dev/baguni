@@ -16,9 +16,25 @@
     //
   }
   &__index {
-    margin: 12px 0 0;
+    margin: 16px 0 36px;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(var(--assets-index-column, 3), 1fr);
+    gap: 32px 24px;
+    li {
+      min-width: 0;
+    }
+  }
+  &__paginate {
+    display: grid;
+    place-content: center;
   }
   &__filter {
     //
+  }
+
+  @include mixins.responsive(max) {
+    --assets-index-column: 4;
   }
 }

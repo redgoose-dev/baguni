@@ -89,7 +89,7 @@ function onClickOpenFullSizeWindow()
 </script>
 
 <style lang="scss" scoped>
-@use '../../../assets/scss/func';
+@use '../../../assets/scss/mixins';
 @import '../page';
 
 .modal-content {

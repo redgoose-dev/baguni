@@ -1,4 +1,4 @@
-@use '../../assets/scss/func';
+@use '../../assets/scss/mixins';
 
 .textarea {
   display: block;
@@ -10,15 +10,15 @@
   padding: var(--textarea-padding, 16px);
   background: var(--textarea-bg, var(--color-bg));
   transition: box-shadow var(--textarea-transition-speed, (160ms)) ease-out;
-  box-shadow: var(--textarea-outline, (inset 0 0 0 1px #{func.alpha-mix(var(--color-forms-outline), 100%)}));
+  box-shadow: var(--textarea-outline, (inset 0 0 0 1px #{mixins.mix-alpha(var(--color-forms-outline), 100%)}));
   color: var(--textarea-text-color, var(--color-base));
   font-size: var(--textarea-text-size, 14px);
   line-height: 1.42;
   &::-webkit-input-placeholder {
-    color: var(--textarea-placeholder, func.alpha-mix(var(--color-base), 45%));
+    color: var(--textarea-placeholder, mixins.mix-alpha(var(--color-base), 45%));
   }
   &:read-only {
-    background: var(--textarea-readonly, func.alpha-mix(var(--color-base), 4%));
+    background: var(--textarea-readonly, mixins.mix-alpha(var(--color-base), 4%));
   }
   &:disabled {
     cursor: not-allowed;
@@ -27,7 +27,7 @@
     user-select: none;
   }
   &:focus {
-    --textarea-outline: inset 0 0 0 2px #{func.alpha-mix(var(--color-key-1), 100%)};
+    --textarea-outline: inset 0 0 0 2px #{mixins.mix-alpha(var(--color-key-1), 100%)};
   }
   &:focus:not([disabled]) {
     outline: 0;

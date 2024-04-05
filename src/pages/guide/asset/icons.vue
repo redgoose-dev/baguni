@@ -131,7 +131,7 @@ function onClickIconLabel(e)
 </script>
 
 <style lang="scss" scoped>
-@use '../../../assets/scss/func';
+@use '../../../assets/scss/mixins';
 @import '../page';
 
 .icons-index {
@@ -145,7 +145,7 @@ function onClickIconLabel(e)
     display: grid;
     place-content: center;
     aspect-ratio: 1 / 1;
-    background: func.alpha-mix(var(--color-base), 5%);
+    background: mixins.mix-alpha(var(--color-base), 5%);
     text-align: center;
   }
   svg {

@@ -1,4 +1,3 @@
-@use '../../assets/scss/func';
 @use '../../assets/scss/mixins';
 
 .input-text {
@@ -16,14 +15,14 @@
   transition:
     box-shadow var(--input-text-transition-speed, (160ms)) ease-out,
     outline var(--input-text-transition-speed, (160ms)) ease-out;
-  box-shadow: var(--input-text-outline, (inset 0 0 0 1px #{func.alpha-mix(var(--color-forms-outline), 100%)}));
+  box-shadow: var(--input-text-outline, (inset 0 0 0 1px #{mixins.mix-alpha(var(--color-forms-outline), 100%)}));
   outline: 2px solid transparent;
   outline-offset: -2px;
   &::-webkit-input-placeholder {
-    color: var(--input-text-placeholder, func.alpha-mix(var(--color-base), 45%));
+    color: var(--input-text-placeholder, mixins.mix-alpha(var(--color-base), 45%));
   }
   &:read-only {
-    background: var(--input-text-readonly, func.alpha-mix(var(--color-base), 4%));
+    background: var(--input-text-readonly, mixins.mix-alpha(var(--color-base), 4%));
   }
   &:disabled {
     cursor: not-allowed;

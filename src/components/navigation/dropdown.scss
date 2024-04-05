@@ -15,10 +15,22 @@
     position: absolute;
     left: -8px;
     top: 100%;
-    padding: 6px 0 0;
+    padding: 6px 0 24px;
     &--right {
       left: unset;
       right: calc(0px - 8px);
+    }
+    &--top-left {
+      top: auto;
+      bottom: 100%;
+      padding: 16px 0 6px;
+    }
+    &--top-right {
+      top: auto;
+      bottom: 100%;
+      left: unset;
+      right: calc(0px - 8px);
+      padding: 16px 0 6px;
     }
   }
 }

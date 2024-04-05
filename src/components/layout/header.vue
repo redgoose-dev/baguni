@@ -33,11 +33,15 @@
           </ButtonBasic>
         </div>
         <div>
-          <Dropdown ref="$profileDropdown" position="right">
+          <Dropdown
+            ref="$profileDropdown"
+            v-model="openDropdownProfile"
+            position="right">
             <template #trigger>
               <ButtonBasic
                 size="small"
-                right-icon="chevron-down">
+                right-icon="chevron-down"
+                :color="openDropdownProfile ? 'weak' : ''">
                 foo@bar.com
               </ButtonBasic>
             </template>
@@ -73,6 +77,7 @@ import Context from '../navigation/context.vue'
 
 const $profileDropdown = ref()
 const isLogin = ref(true)
+const openDropdownProfile = ref(false)
 
 function onSelectProfileDropdown({ key })
 {
@@ -83,6 +88,7 @@ function onSelectProfileDropdown({ key })
     case 'logout':
       break
   }
+  $profileDropdown.value.close()
 }
 </script>
 

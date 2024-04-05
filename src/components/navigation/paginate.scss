@@ -1,0 +1,13 @@
+@use '../../assets/scss/mixins';
+
+.paginate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--paginate-gap, 1px);
+  //
+}
+
+.paginate-item {
+  //
+}

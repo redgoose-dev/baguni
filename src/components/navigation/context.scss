@@ -1,11 +1,11 @@
-@use '../../assets/scss/func';
+@use '../../assets/scss/mixins';
 
 .context {
   > ul {
     margin: 0;
     padding: 12px 0;
     list-style: none;
-    min-width: 160px;
+    min-width: var(--context-min-width, 160px);
     box-sizing: border-box;
     border-radius: 8px;
     background-color: var(--color-bg);
@@ -45,7 +45,7 @@
     overflow-x: clip;
   }
   &:hover:not(:disabled) {
-    background-color: #{func.alpha-mix(var(--color-weak), 8%)};
+    background-color: #{mixins.mix-alpha(var(--color-weak), 8%)};
   }
   &:active {
     opacity: .5;

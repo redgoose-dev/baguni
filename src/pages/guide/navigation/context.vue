@@ -31,7 +31,7 @@
       <div class="page-example">
         <div class="page-grid" style="--column:2;--h-items:center">
           <div>
-            <Dropdown ref="$dropdown1" position="right">
+            <Dropdown v-model="dropdown" ref="$dropdown1" position="top-right">
               <Context
                 :items="[
                   { key: 'context-1', label: 'context #1' },
@@ -42,7 +42,7 @@
             </Dropdown>
           </div>
           <div>
-            <Dropdown ref="$dropdown2">
+            <Dropdown ref="$dropdown2" :use-value="true" position="right">
               <template #trigger>
                 <ButtonBasic size="small" right-icon="chevron-down">
                   트리거 버튼
@@ -58,6 +58,7 @@
             </Dropdown>
           </div>
         </div>
+        <pre class="page-example-result">{{dropdown}}</pre>
       </div>
     </section>
   </div>
@@ -65,13 +66,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import Context from '../../../components/navigation/context.vue'
 import Dropdown from '../../../components/navigation/dropdown.vue'
 import ButtonBasic from '../../../components/buttons/button-basic.vue'
 
 const $dropdown1 = ref()
 const $dropdown2 = ref()
+const dropdown = ref(false)
 
 function onSelectBasic(item)
 {
