@@ -155,6 +155,11 @@ const guide = [
         name: 'guide-navigation-context',
         component: () => import('../pages/guide/navigation/context.vue'),
       },
+      {
+        path: 'navigation/paginate',
+        name: 'guide-navigation-paginate',
+        component: () => import('../pages/guide/navigation/paginate.vue'),
+      },
     ],
   },
 ]

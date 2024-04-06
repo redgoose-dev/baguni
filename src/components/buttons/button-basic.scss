@@ -132,11 +132,33 @@
   }
 }
 
+// icon
+.button {
+  &--icon {
+    --button-padding: 0 16px;
+    --icon-size: 18px;
+    --icon-stroke: 2.5;
+    &:is(.button--small) {
+      --button-padding: 0 12px;
+      --icon-size: 14px;
+      --icon-stroke: 2.8;
+    }
+    &:is(.button--big) {
+      --button-padding: 0 20px;
+      --icon-size: 22px;
+      --icon-stroke: 2.2;
+    }
+  }
+}
+
 // theme
 .button {
   &--circle {
     --button-width: auto;
     --button-padding: 0;
     aspect-ratio: 1 / 1;
+    &:is(.button--icon) {
+      --button-padding: 0;
+    }
   }
 }

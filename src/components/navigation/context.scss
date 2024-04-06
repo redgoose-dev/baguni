@@ -5,7 +5,7 @@
     margin: 0;
     padding: 12px 0;
     list-style: none;
-    min-width: var(--context-min-width, 160px);
+    width: var(--context-width, auto);
     box-sizing: border-box;
     border-radius: 8px;
     background-color: var(--color-bg);
@@ -59,7 +59,7 @@
   &--is-icon {
     grid-template-columns: 1fr auto;
     --icon-margin: -2px;
-    --icon-size: 18px;
+    --icon-size: 16px;
     --icon-stroke: 2;
     --icon-color: var(--context-item-fill);
   }

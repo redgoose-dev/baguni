@@ -35,7 +35,7 @@ html {
 }
 body {
   margin: 0;
-  min-width: 1020px;
+  min-width: 900px;
   background: var(--color-bg);
   -webkit-touch-callout: none;
 }
@@ -47,7 +47,7 @@ body, button, input, textarea, select {
   color: var(--color-base);
 }
 a {
-  color: var(--color-key-3);
+  color: var(--color-key-1);
 }
 code, kbd, pre, samp {
   font-family: var(--font-code);

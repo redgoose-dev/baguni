@@ -16,7 +16,7 @@
       <div class="page-example">
         <div class="page-grid" style="--p-content:center">
           <ButtonBasic
-            color="key-3"
+            color="key-1"
             @click="onClickOpenWindow">
             Open window
           </ButtonBasic>
@@ -31,7 +31,7 @@
       <div class="page-example">
         <div class="page-grid" style="--p-content:center">
           <ButtonBasic
-            color="key-3"
+            color="key-1"
             @click="onClickOpenFullSizeWindow">
             Open full size window
           </ButtonBasic>

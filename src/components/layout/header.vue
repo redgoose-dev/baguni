@@ -36,7 +36,8 @@
           <Dropdown
             ref="$profileDropdown"
             v-model="openDropdownProfile"
-            position="right">
+            position="right"
+            class="profile">
             <template #trigger>
               <ButtonBasic
                 size="small"

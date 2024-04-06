@@ -65,6 +65,7 @@ const wrapProps = computed(() => {
   if (props.size) attr.class.push(`button--${props.size}`)
   if (props.color) attr.class.push(`button--${props.color}`)
   if (props.theme) attr.class.push(`button--${props.theme}`)
+  if (props.icon) attr.class.push(`button--icon`)
   return attr
 })
 const bodyProps = computed(() => {

@@ -6,22 +6,36 @@
     </PageHeader>
     <div class="explorer__body">
       <div class="explorer__content">
-        <IndexFilter/>
-        <ul class="explorer__index">
-          <li v-for="o in 20">
-            <ImageThumbnail
+        <IndexFilter @update="onUpdateIndexFilter"/>
+        <ul :class="[
+          'explorer__index',
+          indexTheme === 'list' && 'list',
+          indexTheme === 'thumbnail' && 'thumbnail',
+        ]">
+          <li v-for="o in 5">
+            <ImageItem
               to="/asset/123"
               image="https://goose.redgoose.me/data/upload/original/202306/on-the-clouds-006.webp"
               title="많은 사용자분들의 사랑을 받고 있는 AI 드로잉"
               :meta="[ '0000-00-00' ]"
-              :nav="[
-                { key: 'edit', label: '수정', icon: 'edit' },
-                { key: 'remove', label: '삭제', icon: 'trash-2', color: 'danger' },
-              ]"/>
+              :theme="indexTheme"
+              class="item">
+              <template #body>
+                <nav class="item-nav">
+                  <router-link to="/asset/edit/123">수정</router-link>
+                  <a href="#">공유하기</a>
+                  <a href="#">삭제하기</a>
+                </nav>
+              </template>
+            </ImageItem>
           </li>
         </ul>
         <nav class="explorer__paginate">
-          <Paginate/>
+          <Paginate
+            v-model="page"
+            :total="240"
+            :size="8"
+            :range="5"/>
         </nav>
       </div>
       <div class="explorer__filter">
@@ -33,11 +47,20 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import PageHeader from '../../components/content/page-header.vue'
 import Filter from './components/filter.vue'
 import IndexFilter from './components/index-filter.vue'
 import Paginate from '../../components/navigation/paginate.vue'
-import { ImageList, ImageThumbnail } from '../../components/content/image'
+import ImageItem from '../../components/content/image/index.vue'
+
+const page = ref(12)
+const indexTheme = ref('thumbnail') // list,thumbnail
+
+function onUpdateIndexFilter(newValue)
+{
+  indexTheme.value = newValue.theme
+}
 </script>
 
 <style src="./index.scss" lang="scss" scoped></style>

@@ -2,6 +2,7 @@
   position: relative;
   display: block;
   box-sizing: border-box;
+  --context-width: 160px;
   .trigger {
     display: block;
     margin: 0;
@@ -16,6 +17,7 @@
     left: -8px;
     top: 100%;
     padding: 6px 0 24px;
+    z-index: var(--context-z-index, 1);
     &--right {
       left: unset;
       right: calc(0px - 8px);

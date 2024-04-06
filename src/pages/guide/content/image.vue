@@ -10,11 +10,32 @@
   <div class="page-content">
     <section class="page-section">
       <header>
-        <h1>basic</h1>
-        <p>기본적으로 사용하는 모습입니다.</p>
+        <h1>list</h1>
+        <p>목록으로 사용할때의 모습</p>
       </header>
       <div class="page-example">
-        ...
+        <div class="page-grid">
+          <ImageList
+            v-for="o in 3"
+            title="이미지 아이템 리스트 스타일"
+            description="이미지 카드 설명"
+            :meta="[ 'apple', 'banana', 'mango' ]"/>
+        </div>
+      </div>
+    </section>
+    <section class="page-section">
+      <header>
+        <h1>thumbnail</h1>
+        <p>썸네일 이미지로 부각할때의 모습</p>
+      </header>
+      <div class="page-example">
+        <div class="page-grid" style="--column:3">
+          <ImageThumbnail
+            v-for="o in 5"
+            title="이미지 아이템 썸네일 스타일"
+            description="이미지 카드 설명"
+            :meta="[ 'apple', 'banana', 'mango' ]"/>
+        </div>
       </div>
     </section>
   </div>
@@ -22,7 +43,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ImageList, ImageThumbnail } from '../../../components/content/image'
 </script>
 
 <style lang="scss" scoped>

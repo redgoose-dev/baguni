@@ -7,7 +7,6 @@
   box-sizing: border-box;
   @include mixins.background-blur(16px);
   background: color-mix(in hsl, var(--color-bg), transparent 25%);
-  //background: color-mix(in hsl, red, transparent 75%);
   padding: 0 var(--size-side-padding);
   &__wrap {
     display: grid;
@@ -68,4 +67,8 @@
   display: flex;
   align-items: center;
   gap: 0 10px;
+}
+
+.profile {
+  --context-width: 120px;
 }

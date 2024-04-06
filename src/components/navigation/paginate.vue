@@ -28,7 +28,7 @@
         item.active && 'active',
       ]"
       @click="go(item.key)">
-      <em>{{item.key}}</em>
+      <component :is="item.active ? 'strong' : 'em'">{{item.key}}</component>
     </button>
   </template>
   <template v-else>
@@ -41,7 +41,7 @@
         'paginate-item--number',
         page === 1 && 'active',
       ]">
-      <em>{{page || 1}}</em>
+      <component :is="page === 1 ? 'strong' : 'em'">{{page || 1}}</component>
     </button>
   </template>
   <button
