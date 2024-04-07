@@ -1,0 +1,29 @@
+.manage-tags {
+  margin: 0;
+  padding: 0;
+  border: none;
+  legend {
+    font-size: 14px;
+    font-weight: 600;
+    user-select: none;
+  }
+}
+
+.description {
+  font-size: 11px;
+  line-height: 1.42;
+  color: var(--color-weak);
+}
+
+.add-tag {
+  margin: 8px 0 0;
+  display: flex;
+}
+
+.tags-index {
+  margin: 12px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+}

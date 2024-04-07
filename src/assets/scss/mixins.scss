@@ -49,6 +49,16 @@
   overflow-x: clip;
 }
 
+// focus
+@mixin focus-content($color: var(--color-key-1), $offset: -2px)
+{
+  outline: 2px solid #{mix-alpha($color, 0%)};
+  outline-offset: $offset;
+  &:focus-visible {
+    outline-color: $color;
+  }
+}
+
 
 // FUNCTIONS
 

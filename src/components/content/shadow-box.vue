@@ -12,6 +12,8 @@ const props = defineProps({
 
 <style lang="scss" scoped>
 .shadow-box {
+  width: var(--shadow-box-width, unset);
+  height: var(--shadow-box-height, unset);
   box-shadow:
     0 0 0 .5px hsla(0% 0% 0% / 15%),
     0 4px 48px hsla(0% 0% 0% / 15%),

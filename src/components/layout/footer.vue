@@ -6,9 +6,12 @@
 </footer>
 </template>
 
+<script setup>
+</script>
+
 <style lang="scss" scoped>
 .layout-footer {
-  padding: 0 0 16px;
+  padding: 0 0 24px;
   &__wrap {
     display: grid;
     max-width: var(--size-content-width);
@@ -26,5 +29,3 @@
   user-select: none;
 }
 </style>
-<script setup>
-</script>

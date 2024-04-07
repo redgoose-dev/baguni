@@ -19,9 +19,7 @@ const assets = [
     path: '/asset/create',
     name: 'asset-create',
     component: () => import('../pages/assets/create.vue'),
-    meta: {
-      active: 'asset',
-    },
+    meta: {},
   },
   {
     path: '/asset/edit/:id',

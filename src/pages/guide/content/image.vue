@@ -15,11 +15,12 @@
       </header>
       <div class="page-example">
         <div class="page-grid">
-          <ImageList
+          <ImageItem
             v-for="o in 3"
             title="이미지 아이템 리스트 스타일"
             description="이미지 카드 설명"
-            :meta="[ 'apple', 'banana', 'mango' ]"/>
+            :meta="[ 'apple', 'banana', 'mango' ]"
+            theme="list"/>
         </div>
       </div>
     </section>
@@ -30,11 +31,12 @@
       </header>
       <div class="page-example">
         <div class="page-grid" style="--column:3">
-          <ImageThumbnail
+          <ImageItem
             v-for="o in 5"
             title="이미지 아이템 썸네일 스타일"
             description="이미지 카드 설명"
-            :meta="[ 'apple', 'banana', 'mango' ]"/>
+            :meta="[ 'apple', 'banana', 'mango' ]"
+            theme="thumbnail"/>
         </div>
       </div>
     </section>
@@ -43,7 +45,7 @@
 </template>
 
 <script setup>
-import { ImageList, ImageThumbnail } from '../../../components/content/image'
+import ImageItem from '../../../components/content/image/index.vue'
 </script>
 
 <style lang="scss" scoped>

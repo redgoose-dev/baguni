@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 import IconFeather from '../icons/feather.vue'
 
 const $root = ref()
@@ -42,6 +42,14 @@ const emits = defineEmits([ 'update:modelValue' ])
 
 const computedOpen = computed(() => {
   return props.useValue ? open.value : props.modelValue
+})
+
+onUnmounted(() => {
+  window.removeEventListener('click', onClickWindow)
+})
+
+defineExpose({
+  close: () => controlContext(false),
 })
 
 function onClickTrigger()
@@ -71,13 +79,9 @@ function controlContext(sw)
 
 function onClickWindow(e)
 {
-  if ($root.value.contains(e.target)) return
+  if ($root.value?.contains(e.target)) return
   controlContext(false)
 }
-
-defineExpose({
-  close: () => controlContext(false),
-})
 </script>
 
 <style src="./dropdown.scss" lang="scss" scoped></style>

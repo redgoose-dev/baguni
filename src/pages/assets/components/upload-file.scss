@@ -1,0 +1,142 @@
+@use '../../../assets/scss/mixins';
+
+.manage-file-upload {
+  margin: 0;
+  padding: 0;
+  border: none;
+  legend {
+    font-size: 14px;
+    font-weight: 600;
+    user-select: none;
+  }
+}
+
+// upload
+.upload-file {
+  margin: 8px 0 0;
+  box-shadow: inset 0 0 0 0 #{mixins.mix-alpha(var(--color-key-3), 0%)};
+  border-radius: 8px;
+  transition: box-shadow 160ms ease-out;
+  &__box {
+    --shadow-box-padding: 32px;
+  }
+  &__body {
+    margin: 0;
+    user-select: none;
+    img {
+      display: block;
+      margin: 0 auto;
+    }
+    figcaption {
+      text-align: center;
+      h4 {
+        margin: 20px 0 0;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: -.25px;
+        line-height: 1.15;
+      }
+      p {
+        margin: 5px 0 0;
+        font-size: 13px;
+        font-weight: 500;
+        letter-spacing: -.25px;
+        line-height: 1.15;
+        color: var(--color-weak);
+      }
+    }
+  }
+  &__button {
+    display: grid;
+    place-content: center;
+    margin: 28px 0 0;
+    .button {
+      --button-width: 136px;
+    }
+  }
+  &.uploading {
+    box-shadow: inset 0 0 0 3px #{mixins.mix-alpha(var(--color-key-3), 100%)};
+  }
+}
+
+// uploaded
+.uploaded-file {
+  margin: 8px 0 0;
+  &__box {
+    padding: 20px;
+  }
+  &__image {
+    position: relative;
+    margin: 0;
+    nav {
+      position: absolute;
+      right: -12px;
+      top: -12px;
+      .button {
+        --button-width: 40px;
+        --button-height: 40px;
+        --icon-size: 22px;
+        --icon-stroke: 1.75;
+      }
+    }
+  }
+  &__body {
+    margin: 16px 0 0;
+    padding: 0;
+    border: none;
+  }
+  .image {
+    display: block;
+    width: 100%;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 2px;
+    user-select: none;
+    @include mixins.focus-content();
+    img {
+      display: block;
+      width: 100%;
+      object-fit: contain;
+      border-radius: 2px;
+    }
+  }
+  .filename {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0 12px;
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-weak);
+      letter-spacing: -.25px;
+      user-select: none;
+    }
+  }
+  .info {
+    margin: 30px 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    dl {
+      margin: 0;
+    }
+    dt {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-weak);
+      letter-spacing: -.25px;
+      line-height: 1.15;
+      user-select: none;
+    }
+    dd {
+      margin: 4px 0 0;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.15;
+    }
+  }
+}

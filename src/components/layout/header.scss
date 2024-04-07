@@ -26,6 +26,8 @@
   user-select: none;
   a {
     display: block;
+    border-radius: 1px;
+    @include mixins.focus-content(var(--color-key-1), 6px);
   }
   img {
     display: block;
@@ -45,18 +47,23 @@
   }
   a {
     display: block;
-    padding: 16px 12px;
+    padding: 10px 12px;
     font-size: 15px;
     text-decoration: none;
     color: var(--color-base);
     font-weight: 600;
     line-height: 1.15;
     letter-spacing: -.5px;
-    &.router-link-active {
+    border-radius: 4px;
+    @include mixins.focus-content();
+    &:focus-visible:is(.on) {
+      outline: none;
+    }
+    &.on {
       cursor: default;
       color: var(--color-key-1);
     }
-    &:hover:not(.router-link-active) {
+    &:hover:not(.on) {
       opacity: .5;
     }
   }

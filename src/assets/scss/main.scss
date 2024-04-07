@@ -12,6 +12,7 @@
   --color-bg: hsl(0 0% 100%);
   --color-base: hsl(0 0% 13%);
   --color-weak: hsl(0 0% 47%);
+  --color-blur: hsl(0 0% 82%);
   --color-key-1: hsl(176 51% 61%);
   --color-key-2: hsl(186 68% 46%);
   --color-key-3: hsl(243 68% 57%);
@@ -55,4 +56,11 @@ code, kbd, pre, samp {
 ::selection {
   background: color-mix(in hsl, var(--color-key-2), transparent 25%);
   color: var(--color-light);
+}
+legend {
+  &.hidden {
+    position: absolute;
+    font-size: 0;
+    visibility: hidden;
+  }
 }

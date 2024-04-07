@@ -15,7 +15,11 @@
     <Button icon="copy" theme="circle" size="big"/>
     <Dropdown v-model="controlOption.open">
       <template #trigger>
-        <Button icon="more-horizontal" theme="circle" size="big"/>
+        <Button
+          icon="more-horizontal"
+          theme="circle"
+          size="big"
+          :color="controlOption.open ? 'blur' : ''"/>
       </template>
       <Context :items="controlOption.context"/>
     </Dropdown>

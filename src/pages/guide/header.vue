@@ -14,6 +14,7 @@
       <ul>
         <li><RouterLink to="/guide/asset/colors">colors</RouterLink></li>
         <li><RouterLink to="/guide/asset/icons">icons</RouterLink></li>
+        <li><RouterLink to="/guide/asset/loading">loading</RouterLink></li>
       </ul>
     </details>
 

@@ -17,7 +17,7 @@ const props = defineProps({
   title: String,
   disabled: Boolean,
   size: String, // small,big
-  color: String, // key-1,key-2,key-3,success,danger,dark,weak
+  color: String, // key-1,key-2,key-3,success,danger,dark,weak,blur
   icon: String,
   leftIcon: String,
   rightIcon: String,

@@ -1,0 +1,46 @@
+.post {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  align-items: start;
+  gap: 0 40px;
+  margin: 30px 0 0;
+  padding: 0;
+  &__side {
+    position: sticky;
+    top: calc(var(--size-header-height) + 30px);
+  }
+  &__body {
+    display: grid;
+    gap: 30px 0;
+    align-self: start;
+  }
+}
+
+.upload {}
+
+.cover-image {
+  margin-top: 30px;
+}
+
+.field {
+  margin: 0;
+  padding: 0;
+  border: none;
+  label {
+    font-size: 14px;
+    font-weight: 600;
+    user-select: none;
+  }
+  .body {
+    margin: 8px 0 0;
+  }
+}
+
+.submit {
+  margin: 10px 0 0;
+  display: grid;
+  place-content: center;
+  .button {
+    --button-width: 160px;
+  }
+}

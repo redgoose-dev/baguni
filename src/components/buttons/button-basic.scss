@@ -3,7 +3,7 @@
   margin: var(--button-margin, 0);
   width: var(--button-width, unset);
   height: var(--button-height, 36px);
-  padding: var(--button-padding, (0 24px));
+  padding: var(--button-padding, (0 20px));
   border-radius: calc(var(--button-height, 36px) * .5);
   text-align: center;
   box-sizing: border-box;
@@ -66,12 +66,14 @@
 .button {
   &--small {
     --button-height: 28px;
+    --button-padding: 0 16px;
     --body-font-size: 12px;
     --icon-size: 12px;
     --icon-stroke: 3.5;
   }
   &--big {
     --button-height: 44px;
+    --button-padding: 0 24px;
     --body-font-size: 16px;
     --icon-size: 20px;
     --icon-stroke: 2.5;
@@ -129,6 +131,13 @@
     --button-brightness-active: 120%;
     --icon-color: var(--color-light);
     --button-focus-color: var(--color-dark);
+  }
+  &--blur {
+    --button-color-bg: var(--color-blur);
+    --body-color: var(--color-light);
+    --button-brightness-active: 90%;
+    --icon-color: var(--color-light);
+    --button-focus-color: var(--color-key-1);
   }
 }
 
