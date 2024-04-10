@@ -21,6 +21,7 @@
             Open window
           </ButtonBasic>
         </div>
+        <pre class="page-example-result">open: {{modalWindow}}</pre>
       </div>
     </section>
     <section class="page-section">
@@ -36,6 +37,7 @@
             Open full size window
           </ButtonBasic>
         </div>
+        <pre class="page-example-result">open: {{modalFullSize}}</pre>
       </div>
     </section>
   </div>
@@ -43,11 +45,14 @@
 <teleport to="#modal">
   <Modal
     :open="modalWindow"
+    :use-shortcut="true"
+    class="modal-window"
     @close="modalWindow = false">
     <article class="modal-content">
       <h1>Hello modal window</h1>
       <p>description..</p>
     </article>
+    <ModalClose @click="modalWindow = false"/>
   </Modal>
   <Modal
     :open="modalFullSize"
@@ -72,6 +77,7 @@
 <script setup>
 import { ref } from 'vue'
 import Modal from '../../../components/modal/index.vue'
+import ModalClose from '../../../components/modal/close.vue'
 import ButtonBasic from '../../../components/buttons/button-basic.vue'
 
 const modalWindow = ref(false)
@@ -91,7 +97,10 @@ function onClickOpenFullSizeWindow()
 <style lang="scss" scoped>
 @use '../../../assets/scss/mixins';
 @import '../page';
-
+.modal-window {
+  --modal-min-width: 480px;
+  --modal-padding: 30px;
+}
 .modal-content {
   h1 {
     margin: 0;

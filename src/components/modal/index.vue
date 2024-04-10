@@ -5,26 +5,16 @@
     'modal',
     props.full ? 'modal--full' : 'modal--window',
   ]"
-  @click="onClickDialog">
-  <div :class="[
-    'modal-body',
-    props.full ? 'modal-body--full' : 'modal-body--window',
-  ]">
+  @click="onClickDialog"
+  @keydown="onKeydown">
+  <div class="modal-body">
     <slot/>
-    <button
-      v-if="!props.full"
-      type="button"
-      class="modal-close"
-      @click="controlDialog(false)">
-      <IconFeather name="x"/>
-    </button>
   </div>
 </dialog>
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onUnmounted } from 'vue'
-import IconFeather from '../icons/feather.vue'
+import { ref, watch, onMounted } from 'vue'
 
 const $dialog = ref()
 const props = defineProps({
@@ -37,42 +27,30 @@ const emits = defineEmits([ 'close' ])
 function onClickDialog(e)
 {
   if (e.target !== $dialog.value) return
-  controlDialog(false)
+  closeDialog()
 }
 
-function controlDialog(sw)
+function closeDialog()
 {
-  if (sw)
-  {
-    window.addEventListener('keydown', onKeydownWindow)
-    $dialog.value.showModal()
-  }
-  else
-  {
-    window.removeEventListener('keydown', onKeydownWindow)
-    $dialog.value.close()
-    emits('close')
-  }
+  emits('close')
 }
 
-function onKeydownWindow(e)
+function onKeydown(e)
 {
   if (e.key !== 'Escape') return
+  if ($dialog.value !== e.target) return e.preventDefault()
   if (!props.useShortcut) return e.preventDefault()
-  controlDialog(false)
+  closeDialog()
 }
 
 onMounted(() => {
   if (props.open) $dialog.value.showModal()
 })
-onUnmounted(() => {
-  window.removeEventListener('keydown', onKeydownWindow)
-})
 
 watch(() => props.open, (value, oldValue) => {
   if (value === oldValue) return
-  if (value) controlDialog(true)
-  else controlDialog(false)
+  if (value) $dialog.value.showModal()
+  else $dialog.value.close()
 })
 </script>
 

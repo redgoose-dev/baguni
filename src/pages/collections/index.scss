@@ -1,0 +1,15 @@
+.collections {
+  margin: 0 auto;
+  max-width: var(--size-content-width);
+  &__body {
+    margin: 30px 0 0;
+  }
+}
+
+.index {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 20px 0;
+}
