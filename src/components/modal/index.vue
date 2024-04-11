@@ -1,6 +1,7 @@
 <template>
 <dialog
   ref="$dialog"
+  v-if="props.open"
   :class="[
     'modal',
     props.full ? 'modal--full' : 'modal--window',
@@ -14,13 +15,14 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
 
 const $dialog = ref()
 const props = defineProps({
   open: Boolean,
   full: Boolean,
   useShortcut: Boolean,
+  hideScroll: Boolean,
 })
 const emits = defineEmits([ 'close' ])
 
@@ -43,14 +45,36 @@ function onKeydown(e)
   closeDialog()
 }
 
-onMounted(() => {
-  if (props.open) $dialog.value.showModal()
+function controlRoot(sw)
+{
+  if (!props.hideScroll) return
+  document.querySelector('html').classList[sw ? 'add' : 'remove']('mode-not-scroll')
+}
+
+onMounted(async () => {
+  if (props.open)
+  {
+    controlRoot(true)
+    $dialog.value.showModal()
+  }
+})
+onUnmounted(() => {
+  controlRoot(false)
 })
 
-watch(() => props.open, (value, oldValue) => {
+watch(() => props.open, async (value, oldValue) => {
   if (value === oldValue) return
-  if (value) $dialog.value.showModal()
-  else $dialog.value.close()
+  if (value)
+  {
+    await nextTick()
+    controlRoot(true)
+    $dialog.value.showModal()
+  }
+  else
+  {
+    controlRoot(false)
+    $dialog.value.close()
+  }
 })
 </script>
 

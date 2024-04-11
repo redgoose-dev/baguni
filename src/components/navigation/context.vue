@@ -22,7 +22,7 @@
 import IconFeather from '../icons/feather.vue'
 
 const props = defineProps({
-  items: { type: Array, required: true },
+  items: { type: Array, required: true }, // { label, icon, color }
 })
 const emits = defineEmits([ 'select' ])
 

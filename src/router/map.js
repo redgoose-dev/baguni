@@ -48,22 +48,6 @@ const collections = [
       active: 'collection',
     },
   },
-  {
-    path: '/collection/create',
-    name: 'collection-create',
-    component: () => import('../pages/collections/create.vue'),
-    meta: {
-      active: 'collection',
-    },
-  },
-  {
-    path: '/collection/edit/:id',
-    name: 'collection-edit',
-    component: () => import('../pages/collections/edit.vue'),
-    meta: {
-      active: 'collection',
-    },
-  },
 ]
 
 const about = [

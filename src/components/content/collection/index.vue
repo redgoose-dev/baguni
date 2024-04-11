@@ -20,22 +20,44 @@
   </div>
   <nav class="collection-item__side">
     <Dropdown
-      :use-value="true"
-      position="right">
+      ref="$dropdown"
+      v-model="openDropdown"
+      position="right"
+      class="dropdown">
+      <template #trigger>
+        <Button
+          size="small"
+          right-icon="chevron-down"
+          :color="openDropdown ? 'weak' : ''">
+          옵션
+        </Button>
+      </template>
       <Context
         :items="[
           { key: 'edit', label: '수정', icon: 'edit' },
           { key: 'remove', label: '삭제', icon: 'trash-2', color: 'danger' },
         ]"
-        @select=""/>
+        @select="onSelectContext"/>
     </Dropdown>
   </nav>
 </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import Dropdown from '../../navigation/dropdown.vue'
 import Context from '../../navigation/context.vue'
+import Button from '../../buttons/button-basic.vue'
+
+const emits = defineEmits([ 'context' ])
+const $dropdown = ref()
+const openDropdown = ref(false)
+
+function onSelectContext({ key })
+{
+  emits('context', key, 123)
+  $dropdown.value.close()
+}
 </script>
 
 <style src="./index.scss" lang="scss" scoped></style>

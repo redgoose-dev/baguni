@@ -3,7 +3,7 @@
   margin: var(--button-margin, 0);
   width: var(--button-width, unset);
   height: var(--button-height, 36px);
-  padding: var(--button-padding, (0 20px));
+  padding: var(--button-padding, (0 30px));
   border-radius: calc(var(--button-height, 36px) * .5);
   text-align: center;
   box-sizing: border-box;
@@ -73,7 +73,7 @@
   }
   &--big {
     --button-height: 44px;
-    --button-padding: 0 24px;
+    --button-padding: 0 36px;
     --body-font-size: 16px;
     --icon-size: 20px;
     --icon-stroke: 2.5;
