@@ -1,8 +1,9 @@
 <template>
 <form class="index-filter">
   <div class="column">
-    <label for="">정렬</label>
+    <label for="sort">정렬</label>
     <Select
+      id="sort"
       v-model="filterValue.sort"
       :options="[
         { label: '이름', value: 'name' },
