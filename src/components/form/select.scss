@@ -15,7 +15,7 @@
     width: 100%;
     height: var(--select-height, var(--size-form-height-normal));
     margin: 0;
-    padding: var(--select-padding, 0 42px 0 16px);
+    padding: var(--select-padding, 0 42px 0 12px);
     border-radius: var(--size-form-radius);
     box-sizing: border-box;
     border: none;
@@ -54,7 +54,7 @@
   &--small {
     --select-height: 28px;
     --select-text-size: 12px;
-    --select-padding: 0 32px 0 12px;
+    --select-padding: 0 32px 0 10px;
     --icon-size: 12px;
     --icon-stroke: 3.2;
   }

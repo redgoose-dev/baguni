@@ -7,7 +7,7 @@
   border-radius: var(--size-form-radius);
   width: var(--textarea-wdith, 100%);
   height: var(--textarea-height, auto);
-  padding: var(--textarea-padding, 16px);
+  padding: var(--textarea-padding, 12px);
   background: var(--textarea-bg, var(--color-bg));
   transition: box-shadow var(--textarea-transition-speed, (160ms)) ease-out;
   box-shadow: var(--textarea-outline, (inset 0 0 0 1px #{mixins.mix-alpha(var(--color-forms-outline), 100%)}));
@@ -38,7 +38,7 @@
 .textarea {
   &--small {
     --textarea-text-size: 12px;
-    --textarea-padding: 16px 12px;
+    --textarea-padding: 16px 10px;
   }
 }
 

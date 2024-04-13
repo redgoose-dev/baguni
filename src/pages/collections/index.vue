@@ -25,25 +25,48 @@
     :hide-scroll="true"
     @close="visibleCreateWindow = false">
     <PostCollection
+      mode="create"
       @submit=""
       @close="visibleCreateWindow = false"/>
+  </Modal>
+  <Modal
+    :open="edit.open"
+    :hide-scroll="true"
+    @close="edit.open = false">
+    <PostCollection
+      mode="edit"
+      @submit=""
+      @close="edit.open = false"/>
   </Modal>
 </teleport>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import PageHeader from '../../components/content/page-header.vue'
 import Button from '../../components/buttons/button-basic.vue'
 import CollectionItem from '../../components/content/collection/index.vue'
 import Modal from '../../components/modal/index.vue'
 import PostCollection from './components/post.vue'
 
-const visibleCreateWindow = ref(true)
+const visibleCreateWindow = ref(false)
+const edit = reactive({
+  id: undefined,
+  open: false,
+})
 
 function onSelectContextFromItem(method, key)
 {
   console.log('onSelectContextFromItem()', method, key)
+  switch (method)
+  {
+    case 'edit':
+      edit.id = key
+      edit.open = true
+      break
+    case 'remove':
+      break
+  }
 }
 
 function onClickCreateCollection()

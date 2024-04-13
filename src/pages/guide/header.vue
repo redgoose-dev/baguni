@@ -38,6 +38,7 @@
         <li><RouterLink to="/guide/forms/checkbox-and-radio">checkbox & radio</RouterLink></li>
         <li><RouterLink to="/guide/forms/switch">switch</RouterLink></li>
         <li><RouterLink to="/guide/forms/tag">tag</RouterLink></li>
+        <li><RouterLink to="/guide/forms/etc">etc</RouterLink></li>
       </ul>
     </details>
     <details open>

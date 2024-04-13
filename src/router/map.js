@@ -93,6 +93,11 @@ const guide = [
         component: () => import('../pages/guide/asset/icons.vue'),
       },
       {
+        path: 'asset/loading',
+        name: 'guide-asset-loading',
+        component: () => import('../pages/guide/asset/loading.vue'),
+      },
+      {
         path: 'content/modal',
         name: 'guide-content-modal',
         component: () => import('../pages/guide/content/modal.vue'),
@@ -126,6 +131,11 @@ const guide = [
         path: 'forms/tag',
         name: 'guide-forms-tag',
         component: () => import('../pages/guide/forms/tag.vue'),
+      },
+      {
+        path: 'forms/etc',
+        name: 'guide-forms-etc',
+        component: () => import('../pages/guide/forms/etc.vue'),
       },
       {
         path: 'navigation/button',

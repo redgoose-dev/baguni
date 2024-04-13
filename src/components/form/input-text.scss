@@ -8,7 +8,7 @@
   box-sizing: border-box;
   border: none;
   border-radius: var(--size-form-radius);
-  padding: var(--input-padding, (0 16px));
+  padding: var(--input-padding, (0 12px));
   background: var(--input-text-bg, var(--color-bg));
   color: var(--input-text-color, var(--color-base));
   font-size: var(--input-text-size, 14px);
@@ -40,7 +40,7 @@
   &--small {
     --input-text-height: 28px;
     --input-text-size: 12px;
-    --input-padding: 0 12px;
+    --input-padding: 0 10px;
   }
 }
 

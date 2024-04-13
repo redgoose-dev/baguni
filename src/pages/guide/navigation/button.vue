@@ -23,7 +23,7 @@
         <p>버튼의 사이즈에대한 예제입니다.</p>
       </header>
       <div class="page-example">
-        <div class="page-grid" style="--column:3; --v-align:center;">
+        <div class="page-grid" style="--column:3; --v-items:center;">
           <ButtonBasic size="small" left-icon="cloud">small</ButtonBasic>
           <ButtonBasic left-icon="cloud">normal</ButtonBasic>
           <ButtonBasic size="big" left-icon="cloud">big</ButtonBasic>
@@ -94,7 +94,7 @@
       <h2>circle</h2>
       <p>원 형태의 아이콘 버튼으로 사용됩니다.</p>
       <div class="page-example">
-        <div class="page-flex" style="--h-content:center;--v-align:center;">
+        <div class="page-flex" style="--h-content:center;--v-items:center;">
           <ButtonBasic theme="circle" icon="cloud" size="small"/>
           <ButtonBasic theme="circle" icon="cloud-drizzle"/>
           <ButtonBasic theme="circle" icon="cloud-lightning" size="big"/>

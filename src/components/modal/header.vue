@@ -23,13 +23,25 @@ const props = defineProps({
 
 <style lang="scss" scoped>
 .modal-header {
+  display: flex;
+  align-items: center;
+  gap: 0 30px;
   h1 {
     margin: 0;
+    font-size: 28px;
+    line-height: 1.05;
+    font-weight: 800;
+    letter-spacing: -.5px;
   }
   p {
-    margin: 0;
+    margin: 4px 0 0;
+    line-height: 1.25;
+    font-size: 12px;
+    color: var(--color-weak);
   }
-  &__body {}
+  &__body {
+    flex: 1;
+  }
   &__side {}
 }
 </style>

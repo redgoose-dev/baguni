@@ -40,7 +40,7 @@
         <p>다양한 사이즈</p>
       </header>
       <div class="page-example">
-        <div class="page-grid" style="--column:2;--v-align:center">
+        <div class="page-grid" style="--column:2;--v-items:center">
           <InputText size="small" placeholder="size=small"/>
           <InputText placeholder="size=normal"/>
         </div>

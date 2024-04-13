@@ -29,7 +29,7 @@
       </div>
       <p>사이즈</p>
       <div class="page-example">
-        <div class="page-flex" style="--v-align:center">
+        <div class="page-flex" style="--v-items:center">
           <Label name="normal">
             <Checkbox name="size"/>
           </Label>
@@ -40,7 +40,7 @@
       </div>
       <p>상태</p>
       <div class="page-example">
-        <div class="page-flex" style="--v-align:center">
+        <div class="page-flex" style="--v-items:center">
           <Label name="normal">
             <Checkbox name="status"/>
           </Label>
@@ -80,7 +80,7 @@
       </div>
       <p>사이즈</p>
       <div class="page-example">
-        <div class="page-flex" style="--v-align:center">
+        <div class="page-flex" style="--v-items:center">
           <Label name="normal">
             <Radio name="size"/>
           </Label>
@@ -91,7 +91,7 @@
       </div>
       <p>상태</p>
       <div class="page-example">
-        <div class="page-flex" style="--v-align:center">
+        <div class="page-flex" style="--v-items:center">
           <Label name="normal">
             <Radio name="status"/>
           </Label>
