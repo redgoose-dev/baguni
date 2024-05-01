@@ -14,7 +14,7 @@
         <p>기본적으로 사용하는 모습입니다.</p>
       </header>
       <div class="page-example">
-        ..
+        <Loading/>
       </div>
     </section>
   </div>
@@ -22,6 +22,7 @@
 </template>
 
 <script setup>
+import Loading from '../../../components/asset/loading/index.vue'
 </script>
 
 <style lang="scss" scoped>

@@ -8,6 +8,8 @@
 .image {
   margin: 0;
   box-sizing: border-box;
+  --empty-icon-size: 26px;
+  --empty-icon-stroke: 1.5;
   a {
     position: relative;
     display: block;
@@ -20,10 +22,6 @@
     outline: 2px solid var(--outline-color, #{mixins.mix-alpha(var(--color-key-1), 0%)});
     outline-offset: -2px;
     transition: outline 120ms ease-out;
-    i {
-      --empty-icon-size: 24px;
-      --empty-icon-stroke: 1.5;
-    }
   }
   &:hover a {
     --outline-color: var(--color-key-3);
@@ -53,6 +51,7 @@
 .image-item--thumbnail {
   .image {
     aspect-ratio: 6/4;
+    --empty-icon-size: 32px;
   }
   .body {
     margin: 8px 0 0;
