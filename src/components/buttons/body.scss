@@ -8,10 +8,10 @@
   &__side {
     animation: var(--icon-animation, none);
     &:is(:first-child) {
-      margin-left: -4px;
+      margin-left: -2px;
     }
     &:is(:last-child) {
-      margin-right: -4px;
+      margin-right: -2px;
     }
   }
   &__icon {
@@ -20,7 +20,7 @@
   &__label {
     display: block;
     font-style: normal;
-    font-weight: 600;
+    font-weight: 500;
     font-size: var(--body-font-size, 16px);
     line-height: normal;
     letter-spacing: -.25px;

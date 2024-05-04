@@ -23,7 +23,7 @@
     0 8px 24px var(--button-shadow-2, hsla(0 0% 0% / 12%));
   filter: brightness(var(--button-brightness, 100%));
   --icon-size: 16px;
-  --icon-stroke: 2.5;
+  --icon-stroke: 2.25;
 }
 
 // focus
@@ -69,14 +69,14 @@
     --button-padding: 0 16px;
     --body-font-size: 12px;
     --icon-size: 12px;
-    --icon-stroke: 3;
+    --icon-stroke: 2.5;
   }
   &--big {
     --button-height: 44px;
     --button-padding: 0 36px;
     --body-font-size: 16px;
     --icon-size: 20px;
-    --icon-stroke: 2.5;
+    --icon-stroke: 2.05;
   }
 }
 
@@ -146,16 +146,16 @@
   &--icon {
     --button-padding: 0 16px;
     --icon-size: 18px;
-    --icon-stroke: 2.4;
+    --icon-stroke: 2.25;
     &:is(.button--small) {
       --button-padding: 0 12px;
       --icon-size: 14px;
-      --icon-stroke: 3;
+      --icon-stroke: 2.5;
     }
     &:is(.button--big) {
       --button-padding: 0 20px;
       --icon-size: 22px;
-      --icon-stroke: 2.2;
+      --icon-stroke: 2;
     }
   }
 }

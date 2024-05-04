@@ -66,14 +66,6 @@
       </header>
       <div class="page-example">
         <div class="page-grid">
-          <FormGroup size="big">
-            <InputText type="search" placeholder="type=text" size="big"/>
-            <template #right>
-              <ButtonBasic color="key-3" left-icon="loader" :rotate-icon="true" size="big">
-                Submit
-              </ButtonBasic>
-            </template>
-          </FormGroup>
           <FormGroup>
             <template #left>
               <ButtonBasic color="weak" left-icon="info">Prefix Button</ButtonBasic>

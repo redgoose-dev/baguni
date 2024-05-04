@@ -37,6 +37,7 @@ const props = defineProps({
     box-shadow: unset;
     border-radius: 0;
     height: 100%;
+    padding: 0 16px;
   }
   &:is(.is-left) {
     grid-template-columns: auto 1fr;
@@ -58,6 +59,9 @@ const props = defineProps({
   // size
   &--small {
     --form-group-height: var(--size-form-height-small);
+    :slotted(.button--small) {
+      padding: 0 12px;
+    }
   }
 }
 </style>
