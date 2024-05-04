@@ -6,7 +6,7 @@
     :disabled="disabledFirstArrow"
     :class="[ 'paginate-item', 'paginate-item--far' ]"
     @click="onFirstPage">
-    <IconFeather name="chevrons-left"/>
+    <Icon name="chevrons-left"/>
   </button>
   <button
     type="button"
@@ -14,7 +14,7 @@
     :disabled="pageBlock <= 0"
     :class="[ 'paginate-item', 'paginate-item--range' ]"
     @click="onPrevRange">
-    <IconFeather name="chevron-left"/>
+    <Icon name="chevron-left"/>
   </button>
   <template v-if="pages.length > 0">
     <button
@@ -50,7 +50,7 @@
     :disabled="pageBlock >= pageBlockTotal"
     :class="[ 'paginate-item', 'paginate-item--range' ]"
     @click="onNextRange">
-    <IconFeather name="chevron-right"/>
+    <Icon name="chevron-right"/>
   </button>
   <button
     type="button"
@@ -58,14 +58,14 @@
     :disabled="disabledLastArrow"
     :class="[ 'paginate-item', 'paginate-item--far' ]"
     @click="onLastPage">
-    <IconFeather name="chevrons-right"/>
+    <Icon name="chevrons-right"/>
   </button>
 </nav>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
-import IconFeather from '../icons/feather.vue'
+import Icon from '../icons/index.vue'
 
 const props = defineProps({
   modelValue: { type: Number, required: true }, // 1

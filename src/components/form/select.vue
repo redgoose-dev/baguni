@@ -23,14 +23,14 @@
     <slot/>
   </select>
   <i>
-    <IconFeather name="code"/>
+    <Icon name="code"/>
   </i>
 </label>
 </template>
 
 <script setup>
 import { computed } from 'vue'
-import IconFeather from '../icons/feather.vue'
+import Icon from '../icons/index.vue'
 
 const props = defineProps({
   name: String,

@@ -1,10 +1,11 @@
 <template>
 <svg
-  v-html="icons[props.name]"
+  v-if="icon"
+  v-html="icon"
   xmlns="http://www.w3.org/2000/svg"
   width="24"
   height="24"
-  viewBox="-1 -1 26 26"
+  viewBox="0 0 24 24"
   fill="none"
   stroke="currentColor"
   stroke-width="2"
@@ -20,7 +21,8 @@
 
 <script setup>
 import { computed } from 'vue'
-import icons from 'feather-icons/dist/icons.json'
+import { icons } from 'lucide'
+import { toPascalCase } from '../../libs/strings.js'
 
 const props = defineProps({
   name: String,
@@ -30,6 +32,31 @@ const props = defineProps({
   animation: String,
   animationSpeed: String,
 })
+
+const icon = computed(() => {
+  let src = icons[toPascalCase(props.name)]
+  if (!src) return null
+  const [ tag, attrs, children ] = src
+  const element = createSvgElement(tag, attrs, children)
+  return element.innerHTML
+})
+
+function createSvgElement(tag, attrs, children = [])
+{
+  const element = document.createElementNS("http://www.w3.org/2000/svg", tag)
+  Object.keys(attrs).forEach((name) => {
+    element.setAttribute(name, String(attrs[name]))
+  })
+  if (children.length)
+  {
+    children.forEach((child) => {
+      const childElement = createSvgElement(...child)
+      element.appendChild(childElement)
+    })
+  }
+  return element
+}
+
 const wrapProps = computed(() => {
   let attr = {
     style: {},
@@ -40,7 +67,6 @@ const wrapProps = computed(() => {
   if (props.animationSpeed) attr.style['--icon-animation-speed'] = props.animationSpeed
   return attr
 })
-
 </script>
 
 <style lang="scss" scoped>

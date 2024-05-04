@@ -14,7 +14,7 @@
           src="https://goose.redgoose.me/data/upload/original/202003/triangle-beeple-001.jpg"
           alt="">
         <i v-else>
-          <IconFeather name="image"/>
+          <Icon name="image"/>
         </i>
       </button>
       <div class="body">
@@ -47,7 +47,7 @@
 
 <script setup>
 import ShadowBox from '../../../components/content/shadow-box.vue'
-import IconFeather from '../../../components/icons/feather.vue'
+import Icon from '../../../components/icons/index.vue'
 import Button from '../../../components/buttons/button-basic.vue'
 </script>
 

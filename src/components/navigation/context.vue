@@ -11,7 +11,7 @@
         ]"
         @click="onClickItem(item)">
         <span>{{item.label}}</span>
-        <IconFeather v-if="item.icon" :name="item.icon"/>
+        <Icon v-if="item.icon" :name="item.icon"/>
       </button>
     </li>
   </ul>
@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import IconFeather from '../icons/feather.vue'
+import Icon from '../icons/index.vue'
 
 const props = defineProps({
   items: { type: Array, required: true }, // { label, icon, color }

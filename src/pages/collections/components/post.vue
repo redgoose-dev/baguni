@@ -33,7 +33,7 @@
             <figure>
               <img v-if="false" src="https://goose.redgoose.me/data/upload/original/201906/rg3811.jpg" alt="">
               <i v-else>
-                <IconFeather name="image"/>
+                <Icon name="image"/>
               </i>
             </figure>
           </div>
@@ -63,7 +63,7 @@ import ModalHeader from '../../../components/modal/header.vue'
 import InputText from '../../../components/form/input-text.vue'
 import Textarea from '../../../components/form/textarea.vue'
 import Button from '../../../components/buttons/button-basic.vue'
-import IconFeather from '../../../components/icons/feather.vue'
+import Icon from '../../../components/icons/index.vue'
 
 const props = defineProps({
   mode: String, // create,edit

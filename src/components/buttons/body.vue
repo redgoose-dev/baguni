@@ -1,11 +1,11 @@
 <template>
 <span class="button-body">
-  <IconFeather
+  <Icon
     v-if="!!props.leftIcon"
     :name="props.leftIcon"
     :animation="rotateIcon ? 'rotate' : ''"
     class="button-body__side"/>
-  <IconFeather
+  <Icon
     v-if="props.icon"
     :name="props.icon"
     :animation="rotateIcon ? 'rotate' : ''"
@@ -15,7 +15,7 @@
     class="button-body__label">
     <slot/>
   </em>
-  <IconFeather
+  <Icon
     v-if="!!props.rightIcon"
     :name="props.rightIcon"
     :animation="rotateIcon ? 'rotate' : ''"
@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import IconFeather from '../icons/feather.vue'
+import Icon from '../icons/index.vue'
 
 const props = defineProps({
   isLabel: Boolean,

@@ -53,8 +53,8 @@
   cursor: pointer;
   border-radius: 4px;
   outline: none;
-  --icon-size: 16px;
-  --icon-stroke: 2.5;
+  --icon-size: 12px;
+  --icon-stroke: 3;
   --icon-color: var(--tag-color-fill);
   &:focus-visible {
     outline: 2px solid var(--color-key-1);

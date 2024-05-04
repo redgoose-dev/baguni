@@ -12,13 +12,13 @@
     :disabled="props.disabled"
     @change="changeValue">
   <i>
-    <IconFeather name="check" class="check"/>
+    <Icon name="check" class="check"/>
   </i>
 </label>
 </template>
 
 <script setup>
-import IconFeather from '../icons/feather.vue'
+import Icon from '../icons/index.vue'
 
 const props = defineProps({
   name: String,

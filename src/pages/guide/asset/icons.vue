@@ -11,22 +11,12 @@
     <section class="page-section">
       <header>
         <h1>index</h1>
-        <p>다음은 아이콘들의 목록입니다. 아이콘의 아래의 이름은 `name` props 값입니다.</p>
+        <p>sdgs</p>
       </header>
-      <div class="page-example">
-        <details class="page-details">
-          <summary>아이콘 목록보기</summary>
-          <ul class="icons-index">
-            <li v-for="key in iconsIndex">
-              <IconFeather :name="key"/>
-              <input
-                type="text"
-                :value="key"
-                @click="onClickIconLabel"/>
-            </li>
-          </ul>
-        </details>
-      </div>
+      <p>
+        제작사 <a href="https://lucide.dev" target="_blank">lucide.dev</a> 에서 아이콘을 탐색할 수 있습니다.<br/>
+        아이콘 이름을 `name` props 값으로 사용합니다.
+      </p>
     </section>
     <section class="page-section">
       <header>
@@ -36,15 +26,15 @@
       <div class="page-example">
         <ul class="icons-index" style="--icons-column: 3">
           <li>
-            <IconFeather name="cloud" color="var(--color-key-1)"/>
+            <Icon name="cloud" color="var(--color-key-1)"/>
             <span>--color-key-1</span>
           </li>
           <li>
-            <IconFeather name="cloud" color="var(--color-key-2)"/>
+            <Icon name="cloud" color="var(--color-key-2)"/>
             <span>--color-key-2</span>
           </li>
           <li>
-            <IconFeather name="cloud" color="var(--color-key-3)"/>
+            <Icon name="cloud" color="var(--color-key-3)"/>
             <span>--color-key-3</span>
           </li>
         </ul>
@@ -58,16 +48,16 @@
       <div class="page-example">
         <ul class="icons-index" style="--icons-column: 3">
           <li>
-            <IconFeather name="cloud-snow" size="24px"/>
-            <span>24</span>
+            <Icon name="cloud-snow" size="24px"/>
+            <span>24px</span>
           </li>
           <li>
-            <IconFeather name="cloud-snow" size="48px"/>
-            <span>48</span>
+            <Icon name="cloud-snow" size="48px"/>
+            <span>48px</span>
           </li>
           <li>
-            <IconFeather name="cloud-snow" size="72px"/>
-            <span>72</span>
+            <Icon name="cloud-snow" size="72px"/>
+            <span>72px</span>
           </li>
         </ul>
       </div>
@@ -80,15 +70,15 @@
       <div class="page-example">
         <ul class="icons-index" style="--icons-column: 3">
           <li>
-            <IconFeather name="cloud-snow" size="36px" :stroke=".5"/>
+            <Icon name="cloud-snow" size="36px" :stroke=".5"/>
             <span>0.5</span>
           </li>
           <li>
-            <IconFeather name="cloud-snow" size="36px" :stroke="1"/>
+            <Icon name="cloud-snow" size="36px" :stroke="1"/>
             <span>1</span>
           </li>
           <li>
-            <IconFeather name="cloud-snow" size="36px" :stroke="2"/>
+            <Icon name="cloud-snow" size="36px" :stroke="2"/>
             <span>2</span>
           </li>
         </ul>
@@ -102,10 +92,7 @@
       <div class="page-example">
         <ul class="icons-index" style="--icons-column: 3">
           <li>
-            <IconFeather
-              name="loader"
-              size="36px"
-              animation="rotate"/>
+            <Icon name="loader" size="36px" animation="rotate"/>
             <span>rotate</span>
           </li>
         </ul>
@@ -117,17 +104,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import icons from 'feather-icons/dist/icons.json'
-import IconFeather from '../../../components/icons/feather.vue'
-
-const iconsIndex = computed(() => {
-  return Object.keys(icons)
-})
-
-function onClickIconLabel(e)
-{
-  e.target.select()
-}
+import Icon from '../../../components/icons/index.vue'
 </script>
 
 <style lang="scss" scoped>

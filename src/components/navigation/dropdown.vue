@@ -12,7 +12,7 @@
         'trigger-button',
         computedOpen && 'open',
       ]">
-      <IconFeather :name="props.icon"/>
+      <Icon :name="props.icon"/>
     </button>
   </div>
   <div
@@ -28,7 +28,7 @@
 
 <script setup>
 import { ref, computed, onUnmounted } from 'vue'
-import IconFeather from '../icons/feather.vue'
+import Icon from '../icons/index.vue'
 
 const $root = ref()
 const props = defineProps({

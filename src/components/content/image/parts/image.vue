@@ -5,12 +5,12 @@
   :alt="props.title"
   loading="lazy">
 <i v-else>
-  <IconFeather name="image"/>
+  <Icon name="image"/>
 </i>
 </template>
 
 <script setup>
-import IconFeather from '../../../icons/feather.vue'
+import Icon from '../../../icons/index.vue'
 
 const props = defineProps({
   src: String,

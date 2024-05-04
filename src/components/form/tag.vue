@@ -16,13 +16,13 @@
     type="button"
     class="tag-remove"
     @click="onClickRemove">
-    <IconFeather name="x"/>
+    <Icon name="x"/>
   </button>
 </div>
 </template>
 
 <script setup>
-import IconFeather from '../icons/feather.vue'
+import Icon from '../icons/index.vue'
 
 const props = defineProps({
   label: String,

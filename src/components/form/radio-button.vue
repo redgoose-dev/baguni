@@ -15,7 +15,7 @@
       :checked="props.modelValue === item.value"
       @change="emits('update:modelValue', $event.target.value)">
     <span>
-      <IconFeather v-if="item.icon" :name="item.icon"/>
+      <Icon v-if="item.icon" :name="item.icon"/>
       <em>{{item.label}}</em>
     </span>
   </label>
@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import IconFeather from '../../components/icons/feather.vue'
+import Icon from '../../components/icons/index.vue'
 
 const props = defineProps({
   name: { type: String, required: true },

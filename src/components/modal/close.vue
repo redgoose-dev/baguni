@@ -3,12 +3,12 @@
   type="button"
   class="modal-close"
   @click="emits('click')">
-  <IconFeather name="x"/>
+  <Icon name="x"/>
 </button>
 </template>
 
 <script setup>
-import IconFeather from '../icons/feather.vue'
+import Icon from '../icons/index.vue'
 
 const emits = defineEmits([ 'click' ])
 </script>
@@ -19,15 +19,15 @@ const emits = defineEmits([ 'click' ])
   right: 10px;
   top: 10px;
   margin: 0;
-  padding: 8px;
+  padding: 10px;
   background: none;
   border-radius: 4px;
   border: none;
   outline: 2px solid transparent;
   outline-offset: -2px;
   cursor: pointer;
-  --icon-margin: -4px;
-  --icon-size: 24px;
+  --icon-margin: -5px;
+  --icon-size: 20px;
   --icon-stroke: 2.5;
   &:active {
     opacity: .5;
