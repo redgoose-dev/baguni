@@ -64,3 +64,11 @@ legend {
     visibility: hidden;
   }
 }
+
+// for root
+html.mode-not-scroll {
+  overflow: hidden;
+  > body {
+    overflow: hidden;
+  }
+}

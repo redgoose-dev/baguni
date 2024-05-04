@@ -25,6 +25,7 @@
       <ul>
         <li><RouterLink to="/guide/content/modal">modal</RouterLink></li>
         <li><RouterLink to="/guide/content/image">image</RouterLink></li>
+        <li><RouterLink to="/guide/content/lightbox">lightbox</RouterLink></li>
       </ul>
     </details>
 

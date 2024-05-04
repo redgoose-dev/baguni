@@ -51,11 +51,3 @@
     overflow: auto;
   }
 }
-
-// for root
-:global(html.mode-not-scroll) {
-  overflow: hidden;
-}
-:global(html.mode-not-scroll > body) {
-  overflow: hidden;
-}
