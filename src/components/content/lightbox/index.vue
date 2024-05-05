@@ -6,7 +6,7 @@
   @click="onClose"
   @keydown="onKeydown">
   <figure>
-    <img :src="props.src" :alt="props.title"/>
+    <img :src="props.src" :alt="props.title" draggable="false"/>
   </figure>
   <nav class="close">
     <button
