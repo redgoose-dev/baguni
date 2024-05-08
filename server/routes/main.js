@@ -12,7 +12,7 @@ function appRoutes()
 {
   const router = Router()
   router.all('/', home)
-  router.get('/foo/', async (req, res) => {
+  router.get('/fooo/', async (req, res) => {
     res.json({
       foo: 'bar',
     })
@@ -37,7 +37,7 @@ function setup(req, res, _next)
 export default function(_app)
 {
   app = _app
-  const { VITE_BASE_URL, VITE_LOCAL_PATH_NAME } = import.meta.env
+  const { VITE_BASE_PATH, VITE_LOCAL_PATH_NAME } = import.meta.env
   app.use(setup)
-  app.use(`${VITE_BASE_URL}/${VITE_LOCAL_PATH_NAME}/`.replace(/\/\//gi, '/'), appRoutes())
+  app.use(`${VITE_BASE_PATH}/${VITE_LOCAL_PATH_NAME}/`.replace(/\/\//gi, '/'), appRoutes())
 }

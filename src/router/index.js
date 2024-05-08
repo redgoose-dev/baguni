@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import map from './map'
 
-const { VITE_BASE_URL } = import.meta.env
+const { VITE_BASE_PATH } = import.meta.env
 
 const router = createRouter({
-  history: createWebHistory(VITE_BASE_URL || '/'),
+  history: createWebHistory(VITE_BASE_PATH || '/'),
   routes: map,
   scrollBehavior(to, from, savePosition)
   {

@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import createServiceWorkerPlugin from './plugins/create-service-worker.js'
 
 const config = defineConfig(async ({ mode }) => {
-  const { VITE_HOST, VITE_PORT, VITE_OPEN_BROWSER, VITE_OUT_DIR } = loadEnv(mode, process.cwd())
+  const { VITE_HOST, VITE_PORT, VITE_OPEN_BROWSER, VITE_DIR_OUT } = loadEnv(mode, process.cwd())
   return {
     server: {
       host: VITE_HOST,
@@ -11,7 +11,7 @@ const config = defineConfig(async ({ mode }) => {
       open: VITE_OPEN_BROWSER === 'true',
     },
     build: {
-      outDir: VITE_OUT_DIR || 'dist',
+      outDir: VITE_DIR_OUT || 'dist',
       rollupOptions: {
         output: {
           assetFileNames: (assetInfo) => {

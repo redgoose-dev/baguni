@@ -7,6 +7,8 @@
   "repository": "https://github.com/redgoose-dev/baguni.git",
   "author": "redgoose <scripter@me.com>",
   "scripts": {
+    "install": "bun run --bun resource/install.js",
+    "uninstall": "bun run --bun resource/uninstall.js",
     "dev": "NODE_ENV=development bun run --bun server/index.js",
     "prebuild": "rm -rf ./dist",
     "build": "bunx --bun vite build",

@@ -52,11 +52,11 @@ async function development(app)
  */
 function production(app)
 {
-  const { VITE_OUT_DIR } = import.meta.env
+  const { VITE_DIR_OUT } = import.meta.env
   // extend routes
   routes(app)
   // load static files
-  app.use(express.static(VITE_OUT_DIR, {
+  app.use(express.static(VITE_DIR_OUT, {
     index: false,
     extensions: [ 'html' ],
     dotfiles: 'ignore',
@@ -65,7 +65,7 @@ function production(app)
   }))
   // service route
   app.get('*', async (req, res, _next) => {
-    const distDir = `${process.cwd()}/${VITE_OUT_DIR}`
+    const distDir = `${process.cwd()}/${VITE_DIR_OUT}`
     let template = Bun.file(Bun.resolveSync('./index.html', distDir))
     template = await template.text()
     res

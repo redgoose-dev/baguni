@@ -10,7 +10,7 @@
     "show": 511,
     "database": 32,
     "databaseName": "baguni",
-    "canvasType": "ERD",
+    "canvasType": "@dineug/erd-editor/builtin-schema-sql",
     "language": 1,
     "tableNameCase": 4,
     "columnNameCase": 2,
@@ -71,8 +71,7 @@
           "cavrqlsjxt2y7zL0qPttL",
           "chLPHIKy_WxSNKlYEpmaN",
           "eeHiLxTeXXMn8FwjJsJTs",
-          "l-4F2K6vCpQ7qp-hedyal",
-          "OLm1OTgYu4rrKoMt3O4Aj"
+          "l-4F2K6vCpQ7qp-hedyal"
         ],
         "seqColumnIds": [
           "M_nWc7vCxuEd9t_N7VXf6",
@@ -88,14 +87,14 @@
         ],
         "ui": {
           "x": 216.5108,
-          "y": 64.592,
+          "y": 85.592,
           "zIndex": 2,
           "widthName": 60,
           "widthComment": 68,
           "color": "#00BCD4"
         },
         "meta": {
-          "updateAt": 1715015244685,
+          "updateAt": 1715088244186,
           "createAt": 1715009462750
         }
       },
@@ -1444,7 +1443,7 @@
             "WTO4kDkkjeCUwjrvX7lCO"
           ],
           "x": 647.5108,
-          "y": 92.592,
+          "y": 110.592,
           "direction": 2
         },
         "end": {
@@ -1528,7 +1527,7 @@
             "WTO4kDkkjeCUwjrvX7lCO"
           ],
           "x": 647.5108,
-          "y": 148.59199999999998,
+          "y": 160.59199999999998,
           "direction": 2
         },
         "end": {
@@ -1584,7 +1583,7 @@
             "WTO4kDkkjeCUwjrvX7lCO"
           ],
           "x": 647.5108,
-          "y": 204.59199999999998,
+          "y": 210.59199999999998,
           "direction": 2
         },
         "end": {
@@ -2484,7 +2483,7 @@
     "OLm1OTgYu4rrKoMt3O4Aj": [
       "tableColumnEntities",
       1715014191504,
-      -1,
+      1715088231797,
       {
         "options(notNull)": 1715014191504,
         "name": 1715014191504,
