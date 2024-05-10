@@ -7,8 +7,8 @@
   "repository": "https://github.com/redgoose-dev/baguni.git",
   "author": "redgoose <scripter@me.com>",
   "scripts": {
-    "install": "bun run --bun resource/install.js",
-    "uninstall": "bun run --bun resource/uninstall.js",
+    "app-install": "bun run --bun resource/install.js",
+    "app-uninstall": "bun run --bun resource/uninstall.js",
     "dev": "NODE_ENV=development bun run --bun server/index.js",
     "prebuild": "rm -rf ./dist",
     "build": "bunx --bun vite build",
@@ -19,6 +19,7 @@
     "last 2 versions"
   ],
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "bun": "^1.1.7",
     "cookie-parser": "^1.4.6",
     "express": "^4.19.2",

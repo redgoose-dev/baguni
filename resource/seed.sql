@@ -42,8 +42,8 @@ CREATE TABLE `user`
 (
   `id` INTEGER NOT NULL UNIQUE,
   `email` TEXT NULL UNIQUE,
-  `password` TEXT NULL UNIQUE,
   `name` TEXT NULL,
+  `password` TEXT NULL UNIQUE,
   `regdate` TEXT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT)
 );
