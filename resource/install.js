@@ -1,18 +1,9 @@
 import { exit } from 'node:process'
 import { rm, mkdir, exists } from 'node:fs/promises'
 import { Database } from 'bun:sqlite'
-import { message, basePath, prompt, multiplePrompt } from './libs.js'
-// import {} from '../server/libs/dates.js'
+import { message, basePath, prompt } from './libs.js'
+import { hashPassword, verifyEmail } from '../server/libs/strings.js'
 
-// TODO: 실행
-// TODO: 인스톨 할지 물어보기 ? 인스톨 진행 : 프로그램 종료
-// TODO: user 디렉토리와 데이터베이스가 존재하는지 검사 ? (기존 데이터를 삭제할건지 물어보기 ? 디렉토리와 DB 삭제 : EXIT) : NEXT
-// TODO: user 디렉토리 만들기
-// TODO: DB 설치
-// TODO: 관리자 데이터가 있나 ? NEXT : (관리자 정보 입력 -> 관리자 데이터 추가)
-// TODO: 인스톨 완료 메시지 출력
-
-const { VITE_DIR_DB, VITE_DIR_UPLOAD } = import.meta.env
 const paths = {
   seedDb: `resource/seed.sql`,
   db: `${basePath}/db.sqlite`,
@@ -69,6 +60,56 @@ async function checkData()
 }
 
 /**
+ * 관리자 정보 입력받기
+ * @return {Promise<object>}
+ */
+async function inputUserAccount()
+{
+  message('run', 'Enter admin information.')
+  const email = await inputField({
+    ask: '✏️ E-Mail:',
+    type: 'email',
+    error: 'Invalid email address.',
+  })
+  const name = await inputField({
+    ask: '✏️ Username:',
+    error: 'Invalid name.',
+  })
+  const password = await inputField({
+    ask: '✏️ Password:',
+    error: 'Invalid password.',
+  })
+  return {
+    email,
+    name,
+    password,
+  }
+}
+function inputField(op)
+{
+  const { ask, type, error } = op
+  return new Promise(async (resolve) => {
+    const answer = await prompt(ask)
+    if (!answer)
+    {
+      if (error) message('error', error)
+      return resolve(inputField(op))
+    }
+    switch (type)
+    {
+      case 'email':
+        if (!verifyEmail(answer))
+        {
+          if (error) message('error', error)
+          return resolve(inputField(op))
+        }
+        break
+    }
+    resolve(answer)
+  })
+}
+
+/**
  * create directories
  * @return {Promise<void>}
  */
@@ -105,20 +146,18 @@ async function createDatabase()
 
 /**
  * 관리자 유저 추가
+ * @param {string} [user.email] 이메일 주소
+ * @param {string} [user.name] 이름
+ * @param {string} [user.password] 패스워드
+ * @return {Promise<void>}
  */
-async function addUser()
+async function addUser(user)
 {
-  message('run', 'Enter admin information.')
-  const [ email, name, password ] = await multiplePrompt([
-    '✏️ E-Mail:',
-    '✏️ Username:',
-    '✏️ Password:',
-  ])
+  const { email, name, password } = user
   try
   {
     const sql = `insert into user (email, name, password, regdate) values (?, ?, ?, CURRENT_TIMESTAMP)`
-    // TODO: 비밀번호는 암호화 하자. bcrypt 패키지 활용하면 될듯..
-    db.run(sql, [ email, name, password ])
+    db.run(sql, [ email, name, hashPassword(password) ])
   }
   catch (e)
   {
@@ -132,9 +171,10 @@ async function addUser()
 // actions
 await confirm()
 await checkData()
+const user = await inputUserAccount()
 await createDirectories()
 await createDatabase()
-await addUser()
+await addUser(user)
 db.close()
 message('exit', 'Complete install')
 exit()

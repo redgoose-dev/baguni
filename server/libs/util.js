@@ -1,5 +1,3 @@
-// const __dirname = process.cwd()
-
 /**
  * is development
  * @return {boolean}
@@ -31,3 +29,4 @@ export function openServerMessage(host, port, isDev)
   console.log(`| >> Local: ${colorText(`http://localhost:${port}`, 'cyan')}`)
   console.log(assets.line)
 }
+

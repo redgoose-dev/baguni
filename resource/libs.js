@@ -1,8 +1,9 @@
 import { createInterface } from 'node:readline/promises'
 import { stdin, stdout } from 'node:process'
 
+const { VITE_DATA_PATH } = import.meta.env
 export const appName = 'BA.GU.NI'
-export const basePath = 'user'
+export const basePath = VITE_DATA_PATH || 'data'
 
 export function message(type, msg)
 {
