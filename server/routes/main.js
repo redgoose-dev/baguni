@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { cookieSetup } from '../libs/cookie.js'
-import { home, notFound } from './etc.js'
+import * as map from './map.js'
 
 /** @var {Express} app */
 let app
@@ -11,13 +11,29 @@ let app
 function appRoutes()
 {
   const router = Router()
-  router.all('/', home)
-  router.get('/fooo/', async (req, res) => {
-    res.json({
-      foo: 'bar',
-    })
-  })
-  router.all('*', notFound)
+  router.all('/', map.home)
+  // asset
+  router.get('/assets/', map.assets)
+  router.get('/asset/', map.assetDetail)
+  router.post('/asset/', map.assetCreate)
+  router.put('/asset/', map.assetEdit)
+  router.delete('/asset/', map.assetRemove)
+  // collection
+  router.get('/collections/', map.collections)
+  router.get('/collection/', map.collectionDetail)
+  router.post('/collection/', map.collectionCreate)
+  router.put('/collection/', map.collectionEdit)
+  router.delete('/collection/', map.collectionRemove)
+  router.post('/collection/asset/', map.collectionAddAsset)
+  router.delete('/collection/asset/', map.collectionRemoveAsset)
+  // user
+  router.get('/user/', map.userDetail)
+  router.put('/user/', map.userEdit)
+  // auth
+  router.post('/login/', map.login)
+  router.post('/logout/', map.logout)
+  // etc
+  router.all('*', map.notFound)
   return router
 }
 

@@ -3,7 +3,6 @@
 node_modules/
 .AppleDouble/
 dist/
-user/
 data/
 
 # files
