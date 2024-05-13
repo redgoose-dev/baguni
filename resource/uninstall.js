@@ -1,6 +1,7 @@
 import { rm } from 'node:fs/promises'
 import { exit } from 'node:process'
-import { message, prompt, appName, basePath } from './libs.js'
+import { message, prompt, appName } from './libs.js'
+import { basePath } from '../server/libs/consts.js'
 
 /**
  * 진행할것인지에 대한 확인

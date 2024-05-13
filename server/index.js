@@ -87,7 +87,9 @@ async function runServer()
   const { VITE_TIMEZONE, VITE_HOST, VITE_PORT } = import.meta.env
   // set timezone
   process.env.TZ = VITE_TIMEZONE
-  // set cookie
+  // setup
+  app.use(express.json())
+  app.use(express.urlencoded({ extended: false }))
   app.use(cookieParser())
   // render app
   app = dev ? await development(app) : production(app)

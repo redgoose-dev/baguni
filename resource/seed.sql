@@ -92,3 +92,12 @@ CREATE TABLE `permission_user_data` (
   FOREIGN KEY (`collection`) REFERENCES `collection` (`id`),
   FOREIGN KEY (`user`) REFERENCES `user` (`id`)
 );
+
+-- ignore tokens
+CREATE TABLE `ignore_tokens` (
+  `id` INTEGER NOT NULL UNIQUE,
+  `token` TEXT NOT NULL UNIQUE,
+  `expired` TEXT NULL,
+  `regdate` TEXT NULL,
+  PRIMARY KEY (`id` AUTOINCREMENT)
+)

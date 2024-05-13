@@ -1,7 +1,8 @@
 import { exit } from 'node:process'
 import { rm, mkdir, exists } from 'node:fs/promises'
 import { Database } from 'bun:sqlite'
-import { message, basePath, prompt } from './libs.js'
+import { message, prompt } from './libs.js'
+import { basePath } from '../server/libs/consts.js'
 import { hashPassword, verifyEmail } from '../server/libs/strings.js'
 
 const paths = {

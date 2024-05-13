@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import multer from 'multer'
 import { cookieSetup } from '../libs/cookie.js'
 import * as map from './map.js'
 
