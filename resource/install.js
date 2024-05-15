@@ -1,6 +1,7 @@
 import { exit } from 'node:process'
 import { rm, mkdir, exists } from 'node:fs/promises'
 import { Database } from 'bun:sqlite'
+import { randomBytes, generateKeyPairSync } from 'node:crypto'
 import { message, prompt } from './libs.js'
 import { basePath } from '../server/libs/consts.js'
 import { hashPassword, verifyEmail } from '../server/libs/strings.js'
@@ -8,6 +9,7 @@ import { hashPassword, verifyEmail } from '../server/libs/strings.js'
 const paths = {
   seedDb: `resource/seed.sql`,
   db: `${basePath}/db.sqlite`,
+  env: '.env.local',
 }
 const pathList = [
   `${basePath}/original`,
@@ -169,6 +171,38 @@ async function addUser(user)
   message('run', `You've entered your admin information.`)
 }
 
+async function updateEnv()
+{
+  function editField(src, key, value)
+  {
+    const checkRegex = new RegExp(`(?<=^${key}=)`, 'gm')
+    if (checkRegex.test(src))
+    {
+      const regex = new RegExp(`(?<=^${key}=).*$`, 'gm')
+      return src.replace(regex, value)
+    }
+    else
+    {
+      src += `\n${key}='${value}'`
+      return src
+    }
+  }
+  try
+  {
+    let env = Bun.file(paths.env)
+    const existEnv = await env.exists()
+    let text = existEnv ? await env.text() : ''
+    text = editField(text, 'ACCESS_TOKEN_SECRET', randomBytes(16).toString('hex'))
+    text = editField(text, 'REFRESH_TOKEN_SECRET', randomBytes(24).toString('hex'))
+    await Bun.write(paths.env, text)
+  }
+  catch (e)
+  {
+    message('error', e.message)
+    exit()
+  }
+}
+
 // actions
 await confirm()
 await checkData()
@@ -176,6 +210,7 @@ const user = await inputUserAccount()
 await createDirectories()
 await createDatabase()
 await addUser(user)
+await updateEnv()
 db.close()
 message('exit', 'Complete install')
 exit()

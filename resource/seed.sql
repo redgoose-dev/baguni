@@ -78,8 +78,8 @@ CREATE TABLE `map_asset_tag` (
   FOREIGN KEY (`tag`) REFERENCES `tag` (`id`)
 );
 
--- user, content data 권한 데이터
-CREATE TABLE `permission_user_data` (
+-- user, content 권한 데이터
+CREATE TABLE `permission_user` (
   `id` INTEGER NOT NULL UNIQUE,
   `permission` TEXT NOT NULL DEFAULT 'READ', -- 권한(READ,WRITE)
   `user` INTEGER NOT NULL, -- user 테이블 id

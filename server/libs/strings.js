@@ -31,3 +31,11 @@ export function verifyEmail(address)
   const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/;
   return emailRegex.test(String(address).toLowerCase())
 }
+
+/**
+ * 숫자 한자리라면 앞에 `0`을 붙인다.
+ */
+export function twoDigit(day)
+{
+  return `0${day}`.slice(-2)
+}

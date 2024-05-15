@@ -8,11 +8,12 @@ export function success({ res, message, data })
     })
 }
 
-export function error({ res, message })
+export function error({ res, message, code })
 {
   res
-    .status(500)
+    .status(code || 500)
     .json({
+      code: code || 500,
       message: message || '알 수 없는 오류',
     })
 }

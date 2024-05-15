@@ -5,6 +5,18 @@ import { basePath } from './consts.js'
 /** @var {Database} db */
 export let db
 
+export const tables = {
+  asset: 'asset',
+  collection: 'collection',
+  file: 'file',
+  tag: 'tag',
+  user: 'user',
+  mapAssetCollection: 'map_asset_collection',
+  mapAssetFile: 'map_asset_file',
+  mapAssetTag: 'map_asset_tag',
+  permissionUser: 'permission_user',
+}
+
 /**
  * connect
  * @param {object} options
@@ -35,9 +47,19 @@ export async function getCount()
   //
 }
 
-export async function getItem()
+/**
+ * get item
+ * @param {string} [options.table]
+ * @param {string[]} [options.fields]
+ * @param {string} [options.where]
+ * @param {any} [options.values]
+ */
+export function getItem(options)
 {
-  //
+  const { table, fields, where, values } = options
+  const field = fields?.length ? fields.join(',') : '*'
+  const query = db.query(`select ${field} from ${table} ${where ? `where ${where}` : ''}`)
+  return query.get(values)
 }
 
 export async function addItem()
@@ -60,8 +82,7 @@ export async function getLastIndex()
   //
 }
 
-export async function run()
+export async function run(sql)
 {
-  //
+  db.exec(sql)
 }
-
