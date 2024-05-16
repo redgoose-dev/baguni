@@ -1,12 +1,17 @@
-import jwt from 'jsonwebtoken'
+import { sign, verify } from 'jsonwebtoken'
 
-const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = import.meta.env
+const {
+  ACCESS_TOKEN_SECRET,
+  ACCESS_TOKEN_SECRET_EXPIRES,
+  REFRESH_TOKEN_SECRET,
+  REFRESH_TOKEN_SECRET_EXPIRES,
+} = import.meta.env
 
 /**
  * create token
  * @param {'access'|'refresh'} type
  * @param {object} payload
- * @return {string|null}
+ * @return {object}
  */
 export function createToken(type, payload = {})
 {
@@ -15,18 +20,39 @@ export function createToken(type, payload = {})
   {
     case 'access':
       secret = ACCESS_TOKEN_SECRET
-      expires = '1h'
+      expires = ACCESS_TOKEN_SECRET_EXPIRES // 엑세스 토큰 만료시간
       break
     case 'refresh':
       secret = REFRESH_TOKEN_SECRET
-      expires = '3d'
+      expires = REFRESH_TOKEN_SECRET_EXPIRES // 리프레시 토큰 만료시간
       break
     default:
       return null
   }
-  return jwt.sign(payload, secret, {
+  const value = sign(payload, secret, {
     expiresIn: expires,
   })
+  return {
+    value,
+    parse: decodeToken(type, value),
+  }
 }
 
-
+/**
+ * decode token
+ * @param {'access'|'refresh'} type
+ * @param {string} token
+ * @return {object|null}
+ */
+export function decodeToken(type, token)
+{
+  switch (type)
+  {
+    case 'access':
+      return verify(token, ACCESS_TOKEN_SECRET)
+    case 'refresh':
+      return verify(token, REFRESH_TOKEN_SECRET)
+    default:
+      return null
+  }
+}

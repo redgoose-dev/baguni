@@ -19,6 +19,7 @@
             <InputText
               type="email"
               id="email"
+              v-model="fields.email"
               placeholder="goose@servername.com"/>
           </div>
         </div>
@@ -28,13 +29,14 @@
             <InputText
               type="password"
               id="password"
+              v-model="fields.password"
               placeholder="password"/>
           </div>
         </div>
       </fieldset>
       <div class="save">
         <label>
-          <Checkbox name="save"/>
+          <Checkbox name="save" v-model="fields.save"/>
           <span>로그인 정보 저장</span>
         </label>
       </div>
@@ -49,13 +51,37 @@
 </template>
 
 <script setup>
+import { reactive, ref } from 'vue'
+import { ofetch } from 'ofetch'
 import InputText from '../../components/form/input-text.vue'
 import Button from '../../components/buttons/button-basic.vue'
 import Checkbox from '../../components/form/checkbox.vue'
 
-function onSubmit()
+const fields = reactive({
+  email: '',
+  password: '',
+  save: true,
+})
+
+async function onSubmit()
 {
-  console.log('onSubmit()')
+  try
+  {
+    const res = await ofetch('/local/login', {
+      method: 'post',
+      responseType: 'json',
+      body: {
+        email: fields.email,
+        password: fields.password,
+        save: fields.save ? 'true' : undefined,
+      },
+    })
+    console.log('onSubmit()', res)
+  }
+  catch (e)
+  {
+    console.error(e.message)
+  }
 }
 </script>
 

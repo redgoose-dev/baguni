@@ -11,6 +11,7 @@ export const tables = {
   file: 'file',
   tag: 'tag',
   user: 'user',
+  tokens: 'tokens',
   mapAssetCollection: 'map_asset_collection',
   mapAssetFile: 'map_asset_file',
   mapAssetTag: 'map_asset_tag',
@@ -62,9 +63,26 @@ export function getItem(options)
   return query.get(values)
 }
 
-export async function addItem()
+/**
+ * add item
+ * @example
+ * options.table
+ * options.value = [ { key, valueName, value } ]
+ * @param {string} [options.table]
+ */
+export async function addItem(options)
 {
-  //
+  const { table, values } = options
+  let fields = []
+  let valueNames = []
+  let objects = []
+  values.forEach(item => {
+    fields.push(item.key)
+    valueNames.push(item.valueName || '?')
+    if (item.value) objects.push(item.value)
+  })
+  const sql = `insert into ${table} (${fields.join(', ')}) values (${valueNames.join(', ')})`
+  db.run(sql, objects)
 }
 
 export async function editItem()

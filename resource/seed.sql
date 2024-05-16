@@ -93,8 +93,8 @@ CREATE TABLE `permission_user` (
   FOREIGN KEY (`user`) REFERENCES `user` (`id`)
 );
 
--- ignore tokens
-CREATE TABLE `ignore_tokens` (
+-- refresh tokens
+CREATE TABLE `tokens` (
   `id` INTEGER NOT NULL UNIQUE,
   `token` TEXT NOT NULL UNIQUE,
   `expired` TEXT NULL,

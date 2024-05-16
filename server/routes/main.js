@@ -1,6 +1,4 @@
 import { Router } from 'express'
-import multer from 'multer'
-import { cookieSetup } from '../libs/cookie.js'
 import * as map from './map.js'
 
 /** @var {Express} app */
@@ -44,7 +42,6 @@ function appRoutes()
 function setup(req, res, _next)
 {
   // set cookie
-  cookieSetup({ secure: req.secure })
   _next()
 }
 

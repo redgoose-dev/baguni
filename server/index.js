@@ -84,9 +84,8 @@ async function runServer()
 {
   let app = express()
   const dev = isDev()
-  const { VITE_TIMEZONE, VITE_HOST, VITE_PORT } = import.meta.env
+  const { VITE_HOST, VITE_PORT } = import.meta.env
   // set timezone
-  process.env.TZ = VITE_TIMEZONE
   // setup
   app.use(express.json())
   app.use(express.urlencoded({ extended: false }))

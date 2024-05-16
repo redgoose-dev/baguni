@@ -17,11 +17,12 @@ const router = createRouter({
 router.beforeEach(async (to, _from) => {
   let isAuth = false
   // console.warn('route-hook:', to)
-  if (to.name !== 'login')
+  if (to.name === 'login')
   {
-    // TODO: 인증 검사를 한다.
-    isAuth = true // 인증이 되었다면 `true`로 바꾼다.
+    return undefined
   }
+  // TODO: 인증 검사를 한다.
+  isAuth = true // 인증이 되었다면 `true`로 바꾼다.
   if (!isAuth) return 'login'
 })
 
