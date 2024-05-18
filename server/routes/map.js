@@ -25,6 +25,7 @@ export { default as userEdit } from './user/put-edit.js'
 // auth
 export { default as login } from './auth/post-login.js'
 export { default as logout } from './auth/post-logout.js'
+export { default as check } from './auth/post-check.js'
 
 // etc
 export { default as home } from './etc/get-index.js'

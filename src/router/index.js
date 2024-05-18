@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import map from './map'
+import { authStore } from '../store/auth.js'
+import map from './map.js'
 
 const { VITE_BASE_PATH } = import.meta.env
 
@@ -14,16 +15,19 @@ const router = createRouter({
 })
 
 // route hook - before
-router.beforeEach(async (to, _from) => {
-  let isAuth = false
-  // console.warn('route-hook:', to)
+router.beforeEach(async (to, from) => {
+  const auth = authStore()
+  // check API 호출
+  const isAuth = await auth.check()
+  // 상황을 판단하여 이후의 행동을 실행한다.
   if (to.name === 'login')
   {
-    return undefined
+    return isAuth ? '/' : undefined
   }
-  // TODO: 인증 검사를 한다.
-  isAuth = true // 인증이 되었다면 `true`로 바꾼다.
-  if (!isAuth) return 'login'
+  else
+  {
+    return isAuth ? undefined : 'login'
+  }
 })
 
 // route hook - after

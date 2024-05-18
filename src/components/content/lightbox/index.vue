@@ -46,7 +46,7 @@ async function control(sw)
   }
   else
   {
-    $root.value.close()
+    if ($root.value) $root.value.close()
     open.value = false
     controlRoot(false)
   }

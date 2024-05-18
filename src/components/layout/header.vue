@@ -61,7 +61,7 @@
                 size="small"
                 right-icon="chevron-down"
                 :color="openDropdownProfile ? 'weak' : ''">
-                foo@bar.com
+                {{auth.user.email}}
               </ButtonBasic>
             </template>
             <Context
@@ -75,10 +75,7 @@
       </template>
       <template v-else>
         <div>
-          <ButtonBasic
-            href="/asset/create"
-            size="small"
-            color="key-1">
+          <ButtonBasic href="/login" size="small" color="key-1">
             로그인
           </ButtonBasic>
         </div>
@@ -90,16 +87,19 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { authStore } from '../../store/auth.js'
 import ButtonBasic from '../buttons/button-basic.vue'
 import Dropdown from '../navigation/dropdown.vue'
 import Context from '../navigation/context.vue'
 
 const route = useRoute()
+const router = useRouter()
+const auth = authStore()
 const $profileDropdown = ref()
-const isLogin = ref(true)
 const openDropdownProfile = ref(false)
 
+const isLogin = computed(() => (!!auth.user))
 const activeMenuItem = computed(() => {
   return route.meta?.active
 })
@@ -111,6 +111,8 @@ function onSelectProfileDropdown({ key })
     case 'account':
       break
     case 'logout':
+      if (!confirm('정말로 로그아웃 할까요?')) return
+      auth.logout().then(() => router.replace('/login'))
       break
   }
   $profileDropdown.value.close()

@@ -31,6 +31,7 @@ function appRoutes()
   // auth
   router.post('/login/', map.login)
   router.post('/logout/', map.logout)
+  router.post('/check/', map.check)
   // etc
   router.all('*', map.notFound)
   return router

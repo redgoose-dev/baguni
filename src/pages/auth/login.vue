@@ -53,13 +53,17 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { ofetch } from 'ofetch'
+import { useRouter } from 'vue-router'
+import { authStore } from '../../store/auth.js'
 import InputText from '../../components/form/input-text.vue'
 import Button from '../../components/buttons/button-basic.vue'
 import Checkbox from '../../components/form/checkbox.vue'
 
+const router = useRouter()
+const auth = authStore()
 const fields = reactive({
-  email: '',
-  password: '',
+  email: 'x@x.x',
+  password: '1234',
   save: true,
 })
 
@@ -67,20 +71,14 @@ async function onSubmit()
 {
   try
   {
-    const res = await ofetch('/local/login', {
-      method: 'post',
-      responseType: 'json',
-      body: {
-        email: fields.email,
-        password: fields.password,
-        save: fields.save ? 'true' : undefined,
-      },
-    })
-    console.log('onSubmit()', res)
+    await auth.login(fields.email, fields.password, fields.save)
+    await router.push('/')
   }
   catch (e)
   {
+    // TODO: 오류처리
     console.error(e.message)
+    alert('인증실패')
   }
 }
 </script>

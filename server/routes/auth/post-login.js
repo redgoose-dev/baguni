@@ -22,7 +22,7 @@ export default async (req, res) => {
     // connect db
     connect({ readwrite: true })
     // get data
-    const user = await getItem({
+    const user = getItem({
       table: tables.user,
       where: 'email = $email',
       values: { '$email': req.body.email },
@@ -45,13 +45,14 @@ export default async (req, res) => {
       throw createError('Authentication failed, please try again.', 401)
     }
     // create tokens
-    const payload = {
-      id: user.id,
-      email: user.email,
-    }
     const tokens = {
-      accessToken: createToken('access', payload),
-      refreshToken: createToken('refresh', payload),
+      accessToken: createToken('access', {
+        id: user.id,
+        email: user.email,
+      }),
+      refreshToken: createToken('refresh', {
+        id: user.id,
+      }),
     }
     if (!tokens.refreshToken)
     {
@@ -62,12 +63,16 @@ export default async (req, res) => {
       throw createError(undefined, 500)
     }
     // 리프레시 토큰을 데이터베이스에 추가
-    await addItem({
+    addItem({
       table: tables.tokens,
       values: [
         {
-          key: 'token',
+          key: 'refresh',
           value: tokens.refreshToken.value,
+        },
+        {
+          key: 'access',
+          value: tokens.accessToken.value,
         },
         {
           key: 'expired',
@@ -80,36 +85,34 @@ export default async (req, res) => {
       ],
     })
     // save cookie
-    if (req.body.save?.toLowerCase() === 'true')
-    {
-      res.cookie(`${cookie.prefix}-access`, tokens.accessToken.value, {
-        ...cookie.options,
-        expires: new Date(tokens.accessToken.parse.exp * 1000),
-        secure: req.secure,
-        // maxAge: 1000 * 60 * 60 * 24 * 7
-      })
-      res.cookie(`${cookie.prefix}-refresh`, tokens.refreshToken, {
-        ...cookie.options,
-        expires: new Date(tokens.refreshToken.parse.exp * 1000),
-        secure: req.secure,
-        // maxAge: 1000 * 60 * 60 * 24 * 14,
-      })
-    }
+    const saveCookie = req.body.save?.toLowerCase() === 'true'
+    res.cookie(`${cookie.prefix}-access`, tokens.accessToken.value, {
+      ...cookie.options,
+      expires: saveCookie ? new Date(tokens.accessToken.parse.exp * 1000) : undefined,
+      secure: req.secure,
+    })
+    res.cookie(`${cookie.prefix}-refresh`, tokens.refreshToken.value, {
+      ...cookie.options,
+      expires: saveCookie ? new Date(tokens.refreshToken.parse.exp * 1000) : undefined,
+      secure: req.secure,
+    })
     disconnect()
-    success({
-      res,
-      message: 'login',
+    success(res, {
+      message: '로그인 성공',
       data: {
         accessToken: tokens.accessToken.value,
         refreshToken: tokens.refreshToken.value,
+        user: {
+          ...user,
+          password: undefined,
+        },
       },
     })
   }
   catch (e)
   {
     addLog({ mode: 'error', message: e.message })
-    error({
-      res,
+    error(res, {
       message: '인증 실패했습니다.',
       code: e.code,
     })

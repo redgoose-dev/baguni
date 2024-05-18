@@ -96,7 +96,8 @@ CREATE TABLE `permission_user` (
 -- refresh tokens
 CREATE TABLE `tokens` (
   `id` INTEGER NOT NULL UNIQUE,
-  `token` TEXT NOT NULL UNIQUE,
+  `refresh` TEXT NOT NULL UNIQUE,
+  `access` TEXT NOT NULL UNIQUE,
   `expired` TEXT NULL,
   `regdate` TEXT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT)

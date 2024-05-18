@@ -18,7 +18,7 @@ const route = useRoute()
 const error = ref(undefined)
 
 const layout = computed(() => {
-  let layoutName = route.meta.layout || 'default'
+  let layoutName = route.meta?.layout || 'blank'
   switch (layoutName)
   {
     case 'blank':

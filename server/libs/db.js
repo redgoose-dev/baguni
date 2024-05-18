@@ -19,8 +19,11 @@ export const tables = {
 }
 
 /**
- * connect
+ * connect db
  * @param {object} options
+ * @param {?boolean} [options.readonly]
+ * @param {?boolean} [options.create]
+ * @param {?boolean} [options.readwrite]
  */
 export function connect(options = {})
 {
@@ -30,7 +33,7 @@ export function connect(options = {})
 }
 
 /**
- * disconnect
+ * disconnect db
  */
 export function disconnect()
 {
@@ -38,14 +41,24 @@ export function disconnect()
   db.close()
 }
 
-export async function getItems()
+export function getItems()
 {
   //
 }
 
-export async function getCount()
+/**
+ * get count item
+ * @param {string} [options.table]
+ * @param {string} [options.where]
+ * @param {any} [options.values]
+ * @return {number}
+ */
+export function getCount(options)
 {
-  //
+  const { table, where, values } = options
+  const query = db.query(`select count(*) from ${table} ${where ? `where ${where}` : ''}`)
+  const result = query.get(values)
+  return Number(result['count(*)'] || 0)
 }
 
 /**
@@ -69,8 +82,9 @@ export function getItem(options)
  * options.table
  * options.value = [ { key, valueName, value } ]
  * @param {string} [options.table]
+ * @param {array} [options.values]
  */
-export async function addItem(options)
+export function addItem(options)
 {
   const { table, values } = options
   let fields = []
@@ -85,22 +99,41 @@ export async function addItem(options)
   db.run(sql, objects)
 }
 
-export async function editItem()
+/**
+ * edit item
+ * @param {string} [options.table]
+ * @param {string} [options.set]
+ * @param {string} [options.where]
+ * @param {any} [options.values]
+ */
+export function editItem(options = {})
+{
+  const { table, set, where, values } = options
+  const sql = `update ${table} set ${set} ${where ? `where ${where}` : ''}`
+  db.run(sql, values)
+}
+
+export function removeItem(options)
+{
+  const { table, where, values } = options
+  const sql = `delete from ${table} ${where ? `where ${where}` : ''}`
+  db.run(sql, values)
+}
+
+export function getLastIndex()
 {
   //
 }
 
-export async function removeItem()
-{
-  //
-}
-
-export async function getLastIndex()
-{
-  //
-}
-
-export async function run(sql)
+export function run(sql)
 {
   db.exec(sql)
+}
+
+/**
+ * 만료된 토큰을 삭제한다.
+ */
+export function clearTokens()
+{
+  db.run(`delete from ${tables.tokens} where expired <= CURRENT_TIMESTAMP`, [])
 }

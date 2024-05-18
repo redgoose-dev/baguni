@@ -10,13 +10,13 @@ function getConsoleResource(mode)
   switch (mode)
   {
     case 'warning':
-      return { method: 'warn', prefix: '⚠️ ' }
+      return { method: 'warn', prefix: '⚠️' }
     case 'error':
-      return { method: 'error', prefix: '❌ ' }
+      return { method: 'error', prefix: '❌' }
     case 'success':
-      return { method: 'log', prefix: '✅ ' }
+      return { method: 'log', prefix: '✅' }
     default:
-      return { method: 'log', prefix: '🌱 ' }
+      return { method: 'log', prefix: '🌱' }
   }
 }
 
@@ -30,8 +30,5 @@ export function addLog(log)
 {
   const { mode, message } = log
   const { method, prefix } = getConsoleResource(mode)
-  console.group(`[LOG START] ${dateFormat(new Date(), '{yyyy}-{MM}-{dd} {hh}:{mm}:{ss}')}`)
-  console[method](prefix, message)
-  console.log('[LOG END]')
-  console.groupEnd()
+  console[method](`[LOG | ${dateFormat(new Date(), '{yyyy}-{MM}-{dd} {hh}:{mm}:{ss}')}]`, prefix, message)
 }

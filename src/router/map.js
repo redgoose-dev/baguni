@@ -5,6 +5,7 @@ const assets = [
     component: () => import('../pages/assets/index.vue'),
     meta: {
       active: 'asset',
+      layout: 'default',
     },
   },
   {
@@ -13,13 +14,16 @@ const assets = [
     component: () => import('../pages/assets/detail.vue'),
     meta: {
       active: 'asset',
+      layout: 'default',
     },
   },
   {
     path: '/asset/create',
     name: 'asset-create',
     component: () => import('../pages/assets/create.vue'),
-    meta: {},
+    meta: {
+      layout: 'default',
+    },
   },
   {
     path: '/asset/edit/:id',
@@ -27,6 +31,7 @@ const assets = [
     component: () => import('../pages/assets/edit.vue'),
     meta: {
       active: 'asset',
+      layout: 'default',
     },
   },
 ]
@@ -38,6 +43,7 @@ const collections = [
     component: () => import('../pages/collections/index.vue'),
     meta: {
       active: 'collection',
+      layout: 'default',
     },
   },
   {
@@ -46,6 +52,7 @@ const collections = [
     component: () => import('../pages/collections/detail.vue'),
     meta: {
       active: 'collection',
+      layout: 'default',
     },
   },
 ]
@@ -57,6 +64,7 @@ const about = [
     component: () => import('../pages/about/index.vue'),
     meta: {
       active: 'about',
+      layout: 'default',
     },
   },
 ]
@@ -80,6 +88,7 @@ const guide = [
     component: () => import('../pages/guide/index.vue'),
     meta: {
       active: 'guide',
+      layout: 'default',
     },
     children: [
       {

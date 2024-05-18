@@ -1,4 +1,5 @@
 import { sign, verify } from 'jsonwebtoken'
+import { cookie } from './consts.js'
 
 const {
   ACCESS_TOKEN_SECRET,
@@ -55,4 +56,15 @@ export function decodeToken(type, token)
     default:
       return null
   }
+}
+
+/**
+ * get token from header authorization
+ * @param {any} req
+ * @return {string}
+ */
+export function getTokenFromHeader(req)
+{
+  if (!req?.headers?.authorization) return undefined
+  return req.headers.authorization.replace(/^Bearer /, '')
 }
