@@ -1,3 +1,10 @@
+/**
+ * [POST] /login
+ * @param {string} [req.body.email]
+ * @param {string} [req.body.password]
+ * @param {'true'|undefined} [req.body.save]
+ */
+
 import { success, error } from '../output.js'
 import { checkExistValue } from '../../libs/objects.js'
 import { connect, disconnect, tables, getItem, addItem } from '../../libs/db.js'
@@ -6,13 +13,6 @@ import { createError } from '../../libs/error.js'
 import { addLog } from '../../libs/log.js'
 import { createToken } from '../../libs/token.js'
 import { cookie } from '../../libs/consts.js'
-
-/**
- * [POST] /login
- * @param {string} [req.body.email]
- * @param {string} [req.body.password]
- * @param {'true'|undefined} [req.body.save]
- */
 
 export default async (req, res) => {
   try

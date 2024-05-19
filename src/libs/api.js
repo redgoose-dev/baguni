@@ -1,11 +1,11 @@
 import { ofetch } from 'ofetch'
 import { authStore } from '../store/auth.js'
 
-const { VITE_BASE_PATH, VITE_LOCAL_PATH_NAME } = import.meta.env
+const { VITE_URL_PATH, VITE_LOCAL_PATH_NAME } = import.meta.env
 let instance
 let headers
 
-export const apiPath = `${VITE_BASE_PATH}${VITE_LOCAL_PATH_NAME}`
+export const apiPath = `${VITE_URL_PATH || '/'}${VITE_LOCAL_PATH_NAME}`
 
 function setup()
 {

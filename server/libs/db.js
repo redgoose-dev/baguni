@@ -1,6 +1,5 @@
 import { Database } from 'bun:sqlite'
-
-import { basePath } from './consts.js'
+import { dataPath } from './consts.js'
 
 /** @var {Database} db */
 export let db
@@ -27,7 +26,7 @@ export const tables = {
  */
 export function connect(options = {})
 {
-  db = new Database(`${basePath}/db.sqlite`, {
+  db = new Database(`${dataPath}/db.sqlite`, {
     ...options,
   })
 }

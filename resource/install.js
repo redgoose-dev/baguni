@@ -3,18 +3,19 @@ import { rm, mkdir, exists } from 'node:fs/promises'
 import { Database } from 'bun:sqlite'
 import { randomBytes, generateKeyPairSync } from 'node:crypto'
 import { message, prompt } from './libs.js'
-import { basePath } from '../server/libs/consts.js'
+import { dataPath } from '../server/libs/consts.js'
 import { hashPassword, verifyEmail } from '../server/libs/strings.js'
 
 const paths = {
   seedDb: `resource/seed.sql`,
-  db: `${basePath}/db.sqlite`,
+  db: `${dataPath}/db.sqlite`,
   env: '.env.local',
 }
 const pathList = [
-  `${basePath}/original`,
-  `${basePath}/cover`,
-  `${basePath}/cache`,
+  `${dataPath}/original`,
+  `${dataPath}/cover`,
+  `${dataPath}/cache`,
+  `${dataPath}/tmp`,
 ]
 let db
 
@@ -50,7 +51,7 @@ async function checkData()
     if (confirmDeleteData.toLowerCase() === 'y')
     {
       // 설치된 데이터를 삭제한다.
-      await rm(basePath, { recursive: true })
+      await rm(dataPath, { recursive: true })
     }
     else
     {

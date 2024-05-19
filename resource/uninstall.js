@@ -1,7 +1,7 @@
 import { rm } from 'node:fs/promises'
 import { exit } from 'node:process'
 import { message, prompt, appName } from './libs.js'
-import { basePath } from '../server/libs/consts.js'
+import { dataPath } from '../server/libs/consts.js'
 
 /**
  * 진행할것인지에 대한 확인
@@ -23,7 +23,7 @@ async function confirm()
  */
 async function deleteUserResource()
 {
-  await rm(basePath, { recursive: true })
+  await rm(dataPath, { recursive: true })
   message('run', 'All data has been deleted.')
 }
 

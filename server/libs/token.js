@@ -1,5 +1,7 @@
 import { sign, verify } from 'jsonwebtoken'
 import { cookie } from './consts.js'
+import { tables, getCount, getItem } from './db.js'
+import { addLog } from './log.js'
 
 const {
   ACCESS_TOKEN_SECRET,
@@ -67,4 +69,36 @@ export function getTokenFromHeader(req)
 {
   if (!req?.headers?.authorization) return undefined
   return req.headers.authorization.replace(/^Bearer /, '')
+}
+
+export function checkAuthorization(authorization)
+{
+  try
+  {
+    const token = authorization.replace(/^Bearer /, '')
+    if (!token) throw new Error('엑세스토큰이 없습니다.')
+    // try decode token
+    const decoded = decodeToken('access', token)
+    if (!decoded.id) throw new Error('잘못된 엑세스토큰입니다.')
+    // check if the data exists in the database
+    const count = getCount({
+      table: tables.tokens,
+      where: 'access = $access',
+      values: { '$access': token },
+    })
+    if (!(count > 0)) throw new Error('데이터베이스에 엑세스 토큰이 없습니다.')
+    const user = getItem({
+      table: tables.user,
+      fields: [ 'id', 'email', 'name', 'regdate' ],
+      where: `id = $id`,
+      values: { '$id': decoded.id },
+    })
+    if (!user?.id) throw new Error('유저 정보가 없습니다.')
+    return user
+  }
+  catch (e)
+  {
+    addLog({ mode: 'error', message: e.message })
+    throw new Error('인증을 실패했습니다.')
+  }
 }

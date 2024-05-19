@@ -52,7 +52,7 @@ function setup(req, res, _next)
 export default function(_app)
 {
   app = _app
-  const { VITE_BASE_PATH, VITE_LOCAL_PATH_NAME } = import.meta.env
+  const { VITE_URL_PATH, VITE_LOCAL_PATH_NAME } = import.meta.env
   app.use(setup)
-  app.use(`${VITE_BASE_PATH}/${VITE_LOCAL_PATH_NAME}/`.replace(/\/\//gi, '/'), appRoutes())
+  app.use(`${VITE_URL_PATH}/${VITE_LOCAL_PATH_NAME}/`.replace(/\/\//gi, '/'), appRoutes())
 }

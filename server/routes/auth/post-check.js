@@ -1,12 +1,12 @@
+/**
+ * [POST] /check
+ */
+
 import { success } from '../output.js'
 import { connect, disconnect, tables, getItem, getCount, editItem } from '../../libs/db.js'
 import { addLog } from '../../libs/log.js'
 import { cookie } from '../../libs/consts.js'
 import { createToken, decodeToken } from '../../libs/token.js'
-
-/**
- * [POST] /check
- */
 
 export default async (req, res) => {
   function output(op)

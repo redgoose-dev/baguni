@@ -1,12 +1,12 @@
+/**
+ * [POST] /logout
+ */
+
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, removeItem } from '../../libs/db.js'
 import { addLog } from '../../libs/log.js'
 import { getTokenFromHeader } from '../../libs/token.js'
 import { cookie } from '../../libs/consts.js'
-
-/**
- * [POST] /logout
- */
 
 export default async (req, res) => {
   try
