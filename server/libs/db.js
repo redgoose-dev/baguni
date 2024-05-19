@@ -41,9 +41,23 @@ export function disconnect()
   db.close()
 }
 
-export function getItems()
+/**
+ * get items
+ * TODO: 검증 필요하다.
+ * @param {string} [options.table]
+ * @param {string[]} [options.fields]
+ * @param {string} [options.where]
+ * @param {string} [options.order]
+ * @param {string} [options.limit]
+ * @param {any} [options.values]
+ */
+export function getItems(options = {})
 {
-  //
+  const { table, fields, where, order, limit, values } = options
+  const field = fields?.length ? fields.join(',') : '*'
+  const sql = `select ${field} from ${table} ${where ? `where ${where}` : ''} ${order ? `order by ${order}` : ''} ${limit ? `limit ${limit}` : ''}`
+  const query = db.query(sql)
+  return query.all(values)
 }
 
 /**
@@ -113,21 +127,30 @@ export function editItem(options = {})
   db.run(sql, values)
 }
 
-export function removeItem(options)
+/**
+ * remove item
+ * @param {string} [options.table]
+ * @param {string} [options.where]
+ * @param {any} [options.values]
+ */
+export function removeItem(options = {})
 {
   const { table, where, values } = options
   const sql = `delete from ${table} ${where ? `where ${where}` : ''}`
   db.run(sql, values)
 }
 
-export function getLastIndex()
+/**
+ * get last index
+ * @param {string} [options.table]
+ * @param {string} [options.where]
+ * @param {any} [options.values]
+ */
+export function getLastIndex(options)
 {
-  //
-}
-
-export function run(sql)
-{
-  db.exec(sql)
+  const { table } = options
+  const query = db.query(`select max(id) as maxID from ${table}`)
+  return query.get()
 }
 
 /**
