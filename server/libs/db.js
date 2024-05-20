@@ -63,15 +63,20 @@ export function getItems(options = {})
  * get count item
  * @param {string} [options.table]
  * @param {string} [options.where]
+ * @param {string} [options.join]
  * @param {any} [options.values]
- * @return {number}
+ * @return {object}
  */
 export function getCount(options)
 {
-  const { table, where, values } = options
-  const query = db.query(`select count(*) from ${table} ${where ? `where ${where}` : ''}`)
+  const { table, where, join, values } = options
+  const sql = `select count(*) from ${table} ${join ? `join ${join}` : ''} ${where ? `where ${where}` : ''}`
+  const query = db.query(sql)
   const result = query.get(values)
-  return Number(result['count(*)'] || 0)
+  return {
+    sql,
+    data: Number(result['count(*)'] || 0),
+  }
 }
 
 /**
@@ -79,14 +84,20 @@ export function getCount(options)
  * @param {string} [options.table]
  * @param {string[]} [options.fields]
  * @param {string} [options.where]
+ * @param {string} [options.join]
  * @param {any} [options.values]
+ * @return {object}
  */
 export function getItem(options)
 {
-  const { table, fields, where, values } = options
+  const { table, fields, where, join, values } = options
   const field = fields?.length ? fields.join(',') : '*'
-  const query = db.query(`select ${field} from ${table} ${where ? `where ${where}` : ''}`)
-  return query.get(values)
+  const sql = `select ${field} from ${table} ${join ? `join ${join}` : ''} ${where ? `where ${where}` : ''}`
+  const query = db.query(sql)
+  return {
+    sql,
+    data: query.get(values),
+  }
 }
 
 /**
@@ -96,6 +107,7 @@ export function getItem(options)
  * options.value = [ { key, valueName, value } ]
  * @param {string} [options.table]
  * @param {array} [options.values]
+ * @return {object}
  */
 export function addItem(options)
 {
@@ -110,6 +122,10 @@ export function addItem(options)
   })
   const sql = `insert into ${table} (${fields.join(', ')}) values (${valueNames.join(', ')})`
   db.run(sql, objects)
+  return {
+    data: getLastIndex(table),
+    sql,
+  }
 }
 
 /**
@@ -141,15 +157,13 @@ export function removeItem(options = {})
 
 /**
  * get last index
- * @param {string} [options.table]
- * @param {string} [options.where]
- * @param {any} [options.values]
+ * @param {string} [table]
+ * @return {number}
  */
-export function getLastIndex(options)
+export function getLastIndex(table)
 {
-  const { table } = options
   const query = db.query(`select max(id) as maxID from ${table}`)
-  return query.get()
+  return query.get()?.maxID || 0
 }
 
 /**

@@ -39,3 +39,15 @@ export function twoDigit(day)
 {
   return `0${day}`.slice(-2)
 }
+
+/**
+ * filtering title
+ * @param {string} str
+ * @return {string}
+ */
+export function filteringTitle(str)
+{
+  str = str.trim()
+  return str
+}
+

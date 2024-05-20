@@ -88,20 +88,3 @@ export function removeJunkFiles(files)
     rmSync(file[0].path)
   })
 }
-
-export function convertCoverData(json, files)
-{
-  try
-  {
-    if (json?.cover && files[uploadFields.coverOriginal] && files[uploadFields.coverCreate])
-    {
-      // TODO: 모든 데이터가 있으니 json 편집한다.
-    }
-  }
-  catch (e)
-  {
-    // TODO: 뭔가 없으니 커버쪽 첨부된 파일들을 삭제한다.
-    // TODO: json 데이터는 그대로 넘긴다.
-  }
-  return json
-}

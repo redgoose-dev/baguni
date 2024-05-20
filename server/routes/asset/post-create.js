@@ -4,14 +4,15 @@
  */
 
 import multer from 'multer'
-import { uploader, removeJunkFiles, convertCoverData } from '../../libs/uploader.js'
+import { existsSync, rmSync } from 'node:fs'
+import { uploader, removeJunkFiles } from '../../libs/uploader.js'
 import { uploadFields } from '../../libs/consts.js'
 import { success, error } from '../output.js'
-import { checkExistValue } from '../../libs/objects.js'
-import { connect, disconnect } from '../../libs/db.js'
+import { connect, disconnect, tables, addItem, getItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { addLog } from '../../libs/log.js'
 import { parseJSON } from '../../libs/objects.js'
+import { filteringTitle } from '../../libs/strings.js'
 
 export default async (req, res) => {
   const _uploader = uploader()
@@ -20,43 +21,73 @@ export default async (req, res) => {
     { name: uploadFields.coverOriginal, maxCount: 1 },
     { name: uploadFields.coverCreate, maxCount: 1 },
   ])
-  upload(req, res, async (err) => {
+  upload(req, res, async () => {
     try
     {
       let { title, description, json, tags } = req.body
-      console.log('*'.repeat(30))
-      console.log('BODY//', req.body)
-      console.log('FILE//', req.files[uploadFields.file])
-      console.log('COVER_ORIGINAL//', req.files[uploadFields.coverOriginal])
-      console.log('COVER_CREATE//', req.files[uploadFields.coverCreate])
-      console.log('*'.repeat(30))
+      let ids = {}
+
       // check value
-      // if (!req.files[uploadFields.file]) throw new Error('파일이 없습니다.') // TODO: 다 만들어지면 주석풀기
+      const newFile = req.files?.[uploadFields.file]?.[0]
+      if (!newFile) throw new Error('파일이 없습니다.')
       // connect db
       connect({ readwrite: true })
       // check auth
-      const user = checkAuthorization(req.headers.authorization)
+      checkAuthorization(req.headers.authorization)
+
       // filtering values
-      title = title.trim()
+      if (title) title = filteringTitle(title)
       // check and set json
-      json = parseJSON(json)
-      console.log('=== WORKING ===')
+      json = parseJSON(json) || {}
       // set cover data
-      json = convertCoverData(json, req.files)
-      console.log(json)
-      // throw new Error('작업중')
-      // TODO: 커버 이미지 부분 처리하기 (첨부와 json 데이터 둘다 존재하면 마저 구성하고 json쪽 값이 없으면 첨부파일 지우기)
-      // TODO: asset 테이블에 데이터 입력하기
-      // TODO: file 테이블에 데이터 입력하기
-      // TODO: map_asset_file 테이블에 데이터 입력하기
-      // TODO: 태그값이 있으면 값 처리하기
-      // TODO: tag 테이블에 값 확인하고, 없으면 값 추가하기 (tag 수량만큼 반복 돌리기)
-      // TODO: map_asset_tag 테이블에 값 추가하기 (tag 수량만큼 반복 돌리기)
+      let jsonResult = convertCoverData({ ...json }, req.files)
+      if (jsonResult.isUpdate) json = jsonResult.json
+      json = JSON.stringify(json)
+
+      // add data in database
+      ids.asset = addItem({
+        table: tables.asset,
+        values: [
+          title && { key: 'title', value: title },
+          description && { key: 'description', value: description },
+          { key: 'json', value: json },
+          { key: 'regdate', valueName: 'CURRENT_TIMESTAMP' },
+          { key: 'updated_at', valueName: 'CURRENT_TIMESTAMP' },
+        ].filter(Boolean),
+      }).data
+      // add file data
+      if (newFile)
+      {
+        ids.file = addItem({
+          table: tables.file,
+          values: [
+            { key: 'path', value: newFile.path },
+            { key: 'meta', value: JSON.stringify(newFile) },
+            { key: 'regdate', valueName: 'CURRENT_TIMESTAMP' },
+            { key: 'updated_at', valueName: 'CURRENT_TIMESTAMP' },
+          ].filter(Boolean),
+        }).data
+        ids.assetFile = addItem({
+          table: tables.mapAssetFile,
+          values: [
+            { key: 'asset', value: ids.asset },
+            { key: 'file', value: ids.file },
+          ],
+        }).data
+      }
+      // add tag data
+      if (tags)
+      {
+        tags.split(',').forEach(tag => addTagData(tag.trim(), ids))
+      }
+      // close db
       disconnect()
       // result
       success(res, {
         message: '에셋을 만들었습니다.',
-        data: {},
+        data: {
+          assetID: ids.asset,
+        },
       })
     }
     catch (e)
@@ -72,4 +103,75 @@ export default async (req, res) => {
       })
     }
   })
+}
+
+/**
+ * 커버 이미지용으로 json 값을 편집한다.
+ * @param {object} json
+ * @param {object} files
+ * @return {object}
+ */
+export function convertCoverData(json, files)
+{
+  const fileOriginal = files[uploadFields.coverOriginal]?.[0]
+  const fileCreate = files[uploadFields.coverCreate]?.[0]
+  let isUpdate = false
+  if (json?.cover && fileOriginal && fileCreate)
+  {
+    let { cover } = json
+    cover.original = fileOriginal
+    cover.create = {
+      ...cover.create,
+      path: fileCreate?.path
+    }
+    isUpdate = true
+  }
+  else
+  {
+    if (fileOriginal?.path && existsSync(fileOriginal.path))
+    {
+      rmSync(fileOriginal.path)
+    }
+    if (fileCreate?.path && existsSync(fileCreate.path))
+    {
+      rmSync(fileCreate.path)
+    }
+  }
+  return {
+    json,
+    isUpdate,
+  }
+}
+
+function addTagData(value, ids)
+{
+  const tag = getItem({
+    table: tables.tag,
+    fields: [ 'id' ],
+    where: 'name like $name',
+    values: { '$name': value },
+  }).data
+  let tagId = tag?.id
+  if (!tagId)
+  {
+    try
+    {
+      tagId = addItem({
+        table: tables.tag,
+        values: [{ key: 'name', value: value }],
+      }).data
+    }
+    catch (e)
+    {}
+  }
+  if (tagId)
+  {
+    addItem({
+      table: tables.mapAssetTag,
+      values: [
+        { key: 'asset', value: ids.asset },
+        { key: 'tag', value: tagId },
+      ],
+    })
+  }
 }

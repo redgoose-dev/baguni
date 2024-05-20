@@ -15,8 +15,8 @@ export function checkExistValue(obj, keys)
 
 /**
  * parse json
- * @param {string} src
- * @return {object|array|null}
+ * @param {any} src
+ * @return {any}
  */
 export function parseJSON(src = '')
 {

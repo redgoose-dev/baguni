@@ -1,11 +1,11 @@
 -- Assets data
 CREATE TABLE `asset` (
   `id` INTEGER NOT NULL UNIQUE,
-  `title` TEXT NOT NULL,
+  `title` TEXT NULL,
   `description` TEXT NULL,
-  `json` TEXT NOT NULL DEFAULT '{}',
+  `json` TEXT NULL,
   `regdate` TEXT NOT NULL,
-  `update` TEXT NOT NULL,
+  `updated_at` TEXT NOT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT)
 );
 
@@ -14,9 +14,9 @@ CREATE TABLE `collection` (
   `id` INTEGER NOT NULL UNIQUE,
   `title` TEXT NOT NULL,
   `description` TEXT NULL,
-  `cover_url` TEXT NULL, -- 커버 이미지 URL
+  `cover` TEXT NULL, -- 커버 이미지 데이터 or url
   `regdate` TEXT NOT NULL,
-  `update` TEXT NOT NULL,
+  `updated_at` TEXT NOT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT)
 );
 
@@ -26,7 +26,7 @@ CREATE TABLE `file` (
   `path` TEXT NOT NULL, -- 파일이 저장되어있는 경로
   `meta` TEXT NOT NULL DEFAULT '{}', -- 파일의 정보 (이름,타입,사이즈,날짜,이미지사이즈)
   `regdate` TEXT NOT NULL,
-  `update` TEXT NOT NULL,
+  `updated_at` TEXT NOT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT)
 );
 
@@ -41,10 +41,10 @@ CREATE TABLE `tag` (
 CREATE TABLE `user`
 (
   `id` INTEGER NOT NULL UNIQUE,
-  `email` TEXT NULL UNIQUE,
-  `name` TEXT NULL,
-  `password` TEXT NULL UNIQUE,
-  `regdate` TEXT NULL,
+  `email` TEXT NOT NULL UNIQUE,
+  `name` TEXT NOT NULL,
+  `password` TEXT NOT NULL UNIQUE,
+  `regdate` TEXT NOT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT)
 );
 
@@ -98,7 +98,7 @@ CREATE TABLE `tokens` (
   `id` INTEGER NOT NULL UNIQUE,
   `refresh` TEXT NOT NULL UNIQUE,
   `access` TEXT NOT NULL UNIQUE,
-  `expired` TEXT NULL,
-  `regdate` TEXT NULL,
+  `expired` TEXT NOT NULL,
+  `regdate` TEXT NOT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT)
 )

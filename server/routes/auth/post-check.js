@@ -44,7 +44,7 @@ export default async (req, res) => {
         table: tables.tokens,
         where: 'access = $access',
         values: { '$access': accessToken },
-      })
+      }).data
       if (!(countToken > 0)) throw '데이터베이스에 엑세스 토큰이 없습니다.'
       // get user
       const user = getUser(parseAccessToken.id)
@@ -73,7 +73,7 @@ export default async (req, res) => {
         table: tables.tokens,
         where: 'refresh = $refresh',
         values: { '$refresh': refreshToken },
-      })
+      }).data
       if (!(countToken > 0)) throw new Error('데이터베이스에 리프레시 토큰이 없습니다.')
       // 리프레시 토큰 파싱
       const parseRefreshToken = decodeToken('refresh', refreshToken)

@@ -85,14 +85,14 @@ export function checkAuthorization(authorization)
       table: tables.tokens,
       where: 'access = $access',
       values: { '$access': token },
-    })
+    }).data
     if (!(count > 0)) throw new Error('데이터베이스에 엑세스 토큰이 없습니다.')
     const user = getItem({
       table: tables.user,
       fields: [ 'id', 'email', 'name', 'regdate' ],
       where: `id = $id`,
       values: { '$id': decoded.id },
-    })
+    }).data
     if (!user?.id) throw new Error('유저 정보가 없습니다.')
     return user
   }
