@@ -88,3 +88,17 @@ export function removeJunkFiles(files)
     rmSync(file[0].path)
   })
 }
+
+/**
+ * remove files
+ * @param {string[]} files
+ */
+export function removeFiles(files)
+{
+  if (!(files?.length > 0)) return
+  files.forEach(file => {
+    if (!existsSync(file)) return
+    rmSync(file)
+  })
+}
+

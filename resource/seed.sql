@@ -20,11 +20,14 @@ CREATE TABLE `collection` (
   PRIMARY KEY (`id` AUTOINCREMENT)
 );
 
--- Files data
+-- File data
 CREATE TABLE `file` (
   `id` INTEGER NOT NULL UNIQUE,
   `path` TEXT NOT NULL, -- 파일이 저장되어있는 경로
-  `meta` TEXT NOT NULL DEFAULT '{}', -- 파일의 정보 (이름,타입,사이즈,날짜,이미지사이즈)
+  `name` TEXT NOT NULL, -- 파일이름
+  `type` TEXT NOT NULL, -- 파일 타입
+  `size` INTEGER NOT NULL, -- 파일 사이즈
+  `meta` TEXT NOT NULL DEFAULT '{}', -- 파일의 정보 (날짜,이미지사이즈)
   `regdate` TEXT NOT NULL,
   `updated_at` TEXT NOT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT)
@@ -63,6 +66,7 @@ CREATE TABLE `map_asset_file` (
   `id` INTEGER NOT NULL UNIQUE,
   `asset` INTEGER NOT NULL, -- asset 테이블 id
   `file` INTEGER NOT NULL UNIQUE, -- file 테이블 id
+  `type` TEXT NULL, -- 메인 데이터인지에 대한 플래그
   PRIMARY KEY (`id` AUTOINCREMENT),
   FOREIGN KEY (`asset`) REFERENCES `asset` (`id`),
   FOREIGN KEY (`file`) REFERENCES `file` (`id`)

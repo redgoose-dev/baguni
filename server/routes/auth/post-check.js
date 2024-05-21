@@ -85,7 +85,7 @@ export default async (req, res) => {
       // update database item
       editItem({
         table: tables.tokens,
-        set: 'access = $access',
+        set: [ 'access = $access' ],
         where: 'refresh = $refresh',
         values: {
           '$access': newAccessToken.value,

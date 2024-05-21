@@ -8,11 +8,12 @@ import { existsSync, rmSync } from 'node:fs'
 import { uploader, removeJunkFiles } from '../../libs/uploader.js'
 import { uploadFields } from '../../libs/consts.js'
 import { success, error } from '../output.js'
-import { connect, disconnect, tables, addItem, getItem } from '../../libs/db.js'
+import { connect, disconnect, tables, addItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { addLog } from '../../libs/log.js'
 import { parseJSON } from '../../libs/objects.js'
 import { filteringTitle } from '../../libs/strings.js'
+import { addTag, addFile } from '../../libs/service.js'
 
 export default async (req, res) => {
   const _uploader = uploader()
@@ -25,7 +26,7 @@ export default async (req, res) => {
     try
     {
       let { title, description, json, tags } = req.body
-      let ids = {}
+      let assetId
 
       // check value
       const newFile = req.files?.[uploadFields.file]?.[0]
@@ -45,7 +46,7 @@ export default async (req, res) => {
       json = JSON.stringify(json)
 
       // add data in database
-      ids.asset = addItem({
+      assetId = addItem({
         table: tables.asset,
         values: [
           title && { key: 'title', value: title },
@@ -58,27 +59,12 @@ export default async (req, res) => {
       // add file data
       if (newFile)
       {
-        ids.file = addItem({
-          table: tables.file,
-          values: [
-            { key: 'path', value: newFile.path },
-            { key: 'meta', value: JSON.stringify(newFile) },
-            { key: 'regdate', valueName: 'CURRENT_TIMESTAMP' },
-            { key: 'updated_at', valueName: 'CURRENT_TIMESTAMP' },
-          ].filter(Boolean),
-        }).data
-        ids.assetFile = addItem({
-          table: tables.mapAssetFile,
-          values: [
-            { key: 'asset', value: ids.asset },
-            { key: 'file', value: ids.file },
-          ],
-        }).data
+        addFile(newFile, assetId, 'asset')
       }
       // add tag data
       if (tags)
       {
-        tags.split(',').forEach(tag => addTagData(tag.trim(), ids))
+        tags.split(',').forEach(tag => addTag(tag, assetId))
       }
       // close db
       disconnect()
@@ -86,7 +72,7 @@ export default async (req, res) => {
       success(res, {
         message: '에셋을 만들었습니다.',
         data: {
-          assetID: ids.asset,
+          assetID: assetId,
         },
       })
     }
@@ -140,38 +126,5 @@ export function convertCoverData(json, files)
   return {
     json,
     isUpdate,
-  }
-}
-
-function addTagData(value, ids)
-{
-  const tag = getItem({
-    table: tables.tag,
-    fields: [ 'id' ],
-    where: 'name like $name',
-    values: { '$name': value },
-  }).data
-  let tagId = tag?.id
-  if (!tagId)
-  {
-    try
-    {
-      tagId = addItem({
-        table: tables.tag,
-        values: [{ key: 'name', value: value }],
-      }).data
-    }
-    catch (e)
-    {}
-  }
-  if (tagId)
-  {
-    addItem({
-      table: tables.mapAssetTag,
-      values: [
-        { key: 'asset', value: ids.asset },
-        { key: 'tag', value: tagId },
-      ],
-    })
   }
 }

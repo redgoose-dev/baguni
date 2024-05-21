@@ -18,7 +18,8 @@ export default async (req, res) => {
   try
   {
     // check value
-    checkExistValue(req.body, [ 'email', 'password' ])
+    const checkKey = checkExistValue(req.body, [ 'email', 'password' ])
+    if (checkKey) throw new Error(`There is no '${checkKey}' entry.`)
     // connect db
     connect({ readwrite: true })
     // get data
@@ -26,7 +27,7 @@ export default async (req, res) => {
       table: tables.user,
       where: 'email = $email',
       values: { '$email': req.body.email },
-    })
+    }).data
     if (!user)
     {
       addLog({

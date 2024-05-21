@@ -1,5 +1,6 @@
 import { Database } from 'bun:sqlite'
 import { dataPath } from './consts.js'
+import { removeUndefinedValueKey } from './objects.js'
 
 /** @var {Database} db */
 export let db
@@ -42,21 +43,32 @@ export function disconnect()
 
 /**
  * get items
- * TODO: 검증 필요하다.
+ * TODO: 검증이 좀더 필요하며 기능이 좀더 붙어야 한다.
  * @param {string} [options.table]
  * @param {string[]} [options.fields]
  * @param {string} [options.where]
+ * @param {string} [options.join]
  * @param {string} [options.order]
  * @param {string} [options.limit]
  * @param {any} [options.values]
+ * @param {boolean} [options.run]
+ * @return {object}
  */
 export function getItems(options = {})
 {
-  const { table, fields, where, order, limit, values } = options
+  const { table, fields, where, join, order, limit, values, run } = options
   const field = fields?.length ? fields.join(',') : '*'
-  const sql = `select ${field} from ${table} ${where ? `where ${where}` : ''} ${order ? `order by ${order}` : ''} ${limit ? `limit ${limit}` : ''}`
-  const query = db.query(sql)
-  return query.all(values)
+  const sql = optimiseSql(`select ${field} from ${table} ${join ? `join ${join}` : ''} ${where ? `where ${where}` : ''} ${order ? `order by ${order}` : ''} ${limit ? `limit ${limit}` : ''}`)
+  let data
+  if (run !== false)
+  {
+    const query = db.query(sql)
+    data = query.all(values)
+  }
+  return {
+    sql,
+    data,
+  }
 }
 
 /**
@@ -65,17 +77,19 @@ export function getItems(options = {})
  * @param {string} [options.where]
  * @param {string} [options.join]
  * @param {any} [options.values]
+ * @param {boolean} [options.run]
  * @return {object}
  */
 export function getCount(options)
 {
-  const { table, where, join, values } = options
-  const sql = `select count(*) from ${table} ${join ? `join ${join}` : ''} ${where ? `where ${where}` : ''}`
+  const { table, where, join, values, run } = options
+  const sql = optimiseSql(`select count(*) from ${table} ${join ? `join ${join}` : ''} ${where ? `where ${where}` : ''}`)
   const query = db.query(sql)
   const result = query.get(values)
+  const data = (run !== false) ? Number(result['count(*)'] || 0) : undefined
   return {
     sql,
-    data: Number(result['count(*)'] || 0),
+    data,
   }
 }
 
@@ -86,17 +100,19 @@ export function getCount(options)
  * @param {string} [options.where]
  * @param {string} [options.join]
  * @param {any} [options.values]
+ * @param {boolean} [options.run]
  * @return {object}
  */
 export function getItem(options)
 {
-  const { table, fields, where, join, values } = options
+  const { table, fields, where, join, values, run } = options
   const field = fields?.length ? fields.join(',') : '*'
-  const sql = `select ${field} from ${table} ${join ? `join ${join}` : ''} ${where ? `where ${where}` : ''}`
+  const sql = optimiseSql(`select ${field} from ${table} ${join ? `join ${join}` : ''} ${where ? `where ${where}` : ''}`)
   const query = db.query(sql)
+  const data = (run !== false) ? query.get(values) : undefined
   return {
     sql,
-    data: query.get(values),
+    data,
   }
 }
 
@@ -107,11 +123,12 @@ export function getItem(options)
  * options.value = [ { key, valueName, value } ]
  * @param {string} [options.table]
  * @param {array} [options.values]
+ * @param {boolean} [options.run]
  * @return {object}
  */
 export function addItem(options)
 {
-  const { table, values } = options
+  const { table, values, run } = options
   let fields = []
   let valueNames = []
   let objects = []
@@ -120,10 +137,10 @@ export function addItem(options)
     valueNames.push(item.valueName || '?')
     if (item.value) objects.push(item.value)
   })
-  const sql = `insert into ${table} (${fields.join(', ')}) values (${valueNames.join(', ')})`
-  db.run(sql, objects)
+  const sql = optimiseSql(`insert into ${table} (${fields.join(', ')}) values (${valueNames.join(', ')})`)
+  if (run !== false) db.run(sql, objects)
   return {
-    data: getLastIndex(table),
+    data: getLastIndex(table).data,
     sql,
   }
 }
@@ -131,15 +148,20 @@ export function addItem(options)
 /**
  * edit item
  * @param {string} [options.table]
- * @param {string} [options.set]
+ * @param {string[]} [options.set]
  * @param {string} [options.where]
  * @param {any} [options.values]
+ * @param {boolean} [options.run]
+ * @return {object}
  */
 export function editItem(options = {})
 {
-  const { table, set, where, values } = options
-  const sql = `update ${table} set ${set} ${where ? `where ${where}` : ''}`
-  db.run(sql, values)
+  const { table, set, where, values, run } = options
+  let sql = optimiseSql(`update ${table} set ${set ? set.filter(Boolean).join(', ') : ''} ${where ? `where ${where}` : ''}`)
+  if (run !== false) db.run(sql, removeUndefinedValueKey(values))
+  return {
+    sql,
+  }
 }
 
 /**
@@ -147,29 +169,54 @@ export function editItem(options = {})
  * @param {string} [options.table]
  * @param {string} [options.where]
  * @param {any} [options.values]
+ * @param {boolean} [options.run]
+ * @return {object}
  */
 export function removeItem(options = {})
 {
-  const { table, where, values } = options
-  const sql = `delete from ${table} ${where ? `where ${where}` : ''}`
-  db.run(sql, values)
+  const { table, where, values, run } = options
+  const sql = optimiseSql(`delete from ${table} ${where ? `where ${where}` : ''}`)
+  if (run !== false) db.run(sql, values)
+  return {
+    sql,
+    values,
+  }
 }
 
 /**
  * get last index
  * @param {string} [table]
- * @return {number}
+ * @return {object}
  */
 export function getLastIndex(table)
 {
-  const query = db.query(`select max(id) as maxID from ${table}`)
-  return query.get()?.maxID || 0
+  const sql = `select max(id) as maxID from ${table}`
+  const query = db.query(sql)
+  return {
+    sql,
+    data: query.get()?.maxID || 0,
+  }
 }
 
 /**
  * 만료된 토큰을 삭제한다.
+ * @return {object}
  */
 export function clearTokens()
 {
-  db.run(`delete from ${tables.tokens} where expired <= CURRENT_TIMESTAMP`, [])
+  const sql = `delete from ${tables.tokens} where expired <= CURRENT_TIMESTAMP`
+  db.run(sql, [])
+  return {
+    sql,
+  }
+}
+
+/**
+ * sql 최적화
+ * @param {string} str
+ * @return {string}
+ */
+function optimiseSql(str)
+{
+  return str.trim().replace(/\s{2,}/g, ' ')
 }

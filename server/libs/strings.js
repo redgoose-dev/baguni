@@ -18,6 +18,7 @@ export function hashPassword(password)
  */
 export function verifyPassword(password, hashedPassword)
 {
+  if (!(password && hashedPassword)) return false
   return compareSync(password, hashedPassword)
 }
 
