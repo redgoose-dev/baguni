@@ -10,12 +10,26 @@
     </button>
   </figure>
   <nav class="asset-nav">
-    <Button icon="bookmark" theme="circle" size="big" color="key-1"/>
-    <Button icon="download" theme="circle" size="big"/>
-    <Button icon="copy" theme="circle" size="big"/>
+    <Button
+      title="콜렉션"
+      icon="bookmark"
+      theme="circle"
+      size="big"
+      color="key-1"/>
+    <Button
+      title="다운로드"
+      icon="download"
+      theme="circle"
+      size="big"/>
+    <Button
+      title="이미지 복사하기"
+      icon="copy"
+      theme="circle"
+      size="big"/>
     <Dropdown v-model="controlOption.open">
       <template #trigger>
         <Button
+          title="옵션"
           icon="more-horizontal"
           theme="circle"
           size="big"

@@ -6,15 +6,17 @@
  */
 
 import multer from 'multer'
-import { uploader, removeJunkFiles, removeFiles } from '../../libs/uploader.js'
-import { uploadFields } from '../../libs/consts.js'
+import { existsSync, rmSync } from 'node:fs'
+import { uploader } from '../../libs/uploader.js'
+import { uploadFields, fileTypeForAsset } from '../../libs/consts.js'
 import { success, error } from '../output.js'
-import { connect, disconnect, tables, getItem, getItems, addItem, editItem, removeItem } from '../../libs/db.js'
+import { connect, disconnect, tables, getItem, getItems, editItem, addItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { addLog } from '../../libs/log.js'
-import { parseJSON, compareArrays, checkExistValueInObject } from '../../libs/objects.js'
+import { parseJSON, compareArrays, checkExistValueInObject, findObjectByValue } from '../../libs/objects.js'
 import { filteringTitle } from '../../libs/strings.js'
-import { addTag, removeTag, editFile } from '../../libs/service.js'
+import { addTag, removeTag, addFileData, editFileData, removeJunkFiles } from '../../libs/service.js'
+import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
   const _uploader = uploader()
@@ -27,16 +29,15 @@ export default async (req, res) => {
     try
     {
       const id = req.params.id
-      if (!id) throw new Error(`id 값이 없습니다.`)
+      let err
+      if (!id) throw new ServiceError('id 값이 없습니다.', 204)
       let { title, description, json, tags } = req.body
       let readyUpdate = {
         title: undefined,
         description: undefined,
         json: undefined,
-        file: undefined,
         tags: undefined,
       }
-      let deleteFiles = []
 
       // connect db
       connect({ readwrite: true })
@@ -44,97 +45,87 @@ export default async (req, res) => {
       checkAuthorization(req.headers.authorization)
 
       // get item
-      const raw = getItem({
+      const srcAsset = getItem({
         table: tables.asset,
         where: 'id = $id',
         values: { '$id': id },
       }).data
-      if (!raw) throw new Error('No asset data.')
-      raw.json = parseJSON(raw.json)
+      if (!srcAsset) throw new ServiceError('에셋 데이터가 없습니다.', 204)
+      srcAsset.json = parseJSON(srcAsset.json)
+      const srcMapFiles = getItems({
+        table: tables.file,
+        fields: [
+          `${tables.mapAssetFile}.*`,
+          `${tables.file}.path`,
+        ],
+        join: `${tables.mapAssetFile} on ${tables.file}.id = ${tables.mapAssetFile}.file`,
+        where: `${tables.mapAssetFile}.asset = $asset`,
+        values: { '$asset': id },
+      }).data
+      const srcTags = getItems({
+        table: tables.tag,
+        fields: [ `${tables.tag}.*` ],
+        join: `${tables.mapAssetTag} on ${tables.tag}.id = ${tables.mapAssetTag}.tag`,
+        where: `asset = $asset`,
+        values: { '$asset': id },
+      }).data
 
       // update title
       if (title)
       {
         readyUpdate.title = filteringTitle(title)
       }
+
       // update description
       if (description)
       {
         readyUpdate.description = description
       }
-      // update file
-      const newFile = req.files?.[uploadFields.file]?.[0]
-      if (newFile)
-      {
-        readyUpdate.file = newFile
-        const fileData = getItem({
-          table: tables.file,
-          fields: [ `${tables.file}.*` ],
-          join: `${tables.mapAssetFile} on ${tables.file}.id = ${tables.mapAssetFile}.file`,
-          where: `asset = $asset`,
-          values: { '$asset': id },
-        })
-        deleteFiles.push(fileData.data?.path)
-      }
-      // update json
-      const fileOriginal = req.files?.[uploadFields.coverOriginal]?.[0]
+
+      // update files
+      const newFileMain = req.files?.[uploadFields.file]?.[0]
+      const fileCoverOriginal = req.files?.[uploadFields.coverOriginal]?.[0]
       const fileCreate = req.files?.[uploadFields.coverCreate]?.[0]
+      updateFile({
+        file: newFileMain,
+        map: srcMapFiles,
+        fileType: fileTypeForAsset.asset,
+        assetId: id,
+      })
+      updateFile({
+        file: fileCoverOriginal,
+        map: srcMapFiles,
+        fileType: fileTypeForAsset.assetCoverOriginal,
+        assetId: id,
+      })
+      updateFile({
+        file: fileCreate,
+        map: srcMapFiles,
+        fileType: fileTypeForAsset.assetCoverCreate,
+        assetId: id,
+      })
+
+      // update json
       if (json)
       {
         json = parseJSON(json) || {}
-        // cover image start
-        if (json.cover && fileOriginal)
-        {
-          json.cover.original = fileOriginal
-          deleteFiles.push(raw.json?.cover?.original?.path)
-        }
-        if (json.cover && fileCreate)
-        {
-          json.cover.create = {
-            ...json.cover.create,
-            ...fileCreate,
-          }
-          deleteFiles.push(raw.json?.cover?.create?.path)
-        }
-        if (!json.cover)
-        {
-          // json.cover 데이터가 없으므로 새로 올라간 커버 이미지와 기존 커버 이미지 모두 삭제한다.
-          deleteFiles.push(fileOriginal?.path)
-          deleteFiles.push(fileCreate?.path)
-          deleteFiles.push(raw.json?.cover?.original?.path)
-          deleteFiles.push(raw.json?.cover?.create?.path)
-        }
-        // cover image end
         readyUpdate.json = JSON.stringify(json)
       }
-      else
-      {
-        if (fileOriginal?.path) deleteFiles.push(fileOriginal.path)
-        if (fileCreate?.path) deleteFiles.push(fileCreate.path)
-      }
+
       // update tags
       if (typeof tags === 'string')
       {
-        const tagsData = getItems({
-          table: tables.tag,
-          fields: [ `${tables.tag}.*` ],
-          join: `${tables.mapAssetTag} on ${tables.tag}.id = ${tables.mapAssetTag}.tag`,
-          where: `asset = $id`,
-          values: { '$id': id },
-        })
-        const beforeTagsArray = tagsData.data.map(o => (o.name))
-        const compare = compareArrays(beforeTagsArray, tags.split(','))
+        const beforeTagsArray = srcTags.map(o => (o.name))
+        const afterTagsArray = tags.split(',').map(x => (x.trim()))
+        const compare = compareArrays(beforeTagsArray, afterTagsArray)
         readyUpdate.tags = (compare.added?.length > 0 || compare.removed?.length > 0) ? compare : undefined
       }
 
       // update data
       updateData(readyUpdate, id)
-      // update file
-      editFile(readyUpdate.file, id)
+
       // update tags
       updateTags(readyUpdate.tags, id)
-      // delete files
-      if (deleteFiles.length > 0) removeFiles(deleteFiles)
 
       // close db
       disconnect()
@@ -147,10 +138,12 @@ export default async (req, res) => {
       removeJunkFiles(req.files)
       // add log
       addLog({ mode: 'error', message: e.message })
+      // close db
+      disconnect()
       // result
       error(res, {
-        message: '에셋을 수정하지 못했습니다.',
         code: e.code,
+        message: '에셋을 수정하지 못했습니다.',
       })
     }
   })
@@ -188,5 +181,29 @@ function updateTags(tags, assetId)
   if (tags.added?.length > 0)
   {
     tags.added.forEach(tag => addTag(tag, assetId))
+  }
+}
+
+function updateFile(options)
+{
+  const { file, map, fileType, assetId } = options
+  if (!file) return
+  const data = findObjectByValue(map, 'type', fileType)
+  if (data?.path)
+  {
+    editFileData(file, data.file)
+    if (existsSync(data.path)) rmSync(data.path)
+  }
+  else
+  {
+    const fileMainId = addFileData(file)
+    addItem({
+      table: tables.mapAssetFile,
+      values: [
+        { key: 'asset', value: assetId },
+        { key: 'file', value: fileMainId },
+        { key: 'type', value: fileType },
+      ],
+    })
   }
 }

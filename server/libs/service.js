@@ -1,3 +1,4 @@
+import { existsSync, rmSync } from 'node:fs'
 import { tables, getItem, addItem, removeItem, getCount, editItem } from './db.js'
 
 /**
@@ -88,12 +89,12 @@ export function removeTag(tag, assetId)
 }
 
 /**
- * 파일 추가하기
+ * 파일 데이터 추가하기
  */
-export function addFile(file, assetId, type)
+export function addFileData(file)
 {
   const { path, originalname, mimetype, size, ...restFile } = file
-  const fileId = addItem({
+  const res = addItem({
     table: tables.file,
     values: [
       { key: 'path', value: path },
@@ -104,34 +105,16 @@ export function addFile(file, assetId, type)
       { key: 'regdate', valueName: 'CURRENT_TIMESTAMP' },
       { key: 'updated_at', valueName: 'CURRENT_TIMESTAMP' },
     ].filter(Boolean),
-  }).data
-  addItem({
-    table: tables.mapAssetFile,
-    values: [
-      { key: 'asset', value: assetId },
-      { key: 'file', value: fileId },
-      { key: 'type', value: type },
-    ],
   })
+  return res.data
 }
 
 /**
- * 파일 수정하기
+ * 파일 데이터 수정하기
  */
-export function editFile(file, assetId)
+export function editFileData(file, id)
 {
-  if (!file) return
   const { path, originalname, mimetype, size, ...restFile } = file
-  const fileData = getItem({
-    table: tables.file,
-    fields: [ `${tables.file}.*` ],
-    join: `${tables.mapAssetFile} on ${tables.file}.id = ${tables.mapAssetFile}.file`,
-    where: `${tables.mapAssetFile}.asset = $asset and ${tables.mapAssetFile}.type = $type`,
-    values: {
-      '$asset': assetId,
-      '$type': 'asset',
-    },
-  })
   editItem({
     table: tables.file,
     where: 'id = $id',
@@ -144,7 +127,7 @@ export function editFile(file, assetId)
       `updated_at = CURRENT_TIMESTAMP`,
     ],
     values: {
-      '$id': fileData.data.id,
+      '$id': id,
       '$path': path,
       '$name': originalname,
       '$type': mimetype,
@@ -152,4 +135,33 @@ export function editFile(file, assetId)
       '$meta': JSON.stringify(restFile),
     },
   })
+}
+
+/**
+ * 안쓰는 파일들 삭제한다.
+ */
+export function removeJunkFiles(files)
+{
+  if (!files) return
+  Object.values(files).forEach((file) => {
+    if (!existsSync(file[0].path)) return
+    rmSync(file[0].path)
+  })
+}
+
+export function removeFile(file)
+{
+  if (!file) return
+  if (!existsSync(file)) return
+  rmSync(file)
+}
+
+/**
+ * remove files
+ * @param {string[]} files
+ */
+export function removeFiles(files)
+{
+  if (!(files?.length > 0)) return
+  files.forEach(file => removeFile(file))
 }

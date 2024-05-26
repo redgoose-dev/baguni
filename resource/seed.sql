@@ -14,7 +14,6 @@ CREATE TABLE `collection` (
   `id` INTEGER NOT NULL UNIQUE,
   `title` TEXT NOT NULL,
   `description` TEXT NULL,
-  `cover` TEXT NULL, -- 커버 이미지 데이터 or url
   `regdate` TEXT NOT NULL,
   `updated_at` TEXT NOT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT)
@@ -51,7 +50,28 @@ CREATE TABLE `user`
   PRIMARY KEY (`id` AUTOINCREMENT)
 );
 
--- asset, collection 매핑 테이블
+-- asset/file 매핑 테이블
+CREATE TABLE `map_asset_file` (
+  `id` INTEGER NOT NULL UNIQUE,
+  `asset` INTEGER NOT NULL, -- asset 테이블 id
+  `file` INTEGER NOT NULL UNIQUE, -- file 테이블 id
+  `type` TEXT NULL, -- 메인 데이터인지에 대한 플래그 (fileTypeForAsset)
+  PRIMARY KEY (`id` AUTOINCREMENT),
+  FOREIGN KEY (`asset`) REFERENCES `asset` (`id`),
+  FOREIGN KEY (`file`) REFERENCES `file` (`id`)
+);
+
+-- asset/tag 매핑 테이블
+CREATE TABLE `map_asset_tag` (
+  `id` INTEGER NOT NULL UNIQUE,
+  `asset` INTEGER NOT NULL, -- asset 테이블 id
+  `tag` INTEGER NOT NULL, -- tag 테이블 id
+  PRIMARY KEY (`id` AUTOINCREMENT),
+  FOREIGN KEY (`asset`) REFERENCES `asset` (`id`),
+  FOREIGN KEY (`tag`) REFERENCES `tag` (`id`)
+);
+
+-- asset/collection 매핑 테이블
 CREATE TABLE `map_asset_collection` (
   `id` INTEGER NOT NULL UNIQUE,
   `asset` INTEGER NOT NULL, -- asset 테이블 id
@@ -61,25 +81,14 @@ CREATE TABLE `map_asset_collection` (
   FOREIGN KEY (`asset`) REFERENCES `asset` (`id`)
 );
 
--- asset, file 매핑 테이블
-CREATE TABLE `map_asset_file` (
+-- collection/file 매핑 테이블
+CREATE TABLE `map_collection_file` (
   `id` INTEGER NOT NULL UNIQUE,
-  `asset` INTEGER NOT NULL, -- asset 테이블 id
-  `file` INTEGER NOT NULL UNIQUE, -- file 테이블 id
-  `type` TEXT NULL, -- 메인 데이터인지에 대한 플래그
+  `collection` INTEGER NOT NULL, -- collection 테이블 id
+  `file` INTEGER NOT NULL, -- file 테이블 id
   PRIMARY KEY (`id` AUTOINCREMENT),
-  FOREIGN KEY (`asset`) REFERENCES `asset` (`id`),
+  FOREIGN KEY (`collection`) REFERENCES `collection` (`id`),
   FOREIGN KEY (`file`) REFERENCES `file` (`id`)
-);
-
--- asset, tag 매핑 테이블
-CREATE TABLE `map_asset_tag` (
-  `id` INTEGER NOT NULL UNIQUE,
-  `asset` INTEGER NOT NULL, -- asset 테이블 id
-  `tag` INTEGER NOT NULL, -- tag 테이블 id
-  PRIMARY KEY (`id` AUTOINCREMENT),
-  FOREIGN KEY (`asset`) REFERENCES `asset` (`id`),
-  FOREIGN KEY (`tag`) REFERENCES `tag` (`id`)
 );
 
 -- user, content 권한 데이터
@@ -105,4 +114,4 @@ CREATE TABLE `tokens` (
   `expired` TEXT NOT NULL,
   `regdate` TEXT NOT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT)
-)
+);

@@ -1,5 +1,7 @@
 import { dateFormat } from './dates.js'
 
+const { VITE_HOST } = import.meta.env
+
 /**
  * is development
  * @return {boolean}
@@ -28,7 +30,7 @@ export function openServerMessage(host, port, isDev)
   const colorText = (message, color) => (`${assets[color]}${message}${assets.reset}`)
   console.log(assets.line)
   console.log(`| ${colorText(isDev ? assets.development : assets.production, 'yellow')} server running at:`)
-  console.log(`| >> Local: ${colorText(`http://localhost:${port}`, 'cyan')}`)
+  console.log(`| >> Local: ${colorText(`http://${VITE_HOST}:${port}`, 'cyan')}`)
   console.log(assets.line)
 }
 

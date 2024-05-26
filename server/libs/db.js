@@ -89,6 +89,7 @@ export function getCount(options)
   const data = (run !== false) ? Number(result['count(*)'] || 0) : undefined
   return {
     sql,
+    values,
     data,
   }
 }
@@ -112,6 +113,7 @@ export function getItem(options)
   const data = (run !== false) ? query.get(values) : undefined
   return {
     sql,
+    values,
     data,
   }
 }
@@ -176,7 +178,7 @@ export function removeItem(options = {})
 {
   const { table, where, values, run } = options
   const sql = optimiseSql(`delete from ${table} ${where ? `where ${where}` : ''}`)
-  if (run !== false) db.run(sql, values)
+  if (run !== false) db.run(sql, values || {})
   return {
     sql,
     values,

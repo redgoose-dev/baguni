@@ -4,16 +4,15 @@
  */
 
 import multer from 'multer'
-import { existsSync, rmSync } from 'node:fs'
-import { uploader, removeJunkFiles } from '../../libs/uploader.js'
-import { uploadFields } from '../../libs/consts.js'
+import { uploader } from '../../libs/uploader.js'
+import { uploadFields, fileTypeForAsset } from '../../libs/consts.js'
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, addItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { addLog } from '../../libs/log.js'
 import { parseJSON } from '../../libs/objects.js'
 import { filteringTitle } from '../../libs/strings.js'
-import { addTag, addFile } from '../../libs/service.js'
+import { addTag, addFileData, removeJunkFiles } from '../../libs/service.js'
 
 export default async (req, res) => {
   const _uploader = uploader()
@@ -26,11 +25,7 @@ export default async (req, res) => {
     try
     {
       let { title, description, json, tags } = req.body
-      let assetId
 
-      // check value
-      const newFile = req.files?.[uploadFields.file]?.[0]
-      if (!newFile) throw new Error('파일이 없습니다.')
       // connect db
       connect({ readwrite: true })
       // check auth
@@ -38,15 +33,13 @@ export default async (req, res) => {
 
       // filtering values
       if (title) title = filteringTitle(title)
+
       // check and set json
       json = parseJSON(json) || {}
-      // set cover data
-      let jsonResult = convertCoverData({ ...json }, req.files)
-      if (jsonResult.isUpdate) json = jsonResult.json
       json = JSON.stringify(json)
 
       // add data in database
-      assetId = addItem({
+      const assetId = addItem({
         table: tables.asset,
         values: [
           title && { key: 'title', value: title },
@@ -56,16 +49,42 @@ export default async (req, res) => {
           { key: 'updated_at', valueName: 'CURRENT_TIMESTAMP' },
         ].filter(Boolean),
       }).data
-      // add file data
-      if (newFile)
+
+      // add files
+      const fileMain = req.files?.[uploadFields.file]?.[0]
+      const fileOriginal = req.files?.[uploadFields.coverOriginal]?.[0]
+      const fileCreate = req.files?.[uploadFields.coverCreate]?.[0]
+      if (fileMain)
       {
-        addFile(newFile, assetId, 'asset')
+        addFile({
+          file: fileMain,
+          fileType: fileTypeForAsset.asset,
+          assetId,
+        })
       }
+      if (fileOriginal)
+      {
+        addFile({
+          file: fileOriginal,
+          fileType: fileTypeForAsset.assetCoverOriginal,
+          assetId,
+        })
+      }
+      if (fileCreate)
+      {
+        addFile({
+          file: fileCreate,
+          fileType: fileTypeForAsset.assetCoverCreate,
+          assetId,
+        })
+      }
+
       // add tag data
       if (tags)
       {
         tags.split(',').forEach(tag => addTag(tag, assetId))
       }
+
       // close db
       disconnect()
       // result
@@ -82,6 +101,8 @@ export default async (req, res) => {
       removeJunkFiles(req.files)
       // add log
       addLog({ mode: 'error', message: e.message })
+      // close db
+      disconnect()
       // result
       error(res, {
         message: '에셋을 추가하지 못했습니다.',
@@ -91,40 +112,16 @@ export default async (req, res) => {
   })
 }
 
-/**
- * 커버 이미지용으로 json 값을 편집한다.
- * @param {object} json
- * @param {object} files
- * @return {object}
- */
-export function convertCoverData(json, files)
+function addFile(options)
 {
-  const fileOriginal = files[uploadFields.coverOriginal]?.[0]
-  const fileCreate = files[uploadFields.coverCreate]?.[0]
-  let isUpdate = false
-  if (json?.cover && fileOriginal && fileCreate)
-  {
-    let { cover } = json
-    cover.original = fileOriginal
-    cover.create = {
-      ...cover.create,
-      path: fileCreate?.path
-    }
-    isUpdate = true
-  }
-  else
-  {
-    if (fileOriginal?.path && existsSync(fileOriginal.path))
-    {
-      rmSync(fileOriginal.path)
-    }
-    if (fileCreate?.path && existsSync(fileCreate.path))
-    {
-      rmSync(fileCreate.path)
-    }
-  }
-  return {
-    json,
-    isUpdate,
-  }
+  const { file, fileType, assetId } = options
+  const id = addFileData(file)
+  addItem({
+    table: tables.mapAssetFile,
+    values: [
+      { key: 'asset', value: assetId },
+      { key: 'file', value: id },
+      { key: 'type', value: fileType },
+    ],
+  })
 }

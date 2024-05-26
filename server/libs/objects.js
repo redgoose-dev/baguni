@@ -75,9 +75,9 @@ export function pureObject(src)
 export function compareArrays(a, b)
 {
   return {
-    added: b.filter(x => (!!x && !a.includes(x))),
-    duplicate: b.filter(x => (!!x && a.includes(x))),
-    removed: a.filter(x => (!!x && !b.includes(x))),
+    added: b.filter(x => (!!x && !a.includes(x.trim()))),
+    duplicate: b.filter(x => (!!x && a.includes(x.trim()))),
+    removed: a.filter(x => (!!x && !b.includes(x.trim()))),
   }
 }
 
@@ -90,4 +90,24 @@ export function removeUndefinedValueKey(obj)
 {
   return Object.fromEntries(Object.entries(obj)
     .filter(([_, value]) => value !== undefined))
+}
+
+/**
+ * 배열속 객체의 순서 번호를 찾는다
+ */
+export function findObjectByKey(arr, keyName, value)
+{
+  return arr.findIndex(item => item[keyName] === value)
+}
+
+/**
+ * 배열속 객체를 찾는다
+ * @param {array} arr
+ * @param {string|number} key
+ * @param {string|number|boolean} value
+ * @return {object}
+ */
+export function findObjectByValue(arr, key, value)
+{
+  return arr.find(obj => obj[key] === value)
 }

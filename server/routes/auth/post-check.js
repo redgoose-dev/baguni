@@ -4,9 +4,9 @@
 
 import { success } from '../output.js'
 import { connect, disconnect, tables, getItem, getCount, editItem } from '../../libs/db.js'
-import { addLog } from '../../libs/log.js'
 import { cookie } from '../../libs/consts.js'
 import { createToken, decodeToken } from '../../libs/token.js'
+import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
   function output(op)
@@ -22,7 +22,7 @@ export default async (req, res) => {
       values: { '$id': id },
     })
     return {
-      ...user,
+      ...user.data,
       password: undefined,
     }
   }
@@ -33,10 +33,10 @@ export default async (req, res) => {
     // get tokens
     const accessToken = req.cookies[`${cookie.prefix}-access`]
     const refreshToken = req.cookies[`${cookie.prefix}-refresh`]
-    if (!refreshToken) throw new Error()
+    if (!refreshToken) throw new ServiceError('리프레시 토큰이 없습니다.')
     try
     {
-      if (!accessToken) throw new Error('no access token')
+      if (!accessToken) throw new ServiceError('엑세스 토큰이 없습니다.')
       // 엑세스 토큰 파싱
       const parseAccessToken = decodeToken('access', accessToken)
       // check refresh token in database
@@ -60,10 +60,7 @@ export default async (req, res) => {
     catch (e)
     {
       // `e`가 문자로 되어있다면 완전히 빠져나가고, Error 객체라면 다음 과정으로 넘어간다.
-      if (typeof e === 'string')
-      {
-        throw new Error(e)
-      }
+      if (typeof e === 'string') throw new ServiceError(e)
     }
     // 여기서부터는 리프레시 토큰으로 엑세스 토큰 재발급받는 과정이다.
     try
@@ -109,12 +106,11 @@ export default async (req, res) => {
     }
     catch (e)
     {
-      throw new Error(e.message)
+      throw new ServiceError(e.message)
     }
   }
   catch (e)
   {
-    if (e.message) addLog({ mode: 'error', message: e.message })
     success(res, {
       message: '인증하지 못했습니다.',
       data: undefined,

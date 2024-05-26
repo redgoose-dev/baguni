@@ -1,5 +1,4 @@
 import { sign, verify } from 'jsonwebtoken'
-import { cookie } from './consts.js'
 import { tables, getCount, getItem } from './db.js'
 import { addLog } from './log.js'
 
@@ -99,6 +98,8 @@ export function checkAuthorization(authorization)
   catch (e)
   {
     addLog({ mode: 'error', message: e.message })
-    throw new Error('인증을 실패했습니다.')
+    const err = new Error('인증을 실패했습니다.')
+    err.code = 401
+    throw err
   }
 }

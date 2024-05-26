@@ -33,6 +33,7 @@ function appRoutes()
   router.post('/logout/', map.logout)
   router.post('/check/', map.check)
   // etc
+  router.get('/file/:id/', map.file)
   router.all('*', map.notFound)
   return router
 }

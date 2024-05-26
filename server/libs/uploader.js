@@ -1,6 +1,6 @@
 import multer from 'multer'
 import { randomBytes } from 'node:crypto'
-import { mkdirSync, existsSync, rmSync } from 'node:fs'
+import { mkdirSync, existsSync } from 'node:fs'
 import { dataPath, uploadFields } from './consts.js'
 import { getUploadPathName } from './util.js'
 
@@ -76,29 +76,3 @@ export function uploader(options = {})
     },
   }
 }
-
-/**
- * 안쓰는 파일들 삭제한다.
- */
-export function removeJunkFiles(files)
-{
-  if (!files) return
-  Object.values(files).forEach((file) => {
-    if (!existsSync(file[0].path)) return
-    rmSync(file[0].path)
-  })
-}
-
-/**
- * remove files
- * @param {string[]} files
- */
-export function removeFiles(files)
-{
-  if (!(files?.length > 0)) return
-  files.forEach(file => {
-    if (!existsSync(file)) return
-    rmSync(file)
-  })
-}
-
