@@ -58,14 +58,14 @@ export default async (req, res) => {
           `${tables.mapAssetFile}.*`,
           `${tables.file}.path`,
         ],
-        join: `${tables.mapAssetFile} on ${tables.file}.id = ${tables.mapAssetFile}.file`,
+        join: `join ${tables.mapAssetFile} on ${tables.file}.id = ${tables.mapAssetFile}.file`,
         where: `${tables.mapAssetFile}.asset = $asset`,
         values: { '$asset': id },
       }).data
       const srcTags = getItems({
         table: tables.tag,
         fields: [ `${tables.tag}.*` ],
-        join: `${tables.mapAssetTag} on ${tables.tag}.id = ${tables.mapAssetTag}.tag`,
+        join: `join ${tables.mapAssetTag} on ${tables.tag}.id = ${tables.mapAssetTag}.tag`,
         where: `asset = $asset`,
         values: { '$asset': id },
       }).data

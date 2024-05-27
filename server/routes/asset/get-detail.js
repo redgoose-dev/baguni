@@ -39,7 +39,7 @@ export default async (req, res) => {
         `${tables.file}.regdate`,
         `${tables.mapAssetFile}.type`,
       ],
-      join: `${tables.mapAssetFile} on ${tables.file}.id = ${tables.mapAssetFile}.file`,
+      join: `join ${tables.mapAssetFile} on ${tables.file}.id = ${tables.mapAssetFile}.file`,
       where: `${tables.mapAssetFile}.asset = $asset and ${tables.mapAssetFile}.type like 'asset%'`,
       values: { '$asset': asset.id },
     }).data
@@ -73,7 +73,7 @@ export default async (req, res) => {
     const tags = getItems({
       table: tables.tag,
       fields: [ `${tables.tag}.*` ],
-      join: `${tables.mapAssetTag} on ${tables.tag}.id = ${tables.mapAssetTag}.tag`,
+      join: `join ${tables.mapAssetTag} on ${tables.tag}.id = ${tables.mapAssetTag}.tag`,
       where: `${tables.mapAssetTag}.asset = $id`,
       values: { '$id': asset.id },
     }).data

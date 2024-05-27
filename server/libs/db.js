@@ -47,7 +47,7 @@ export function disconnect()
  * @param {string} [options.table]
  * @param {string[]} [options.fields]
  * @param {string} [options.where]
- * @param {string} [options.join]
+ * @param {string|array} [options.join]
  * @param {string} [options.order]
  * @param {string} [options.limit]
  * @param {any} [options.values]
@@ -56,9 +56,9 @@ export function disconnect()
  */
 export function getItems(options = {})
 {
-  const { table, fields, where, join, order, limit, values, run } = options
+  const { table, fields, where, join, order, limit, values, run, prefix } = options
   const field = fields?.length ? fields.join(',') : '*'
-  const sql = optimiseSql(`select ${field} from ${table} ${join ? `join ${join}` : ''} ${where ? `where ${where}` : ''} ${order ? `order by ${order}` : ''} ${limit ? `limit ${limit}` : ''}`)
+  const sql = optimiseSql(`select ${prefix || ''} ${field} from ${table} ${parseJoin(join)} ${where ? `where ${where}` : ''} ${order ? `order by ${order}` : ''} ${limit ? `limit ${limit}` : ''}`)
   let data
   if (run !== false)
   {
@@ -82,8 +82,8 @@ export function getItems(options = {})
  */
 export function getCount(options)
 {
-  const { table, where, join, values, run } = options
-  const sql = optimiseSql(`select count(*) from ${table} ${join ? `join ${join}` : ''} ${where ? `where ${where}` : ''}`)
+  const { table, where, join, values, run, prefix } = options
+  const sql = optimiseSql(`select ${prefix || ''} count(*) from ${table} ${parseJoin(join)} ${where ? `where ${where}` : ''}`)
   const query = db.query(sql)
   const result = query.get(values)
   const data = (run !== false) ? Number(result['count(*)'] || 0) : undefined
@@ -108,7 +108,7 @@ export function getItem(options)
 {
   const { table, fields, where, join, values, run } = options
   const field = fields?.length ? fields.join(',') : '*'
-  const sql = optimiseSql(`select ${field} from ${table} ${join ? `join ${join}` : ''} ${where ? `where ${where}` : ''}`)
+  const sql = optimiseSql(`select ${field} from ${table} ${parseJoin(join)} ${where ? `where ${where}` : ''}`)
   const query = db.query(sql)
   const data = (run !== false) ? query.get(values) : undefined
   return {
@@ -221,4 +221,22 @@ export function clearTokens()
 function optimiseSql(str)
 {
   return str.trim().replace(/\s{2,}/g, ' ')
+}
+
+/**
+ * join 영역을 필터링한다.
+ * @param {string|string[]} src
+ * @return {string}
+ */
+function parseJoin(src)
+{
+  if (Array.isArray(src))
+  {
+    return src.map(x => (x)).join(' ')
+  }
+  else if (typeof src === 'string')
+  {
+    return src
+  }
+  return ''
 }

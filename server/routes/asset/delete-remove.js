@@ -35,7 +35,7 @@ export default async (req, res) => {
         `${tables.mapAssetFile}.*`,
         `${tables.file}.path`,
       ],
-      join: `${tables.mapAssetFile} on ${tables.file}.id = ${tables.mapAssetFile}.file`,
+      join: `join ${tables.mapAssetFile} on ${tables.file}.id = ${tables.mapAssetFile}.file`,
       where: `${tables.mapAssetFile}.asset = $asset`,
       values: { '$asset': id },
     }).data

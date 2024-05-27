@@ -18,7 +18,7 @@ export default async (req, res) => {
     // connect db
     connect({ readwrite: true })
     // check auth
-    checkAuthorization(req.headers.authorization)
+    // checkAuthorization(req.headers.authorization)
 
     // get data
     const file = getItem({
