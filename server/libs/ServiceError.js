@@ -10,7 +10,6 @@ class ServiceError extends Error {
   {
     super(message)
     this.code = code
-    if (message) addLog({ mode: 'error', message })
   }
 
 }

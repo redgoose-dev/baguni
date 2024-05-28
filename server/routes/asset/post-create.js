@@ -1,11 +1,13 @@
 /**
  * [POST] /asset
+ *
+ * Create asset
  * issue: https://github.com/redgoose-dev/baguni/issues/5
  */
 
 import multer from 'multer'
 import { uploader } from '../../libs/uploader.js'
-import { uploadFields, fileTypeForAsset } from '../../libs/consts.js'
+import { uploadFields, fileTypes } from '../../libs/consts.js'
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, addItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
@@ -58,7 +60,7 @@ export default async (req, res) => {
       {
         addFile({
           file: fileMain,
-          fileType: fileTypeForAsset.asset,
+          fileType: fileTypes.asset,
           assetId,
         })
       }
@@ -66,7 +68,7 @@ export default async (req, res) => {
       {
         addFile({
           file: fileOriginal,
-          fileType: fileTypeForAsset.assetCoverOriginal,
+          fileType: fileTypes.assetCoverOriginal,
           assetId,
         })
       }
@@ -74,7 +76,7 @@ export default async (req, res) => {
       {
         addFile({
           file: fileCreate,
-          fileType: fileTypeForAsset.assetCoverCreate,
+          fileType: fileTypes.assetCoverCreate,
           assetId,
         })
       }

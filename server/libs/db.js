@@ -15,6 +15,7 @@ export const tables = {
   mapAssetCollection: 'map_asset_collection',
   mapAssetFile: 'map_asset_file',
   mapAssetTag: 'map_asset_tag',
+  mapCollectionFile: 'map_collection_file',
   permissionUser: 'permission_user',
 }
 
@@ -148,8 +149,9 @@ export function addItem(options)
   const sql = optimiseSql(`insert into ${table} (${fields.join(', ')}) values (${valueNames.join(', ')})`)
   if (run !== false) db.run(sql, objects)
   return {
-    data: getLastIndex(table).data,
     sql,
+    values,
+    data: getLastIndex(table).data,
   }
 }
 

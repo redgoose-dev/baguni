@@ -8,7 +8,7 @@
 import multer from 'multer'
 import { existsSync, rmSync } from 'node:fs'
 import { uploader } from '../../libs/uploader.js'
-import { uploadFields, fileTypeForAsset } from '../../libs/consts.js'
+import { uploadFields, fileTypes } from '../../libs/consts.js'
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem, getItems, editItem, addItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
@@ -29,7 +29,6 @@ export default async (req, res) => {
     try
     {
       const id = req.params.id
-      let err
       if (!id) throw new ServiceError('id 값이 없습니다.', 204)
       let { title, description, json, tags } = req.body
       let readyUpdate = {
@@ -45,13 +44,13 @@ export default async (req, res) => {
       checkAuthorization(req.headers.authorization)
 
       // get item
-      const srcAsset = getItem({
+      const asset = getItem({
         table: tables.asset,
         where: 'id = $id',
         values: { '$id': id },
-      }).data
-      if (!srcAsset) throw new ServiceError('에셋 데이터가 없습니다.', 204)
-      srcAsset.json = parseJSON(srcAsset.json)
+      })
+      if (!asset?.data) throw new ServiceError('에셋 데이터가 없습니다.', 204)
+      // asset.json = parseJSON(asset.json)
       const srcMapFiles = getItems({
         table: tables.file,
         fields: [
@@ -89,19 +88,19 @@ export default async (req, res) => {
       updateFile({
         file: newFileMain,
         map: srcMapFiles,
-        fileType: fileTypeForAsset.asset,
+        fileType: fileTypes.asset,
         assetId: id,
       })
       updateFile({
         file: fileCoverOriginal,
         map: srcMapFiles,
-        fileType: fileTypeForAsset.assetCoverOriginal,
+        fileType: fileTypes.assetCoverOriginal,
         assetId: id,
       })
       updateFile({
         file: fileCreate,
         map: srcMapFiles,
-        fileType: fileTypeForAsset.assetCoverCreate,
+        fileType: fileTypes.assetCoverCreate,
         assetId: id,
       })
 
@@ -121,11 +120,11 @@ export default async (req, res) => {
         readyUpdate.tags = (compare.added?.length > 0 || compare.removed?.length > 0) ? compare : undefined
       }
 
-      // update data
-      updateData(readyUpdate, id)
-
       // update tags
       updateTags(readyUpdate.tags, id)
+
+      // update data
+      updateData(readyUpdate, id)
 
       // close db
       disconnect()
@@ -147,41 +146,6 @@ export default async (req, res) => {
       })
     }
   })
-}
-
-function updateData(data, assetId)
-{
-  if (!data) return
-  if (!checkExistValueInObject(data, ['title', 'description', 'json'])) return
-  editItem({
-    table: tables.asset,
-    where: 'id = $id',
-    set: [
-      data.title && 'title = $title',
-      data.description && 'description = $description',
-      data.json && 'json = $json',
-      'updated_at = CURRENT_TIMESTAMP',
-    ],
-    values: {
-      '$id': assetId,
-      '$title': data.title,
-      '$description': data.description,
-      '$json': data.json,
-    },
-  })
-}
-
-function updateTags(tags, assetId)
-{
-  if (!tags) return
-  if (tags.removed?.length > 0)
-  {
-    tags.removed.forEach(tag => removeTag(tag, assetId))
-  }
-  if (tags.added?.length > 0)
-  {
-    tags.added.forEach(tag => addTag(tag, assetId))
-  }
 }
 
 function updateFile(options)
@@ -206,4 +170,39 @@ function updateFile(options)
       ],
     })
   }
+}
+
+function updateTags(tags, assetId)
+{
+  if (!tags) return
+  if (tags.removed?.length > 0)
+  {
+    tags.removed.forEach(tag => removeTag(tag, assetId))
+  }
+  if (tags.added?.length > 0)
+  {
+    tags.added.forEach(tag => addTag(tag, assetId))
+  }
+}
+
+function updateData(data, assetId)
+{
+  if (!data) return
+  if (!checkExistValueInObject(data, ['title', 'description', 'json'])) return
+  editItem({
+    table: tables.asset,
+    where: 'id = $id',
+    set: [
+      data.title && 'title = $title',
+      data.description && 'description = $description',
+      data.json && 'json = $json',
+      'updated_at = CURRENT_TIMESTAMP',
+    ],
+    values: {
+      '$id': assetId,
+      '$title': data.title,
+      '$description': data.description,
+      '$json': data.json,
+    },
+  })
 }

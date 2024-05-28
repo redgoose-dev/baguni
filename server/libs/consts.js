@@ -28,13 +28,13 @@ export const uploadFields = {
 
 /**
  * 에셋에서 사용되는 파일의 타입
- * @property {string} [fileTypeForAsset.asset] 에셋
- * @property {string} [fileTypeForAsset.assetCoverOriginal] 에셋 커버 원본
- * @property {string} [fileTypeForAsset.assetCoverCreate] 에셋 커버 제작용
- * @property {string} [fileTypeForAsset.assetBody] 에셋 설명 본문
- * @property {string} [fileTypeForAsset.collectionCover] 콜렉션 커버
+ * @property {string} [fileTypes.asset] 에셋
+ * @property {string} [fileTypes.assetCoverOriginal] 에셋 커버 원본
+ * @property {string} [fileTypes.assetCoverCreate] 에셋 커버 제작용
+ * @property {string} [fileTypes.assetBody] 에셋 설명 본문
+ * @property {string} [fileTypes.collectionCover] 콜렉션 커버
  */
-export const fileTypeForAsset = {
+export const fileTypes = {
   asset: 'asset',
   assetCoverOriginal: 'asset-cover-original',
   assetCoverCreate: 'asset-cover-create',

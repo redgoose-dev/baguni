@@ -1,12 +1,15 @@
 /**
  * [GET] /asset
+ *
+ * Get asset
  */
 
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem, getItems } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
-import { fileTypeForAsset } from '../../libs/consts.js'
+import { fileTypes } from '../../libs/consts.js'
 import { parseJSON } from '../../libs/objects.js'
+import { addLog } from '../../libs/log.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -47,7 +50,7 @@ export default async (req, res) => {
     filesData.forEach(o => {
       switch (o.type)
       {
-        case fileTypeForAsset.asset:
+        case fileTypes.asset:
           files.main = {
             id: o.id,
             name: o.name,
@@ -56,13 +59,13 @@ export default async (req, res) => {
             date: o.regdate,
           }
           break
-        case fileTypeForAsset.assetCoverOriginal:
+        case fileTypes.assetCoverOriginal:
           files.coverOriginal = o.id
           break
-        case fileTypeForAsset.assetCoverCreate:
+        case fileTypes.assetCoverCreate:
           files.coverCreate = o.id
           break
-        case fileTypeForAsset.assetBody:
+        case fileTypes.assetBody:
           if (!files.body) files.body = []
           files.body.push(o.id)
           break
@@ -96,6 +99,8 @@ export default async (req, res) => {
   }
   catch (e)
   {
+    // add log
+    addLog({ mode: 'error', message: e.message })
     // close db
     disconnect()
     // result

@@ -5,7 +5,7 @@
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, getCount, getItem, getItems } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
-import { fileTypeForAsset, defaultPageSize } from '../../libs/consts.js'
+import { fileTypes, defaultPageSize } from '../../libs/consts.js'
 import { parseJSON } from '../../libs/objects.js'
 import ServiceError from '../../libs/ServiceError.js'
 
@@ -102,7 +102,7 @@ export default async (req, res) => {
       const mapAssetFile = getItems({
         table: tables.mapAssetFile,
         fields: [ 'asset', 'file' ],
-        where: `asset in (${Object.keys(ids).join(',')}) and type like '${fileTypeForAsset.assetCoverCreate}'`,
+        where: `asset in (${Object.keys(ids).join(',')}) and type like '${fileTypes.assetCoverCreate}'`,
       })
       mapAssetFile.data.forEach(o => {
         const idx = ids[o.asset]

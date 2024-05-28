@@ -1,19 +1,20 @@
 /**
  * [DELETE] /asset
+ *
+ * Delete asset
  */
 
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem, getItems, removeItem, getCount } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
-import { addLog } from '../../libs/log.js'
 import { removeFile } from '../../libs/service.js'
+import { addLog } from '../../libs/log.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
   try
   {
     const id = Number(req.params.id)
-    let err
     if (!id) throw new ServiceError('id 값이 없습니다.', 204)
     // connect db
     connect({ readwrite: true })
@@ -21,7 +22,7 @@ export default async (req, res) => {
     checkAuthorization(req.headers.authorization)
 
     // get asset data
-    let asset = getItem({
+    const asset = getItem({
       table: tables.asset,
       where: 'id = $id',
       values: { '$id': id },
@@ -83,7 +84,7 @@ export default async (req, res) => {
 
     // TODO: 콜렉션 맵 데이터 삭제
 
-    // remove asset data
+    // remove data
     removeItem({
       table: tables.asset,
       where: 'id = $id',

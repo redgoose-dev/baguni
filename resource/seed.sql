@@ -55,7 +55,7 @@ CREATE TABLE `map_asset_file` (
   `id` INTEGER NOT NULL UNIQUE,
   `asset` INTEGER NOT NULL, -- asset 테이블 id
   `file` INTEGER NOT NULL UNIQUE, -- file 테이블 id
-  `type` TEXT NULL, -- 메인 데이터인지에 대한 플래그 (fileTypeForAsset)
+  `type` TEXT NULL, -- 메인 데이터인지에 대한 플래그 (fileTypes)
   PRIMARY KEY (`id` AUTOINCREMENT),
   FOREIGN KEY (`asset`) REFERENCES `asset` (`id`),
   FOREIGN KEY (`file`) REFERENCES `file` (`id`)
@@ -86,6 +86,7 @@ CREATE TABLE `map_collection_file` (
   `id` INTEGER NOT NULL UNIQUE,
   `collection` INTEGER NOT NULL, -- collection 테이블 id
   `file` INTEGER NOT NULL, -- file 테이블 id
+  `type` TEXT NULL, -- 메인 데이터인지에 대한 플래그 (fileTypes)
   PRIMARY KEY (`id` AUTOINCREMENT),
   FOREIGN KEY (`collection`) REFERENCES `collection` (`id`),
   FOREIGN KEY (`file`) REFERENCES `file` (`id`)
