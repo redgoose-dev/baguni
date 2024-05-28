@@ -42,3 +42,5 @@ export const fileTypeForAsset = {
   collectionCoverOriginal: 'collection-cover-original',
   collectionCoverCreate: 'collection-cover-create',
 }
+
+export const defaultPageSize = 24

@@ -43,12 +43,12 @@ export function disconnect()
 
 /**
  * get items
- * TODO: 검증이 좀더 필요하며 기능이 좀더 붙어야 한다.
  * @param {string} [options.table]
  * @param {string[]} [options.fields]
  * @param {string} [options.where]
  * @param {string|array} [options.join]
- * @param {string} [options.order]
+ * @param {string} [options.order] id,title,regdate
+ * @param {string} [options.sort] desc,asc
  * @param {string} [options.limit]
  * @param {any} [options.values]
  * @param {boolean} [options.run]
@@ -56,9 +56,14 @@ export function disconnect()
  */
 export function getItems(options = {})
 {
-  const { table, fields, where, join, order, limit, values, run, prefix } = options
+  const { table, fields, where, join, order, sort, limit, values, run, prefix } = options
   const field = fields?.length ? fields.join(',') : '*'
-  const sql = optimiseSql(`select ${prefix || ''} ${field} from ${table} ${parseJoin(join)} ${where ? `where ${where}` : ''} ${order ? `order by ${order}` : ''} ${limit ? `limit ${limit}` : ''}`)
+  let _prefix = prefix || ''
+  let _where = where ? `where ${where}` : ''
+  let _order = order ? `order by ${order} ${sort || 'desc'}` : ''
+  _order = (!order && sort) ? `order by id ${sort}` : _order
+  let _limit = limit || ''
+  const sql = optimiseSql(`select ${_prefix} ${field} from ${table} ${parseJoin(join)} ${_where} ${_order} ${_limit}`)
   let data
   if (run !== false)
   {
@@ -67,6 +72,7 @@ export function getItems(options = {})
   }
   return {
     sql,
+    values,
     data,
   }
 }
