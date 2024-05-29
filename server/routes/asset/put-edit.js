@@ -29,7 +29,7 @@ export default async (req, res) => {
     try
     {
       const id = req.params.id
-      if (!id) throw new ServiceError('id 값이 없습니다.', 204)
+      if (!id) throw new ServiceError('id 값이 없습니다.')
       let { title, description, json, tags } = req.body
       let readyUpdate = {
         title: undefined,
@@ -49,7 +49,7 @@ export default async (req, res) => {
         where: 'id = $id',
         values: { '$id': id },
       })
-      if (!asset?.data) throw new ServiceError('에셋 데이터가 없습니다.', 204)
+      if (!asset?.data) throw new ServiceError('에셋 데이터가 없습니다.')
       // asset.json = parseJSON(asset.json)
       const srcMapFiles = getItems({
         table: tables.file,
@@ -88,19 +88,19 @@ export default async (req, res) => {
       updateFile({
         file: newFileMain,
         map: srcMapFiles,
-        fileType: fileTypes.asset,
+        fileType: fileTypes.main,
         assetId: id,
       })
       updateFile({
         file: fileCoverOriginal,
         map: srcMapFiles,
-        fileType: fileTypes.assetCoverOriginal,
+        fileType: fileTypes.coverOriginal,
         assetId: id,
       })
       updateFile({
         file: fileCreate,
         map: srcMapFiles,
-        fileType: fileTypes.assetCoverCreate,
+        fileType: fileTypes.coverCreate,
         assetId: id,
       })
 
@@ -129,7 +129,9 @@ export default async (req, res) => {
       // close db
       disconnect()
       // result
-      success(res, { message: '에셋을 수정했습니다.' })
+      success(res, {
+        message: '에셋을 수정했습니다.',
+      })
     }
     catch (e)
     {

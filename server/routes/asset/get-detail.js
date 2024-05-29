@@ -2,6 +2,7 @@
  * [GET] /asset
  *
  * Get asset
+ * 에셋 상세보기
  */
 
 import { success, error } from '../output.js'
@@ -43,14 +44,14 @@ export default async (req, res) => {
         `${tables.mapAssetFile}.type`,
       ],
       join: `join ${tables.mapAssetFile} on ${tables.file}.id = ${tables.mapAssetFile}.file`,
-      where: `${tables.mapAssetFile}.asset = $asset and ${tables.mapAssetFile}.type like 'asset%'`,
+      where: `${tables.mapAssetFile}.asset = $asset`,
       values: { '$asset': asset.id },
-    }).data
+    })
     let files = {}
-    filesData.forEach(o => {
+    filesData.data.forEach(o => {
       switch (o.type)
       {
-        case fileTypes.asset:
+        case fileTypes.main:
           files.main = {
             id: o.id,
             name: o.name,
@@ -59,13 +60,13 @@ export default async (req, res) => {
             date: o.regdate,
           }
           break
-        case fileTypes.assetCoverOriginal:
+        case fileTypes.coverOriginal:
           files.coverOriginal = o.id
           break
-        case fileTypes.assetCoverCreate:
+        case fileTypes.coverCreate:
           files.coverCreate = o.id
           break
-        case fileTypes.assetBody:
+        case fileTypes.body:
           if (!files.body) files.body = []
           files.body.push(o.id)
           break
@@ -81,6 +82,11 @@ export default async (req, res) => {
       values: { '$id': asset.id },
     }).data
 
+    // get collections
+    // TODO: 데이터가 생기면 작업하기
+    // const collections = getItems({
+    // })
+
     // close db
     disconnect()
     // result
@@ -90,9 +96,9 @@ export default async (req, res) => {
         id: asset.id,
         title: asset.title,
         description: asset.description,
-        tags: tags.map(tag => (tag.name)),
         files,
-        // collectionAssets: [], // TODO: 콜렉션 API 부분 작업이 끝나면 진행하기
+        tags: tags.map(tag => (tag.name)),
+        collections: [],
         regdate: asset.regdate,
       },
     })

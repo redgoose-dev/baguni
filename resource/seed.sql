@@ -71,16 +71,6 @@ CREATE TABLE `map_asset_tag` (
   FOREIGN KEY (`tag`) REFERENCES `tag` (`id`)
 );
 
--- asset/collection 매핑 테이블
-CREATE TABLE `map_asset_collection` (
-  `id` INTEGER NOT NULL UNIQUE,
-  `asset` INTEGER NOT NULL, -- asset 테이블 id
-  `collection` INTEGER NOT NULL UNIQUE, -- collection 테이블 id
-  PRIMARY KEY (`id` AUTOINCREMENT),
-  FOREIGN KEY (`collection`) REFERENCES `collection` (`id`),
-  FOREIGN KEY (`asset`) REFERENCES `asset` (`id`)
-);
-
 -- collection/file 매핑 테이블
 CREATE TABLE `map_collection_file` (
   `id` INTEGER NOT NULL UNIQUE,
@@ -90,6 +80,16 @@ CREATE TABLE `map_collection_file` (
   PRIMARY KEY (`id` AUTOINCREMENT),
   FOREIGN KEY (`collection`) REFERENCES `collection` (`id`),
   FOREIGN KEY (`file`) REFERENCES `file` (`id`)
+);
+
+-- collection/asset 매핑 테이블
+CREATE TABLE `map_collection_asset` (
+  `id` INTEGER NOT NULL UNIQUE,
+  `collection` INTEGER NOT NULL, -- collection 테이블 id
+  `asset` INTEGER NOT NULL, -- asset 테이블 id
+  PRIMARY KEY (`id` AUTOINCREMENT),
+  FOREIGN KEY (`collection`) REFERENCES `collection` (`id`),
+  FOREIGN KEY (`asset`) REFERENCES `asset` (`id`)
 );
 
 -- user, content 권한 데이터

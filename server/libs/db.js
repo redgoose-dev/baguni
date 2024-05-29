@@ -12,10 +12,10 @@ export const tables = {
   tag: 'tag',
   user: 'user',
   tokens: 'tokens',
-  mapAssetCollection: 'map_asset_collection',
   mapAssetFile: 'map_asset_file',
   mapAssetTag: 'map_asset_tag',
   mapCollectionFile: 'map_collection_file',
+  mapCollectionAsset: 'map_collection_asset',
   permissionUser: 'permission_user',
 }
 

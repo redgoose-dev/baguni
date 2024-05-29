@@ -27,7 +27,7 @@ export default async (req, res) => {
     try
     {
       const id = req.params.id
-      if (!id) throw new ServiceError('id 값이 없습니다.', 204)
+      if (!id) throw new ServiceError('id 값이 없습니다.')
       let { title, description } = req.body
       let readyUpdate = {
         title: undefined,
@@ -45,7 +45,7 @@ export default async (req, res) => {
         where: 'id = $id',
         values: { '$id': id },
       })
-      if (!collection.data) throw new ServiceError('콜렉션 데이터가 없습니다.', 204)
+      if (!collection.data) throw new ServiceError('콜렉션 데이터가 없습니다.')
       const srcMapFiles = getItems({
         table: tables.file,
         fields: [
@@ -75,13 +75,13 @@ export default async (req, res) => {
       updateFile({
         file: fileCoverOriginal,
         map: srcMapFiles,
-        fileType: fileTypes.collectionCoverOriginal,
+        fileType: fileTypes.coverOriginal,
         collectionId: id,
       })
       updateFile({
         file: fileCreate,
         map: srcMapFiles,
-        fileType: fileTypes.collectionCoverCreate,
+        fileType: fileTypes.coverCreate,
         collectionId: id,
       })
 

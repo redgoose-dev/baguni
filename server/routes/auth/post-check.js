@@ -1,5 +1,7 @@
 /**
  * [POST] /check
+ *
+ * 인증 검사하기
  */
 
 import { success } from '../output.js'

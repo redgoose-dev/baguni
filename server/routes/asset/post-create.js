@@ -60,7 +60,7 @@ export default async (req, res) => {
       {
         addFile({
           file: fileMain,
-          fileType: fileTypes.asset,
+          fileType: fileTypes.main,
           assetId,
         })
       }
@@ -68,7 +68,7 @@ export default async (req, res) => {
       {
         addFile({
           file: fileOriginal,
-          fileType: fileTypes.assetCoverOriginal,
+          fileType: fileTypes.coverOriginal,
           assetId,
         })
       }
@@ -76,7 +76,7 @@ export default async (req, res) => {
       {
         addFile({
           file: fileCreate,
-          fileType: fileTypes.assetCoverCreate,
+          fileType: fileTypes.coverCreate,
           assetId,
         })
       }
@@ -93,7 +93,7 @@ export default async (req, res) => {
       success(res, {
         message: '에셋을 만들었습니다.',
         data: {
-          assetID: assetId,
+          assetId,
         },
       })
     }

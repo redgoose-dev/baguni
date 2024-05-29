@@ -1,7 +1,7 @@
 /**
- * [GET] /assets
+ * [GET] /collection/:id/assets/
  *
- * 에셋목록
+ * 콜렉션 / 에셋목록
  */
 
 import { success, error } from '../output.js'
@@ -14,7 +14,10 @@ import ServiceError from '../../libs/ServiceError.js'
 export default async (req, res) => {
   try
   {
-    const { q, date_start, date_end, file_type, order, sort, page, size } = req.query
+    const { order, sort, page, size } = req.query
+    const id = Number(req.params.id)
+
+    if (!id) throw new ServiceError('콜렉션 id 값이 없습니다.', 204)
 
     // connect db
     connect({ readonly: true })
@@ -28,43 +31,10 @@ export default async (req, res) => {
     let values = {}
     let limit = ''
 
-    // 키워드 검색
-    if (q)
-    {
-      where += ` and (${tables.asset}.title like '%' || $q || '%' or ${tables.asset}.description like '%' || $q || '%')`
-      values['$q'] = q
-    }
-
     // 기본적인 쿼리 만들기
     fields.push(`${tables.asset}.*`)
-    fields.push(`(select file from ${tables.mapAssetFile} where ${tables.mapAssetFile}.asset = ${tables.asset}.id and type like '${fileTypes.coverCreate}') as cover_file_id`)
-
-    // 파일의 타입 (image/jpeg 에서 image 부분을 필터링하자)
-    if (file_type)
-    {
-      fields.push(`${tables.asset}.*`)
-      join.push(`join ${tables.mapAssetFile} on (${tables.asset}.id = ${tables.mapAssetFile}.asset and ${tables.mapAssetFile}.type like '${fileTypes.main}')`)
-      join.push(`join ${tables.file} on (${tables.mapAssetFile}.file = ${tables.file}.id and ${tables.file}.type like '${file_type}%')`)
-    }
-
-    // 날짜 범위
-    if (date_start || date_end)
-    {
-      where += ` and ($startDate is null or ${tables.asset}.regdate >= $startDate) and ($endDate is null or ${tables.asset}.regdate <= $endDate)`
-      values['$startDate'] = date_start
-      values['$endDate'] = date_end
-    }
-
-    // set limit
-    if (Number(page) > 0)
-    {
-      limit = `limit $limit offset $offset`
-      values['$limit'] = (Number(size) > 0) ? Number(size) : defaultPageSize
-      values['$offset'] = (page - 1) * values['$limit']
-    }
-
-    // repair where
-    where = where.trim().replace(/^and|or/, ' ')
+    join.push(`join ${tables.mapCollectionAsset} on ${tables.asset}.id = ${tables.mapCollectionAsset}.asset and ${tables.mapCollectionAsset}.collection = $collection`)
+    values['$collection'] = id
 
     // get total
     total = getCount({
@@ -73,6 +43,14 @@ export default async (req, res) => {
       where,
       values,
     })
+
+    // set limit
+    if (Number(page) > 0)
+    {
+      limit = `limit $limit offset $offset`
+      values['$limit'] = (Number(size) > 0) ? Number(size) : defaultPageSize
+      values['$offset'] = (page - 1) * values['$limit']
+    }
 
     // get index
     if (total.data > 0)
@@ -101,6 +79,22 @@ export default async (req, res) => {
         }
         ids[index.data[i].id] = i
       }
+      // 커버 이미지 아이디값을 가져와서 붙여준다.
+      if (Object.keys(ids)?.length > 0)
+      {
+        const mapAssetFile = getItems({
+          table: tables.mapAssetFile,
+          fields: [ 'asset', 'file' ],
+          where: `asset in (${Object.keys(ids).join(',')}) and type like '${fileTypes.coverCreate}'`,
+        })
+        mapAssetFile.data.forEach(o => {
+          const idx = ids[o.asset]
+          if (index.data[idx])
+          {
+            index.data[idx].cover_file_id = o.file
+          }
+        })
+      }
     }
     else
     {
@@ -113,7 +107,7 @@ export default async (req, res) => {
     disconnect()
     // result
     success(res, {
-      message: '에셋 데이터 목록',
+      message: '콜렉션에 속한 에셋 데이터 목록',
       data: {
         total: total.data,
         index: index.data,
@@ -127,7 +121,7 @@ export default async (req, res) => {
     // result
     error(res, {
       code: e.code,
-      message: '에셋을 가져오지 못했습니다.',
+      message: '콜렉션 에셋을 가져오지 못했습니다.',
     })
   }
 }

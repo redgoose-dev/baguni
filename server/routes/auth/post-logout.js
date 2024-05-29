@@ -1,5 +1,7 @@
 /**
  * [POST] /logout
+ *
+ * 로그아웃
  */
 
 import { success, error } from '../output.js'

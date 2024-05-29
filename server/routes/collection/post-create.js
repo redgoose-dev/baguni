@@ -42,7 +42,6 @@ export default async (req, res) => {
           { key: 'regdate', valueName: 'CURRENT_TIMESTAMP' },
           { key: 'updated_at', valueName: 'CURRENT_TIMESTAMP' },
         ].filter(Boolean),
-        run: true,
       })
 
       // add files
@@ -52,7 +51,7 @@ export default async (req, res) => {
       {
         addFile({
           file: fileOriginal,
-          fileType: fileTypes.collectionCoverOriginal,
+          fileType: fileTypes.coverOriginal,
           collectionId: collectionId.data,
         })
       }
@@ -60,7 +59,7 @@ export default async (req, res) => {
       {
         addFile({
           file: fileCreate,
-          fileType: fileTypes.collectionCoverCreate,
+          fileType: fileTypes.coverCreate,
           collectionId: collectionId.data,
         })
       }
@@ -71,7 +70,7 @@ export default async (req, res) => {
       success(res, {
         message: '콜렉션을 만들었습니다.',
         data: {
-          assetID: '',
+          collectionId: collectionId.data,
         },
       })
     }
@@ -89,9 +88,6 @@ export default async (req, res) => {
         code: e.code,
       })
     }
-    res.json({
-      message: 'create collection',
-    })
   })
 }
 

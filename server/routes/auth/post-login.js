@@ -1,5 +1,7 @@
 /**
  * [POST] /login
+ *
+ * 로그인
  * @param {string} [req.body.email]
  * @param {string} [req.body.password]
  * @param {'true'|undefined} [req.body.save]
