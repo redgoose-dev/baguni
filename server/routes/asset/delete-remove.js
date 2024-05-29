@@ -39,13 +39,13 @@ export default async (req, res) => {
       join: `join ${tables.mapAssetFile} on ${tables.file}.id = ${tables.mapAssetFile}.file`,
       where: `${tables.mapAssetFile}.asset = $asset`,
       values: { '$asset': id },
-    }).data
-    filesMap.forEach(item => {
+    })
+    filesMap.data.forEach(item => {
       if (item.file)
       {
         removeItem({
           table: tables.file,
-          where: '$id = $id',
+          where: 'id = $id',
           values: { '$id': item.file },
         })
       }

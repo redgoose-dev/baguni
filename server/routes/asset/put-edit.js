@@ -155,7 +155,7 @@ function updateFile(options)
   const { file, map, fileType, assetId } = options
   if (!file) return
   const data = findObjectByValue(map, 'type', fileType)
-  if (data?.path)
+  if (data?.file)
   {
     editFileData(file, data.file)
     if (existsSync(data.path)) rmSync(data.path)

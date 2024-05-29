@@ -43,6 +43,7 @@ export default async (req, res) => {
       where,
       values,
     })
+    if (!total.data) throw new ServiceError('에셋 데이터가 없습니다.', 204)
 
     // set limit
     if (Number(page) > 0)
@@ -53,54 +54,45 @@ export default async (req, res) => {
     }
 
     // get index
-    if (total.data > 0)
+    const ids = {}
+    index = getItems({
+      table: tables.asset,
+      fields,
+      join,
+      where,
+      order,
+      sort,
+      limit,
+      values,
+    })
+    if (!(index.data?.length > 0))
     {
-      const ids = {}
-      index = getItems({
-        table: tables.asset,
-        fields,
-        join,
-        where,
-        order,
-        sort,
-        limit,
-        values,
-      })
-      if (!(index.data?.length > 0))
-      {
-        throw new ServiceError('에셋 데이터가 없습니다.', 204)
-      }
-      // 목록에서 데이터를 돌리면서 값을 조정한다.
-      for (let i=0; i<index.data.length; i++)
-      {
-        if (index.data[i].json)
-        {
-          index.data[i].json = parseJSON(index.data[i].json)
-        }
-        ids[index.data[i].id] = i
-      }
-      // 커버 이미지 아이디값을 가져와서 붙여준다.
-      if (Object.keys(ids)?.length > 0)
-      {
-        const mapAssetFile = getItems({
-          table: tables.mapAssetFile,
-          fields: [ 'asset', 'file' ],
-          where: `asset in (${Object.keys(ids).join(',')}) and type like '${fileTypes.coverCreate}'`,
-        })
-        mapAssetFile.data.forEach(o => {
-          const idx = ids[o.asset]
-          if (index.data[idx])
-          {
-            index.data[idx].cover_file_id = o.file
-          }
-        })
-      }
+      throw new ServiceError('에셋 데이터가 없습니다.', 204)
     }
-    else
+    // 목록에서 데이터를 돌리면서 값을 조정한다.
+    for (let i=0; i<index.data.length; i++)
     {
-      index = {
-        data: [],
+      if (index.data[i].json)
+      {
+        index.data[i].json = parseJSON(index.data[i].json)
       }
+      ids[index.data[i].id] = i
+    }
+    // 커버 이미지 아이디값을 가져와서 붙여준다.
+    if (Object.keys(ids)?.length > 0)
+    {
+      const mapAssetFile = getItems({
+        table: tables.mapAssetFile,
+        fields: [ 'asset', 'file' ],
+        where: `asset in (${Object.keys(ids).join(',')}) and type like '${fileTypes.coverCreate}'`,
+      })
+      mapAssetFile.data.forEach(o => {
+        const idx = ids[o.asset]
+        if (index.data[idx])
+        {
+          index.data[idx].cover_file_id = o.file
+        }
+      })
     }
 
     // close db

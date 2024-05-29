@@ -16,7 +16,7 @@ import ServiceError from '../../libs/ServiceError.js'
 export default async (req, res) => {
   try
   {
-    const id = req.params.id
+    const id = Number(req.params.id)
     if (!id) throw new ServiceError('id 값이 없습니다.', 204)
     // connect db
     connect({ readwrite: true })
@@ -83,9 +83,22 @@ export default async (req, res) => {
     }).data
 
     // get collections
-    // TODO: 데이터가 생기면 작업하기
-    // const collections = getItems({
-    // })
+    let collections = getItems({
+      table: tables.mapCollectionAsset,
+      fields: [ 'collection' ],
+      where: 'asset = $asset',
+      values: {
+        '$asset': id,
+      },
+    })
+    if (collections.data?.length > 0)
+    {
+      collections = collections.data.map(o => (o.collection))
+    }
+    else
+    {
+      collections = null
+    }
 
     // close db
     disconnect()
@@ -98,7 +111,7 @@ export default async (req, res) => {
         description: asset.description,
         files,
         tags: tags.map(tag => (tag.name)),
-        collections: [],
+        collections,
         regdate: asset.regdate,
       },
     })
