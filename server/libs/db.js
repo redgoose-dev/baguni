@@ -171,6 +171,7 @@ export function editItem(options = {})
   if (run !== false) db.run(sql, removeUndefinedValueKey(values))
   return {
     sql,
+    values,
   }
 }
 

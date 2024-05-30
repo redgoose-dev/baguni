@@ -70,12 +70,19 @@ export function getTokenFromHeader(req)
   return req.headers.authorization.replace(/^Bearer /, '')
 }
 
-export function checkAuthorization(authorization)
+/**
+ * check authorization
+ * @param {string} authorization
+ * @param {boolean} useUser
+ * @return {object|void}
+ */
+export function checkAuthorization(authorization, useUser = true)
 {
   try
   {
+    if (!authorization) throw new Error('엑세스 토큰이 없습니다.')
     const token = authorization.replace(/^Bearer /, '')
-    if (!token) throw new Error('엑세스토큰이 없습니다.')
+    if (!token) throw new Error('엑세스 토큰이 없습니다.')
     // try decode token
     const decoded = decodeToken('access', token)
     if (!decoded.id) throw new Error('잘못된 엑세스토큰입니다.')
@@ -86,19 +93,21 @@ export function checkAuthorization(authorization)
       values: { '$access': token },
     }).data
     if (!(count > 0)) throw new Error('데이터베이스에 엑세스 토큰이 없습니다.')
-    const user = getItem({
-      table: tables.user,
-      fields: [ 'id', 'email', 'name', 'regdate' ],
-      where: `id = $id`,
-      values: { '$id': decoded.id },
-    }).data
-    if (!user?.id) throw new Error('유저 정보가 없습니다.')
-    return user
+    if (useUser)
+    {
+      const user = getItem({
+        table: tables.user,
+        fields: [ 'id', 'email', 'name', 'regdate' ],
+        where: `id = $id`,
+        values: { '$id': decoded.id },
+      })
+      if (!user?.data?.id) throw new Error('유저 정보가 없습니다.')
+      return user.data
+    }
   }
   catch (e)
   {
-    addLog({ mode: 'error', message: e.message })
-    const err = new Error('인증을 실패했습니다.')
+    const err = new Error(e.message)
     err.code = 401
     throw err
   }

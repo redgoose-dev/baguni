@@ -2,10 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { authStore } from '../store/auth.js'
 import map from './map.js'
 
-const { VITE_URL_PATH } = import.meta.env
+const { VITE_LOCAL_PATH } = import.meta.env
 
 const router = createRouter({
-  history: createWebHistory(VITE_URL_PATH || '/'),
+  history: createWebHistory(VITE_LOCAL_PATH || '/'),
   routes: map,
   scrollBehavior(to, from, savePosition)
   {

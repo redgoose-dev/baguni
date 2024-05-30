@@ -35,6 +35,7 @@ function appRoutes()
   router.post('/check/', map.check)
   // etc
   router.get('/file/:id/', map.file)
+  router.get('/download/:id/', map.download)
   router.all('*', map.notFound)
   return router
 }
@@ -54,7 +55,7 @@ function setup(req, res, _next)
 export default function(_app)
 {
   app = _app
-  const { VITE_URL_PATH, VITE_LOCAL_PATH_NAME } = import.meta.env
+  const { VITE_LOCAL_PATH, VITE_LOCAL_PATH_NAME } = import.meta.env
   app.use(setup)
-  app.use(`${VITE_URL_PATH}/${VITE_LOCAL_PATH_NAME}/`.replace(/\/\//gi, '/'), appRoutes())
+  app.use(`${VITE_LOCAL_PATH}/${VITE_LOCAL_PATH_NAME}/`.replace(/\/\//gi, '/'), appRoutes())
 }

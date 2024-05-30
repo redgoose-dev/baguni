@@ -31,4 +31,5 @@ export { default as check } from './auth/post-check.js'
 // etc
 export { default as home } from './etc/get-index.js'
 export { default as file } from './etc/get-file.js'
+export { default as download } from './etc/get-download.js'
 export { default as notFound } from './etc/not-found.js'

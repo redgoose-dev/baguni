@@ -11,10 +11,10 @@ import { success, error } from '../output.js'
 import { checkExistValue } from '../../libs/objects.js'
 import { connect, disconnect, tables, getItem, addItem } from '../../libs/db.js'
 import { verifyPassword } from '../../libs/strings.js'
-import { createError } from '../../libs/error.js'
 import { addLog } from '../../libs/log.js'
 import { createToken } from '../../libs/token.js'
 import { cookie } from '../../libs/consts.js'
+import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
   try
@@ -30,23 +30,9 @@ export default async (req, res) => {
       where: 'email = $email',
       values: { '$email': req.body.email },
     }).data
-    if (!user)
-    {
-      addLog({
-        mode: 'error',
-        message: 'Not found user.',
-      })
-      throw createError('Authentication failed, please try again.', 401)
-    }
+    if (!user) throw new ServiceError('유저가 없습니다.', 401)
     const checkPassword = verifyPassword(req.body.password, user.password)
-    if (!checkPassword)
-    {
-      addLog({
-        mode: 'error',
-        message: 'Failed verify password.',
-      })
-      throw createError('Authentication failed, please try again.', 401)
-    }
+    if (!checkPassword) throw new ServiceError('비밀번호 인증 실패', 401)
     // create tokens
     const tokens = {
       accessToken: createToken('access', {
@@ -59,11 +45,7 @@ export default async (req, res) => {
     }
     if (!tokens.refreshToken)
     {
-      addLog({
-        mode: 'error',
-        message: '리프레시 토큰을 만들 수 없습니다.',
-      })
-      throw createError(undefined, 500)
+      throw new ServiceError('리프레시 토큰을 만들 수 없습니다.', 500)
     }
     // 리프레시 토큰을 데이터베이스에 추가
     addItem({

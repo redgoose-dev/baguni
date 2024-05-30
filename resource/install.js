@@ -1,7 +1,7 @@
 import { exit } from 'node:process'
 import { rm, mkdir, exists } from 'node:fs/promises'
 import { Database } from 'bun:sqlite'
-import { randomBytes, generateKeyPairSync } from 'node:crypto'
+import { randomBytes } from 'node:crypto'
 import { message, prompt } from './libs.js'
 import { dataPath } from '../server/libs/consts.js'
 import { hashPassword, verifyEmail } from '../server/libs/strings.js'
@@ -15,6 +15,7 @@ const pathList = [
   `${dataPath}/original`,
   `${dataPath}/cover`,
   `${dataPath}/cache`,
+  `${dataPath}/log`,
   `${dataPath}/tmp`,
 ]
 let db

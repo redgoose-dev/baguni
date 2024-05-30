@@ -30,6 +30,7 @@ export default async (req, res) => {
     {
       const id = req.params.id
       if (!id) throw new ServiceError('id 값이 없습니다.')
+
       let { title, description, json, tags } = req.body
       let readyUpdate = {
         title: undefined,
@@ -199,7 +200,7 @@ function updateData(data, assetId)
       data.description && 'description = $description',
       data.json && 'json = $json',
       'updated_at = CURRENT_TIMESTAMP',
-    ],
+    ].filter(Boolean),
     values: {
       '$id': assetId,
       '$title': data.title,

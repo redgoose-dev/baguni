@@ -1,5 +1,7 @@
 /**
  * [GET] /
+ *
+ * Home
  */
 
 import pkg from '../../../package.json'
