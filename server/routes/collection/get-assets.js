@@ -1,7 +1,7 @@
 /**
  * [GET] /collection/:id/assets/
  *
- * 콜렉션 / 에셋목록
+ * 컬렉션 / 에셋목록
  */
 
 import { success, error } from '../output.js'
@@ -17,7 +17,7 @@ export default async (req, res) => {
     const { order, sort, page, size } = req.query
     const id = Number(req.params.id)
 
-    if (!id) throw new ServiceError('콜렉션 id 값이 없습니다.', 204)
+    if (!id) throw new ServiceError('컬렉션 id 값이 없습니다.', 204)
 
     // connect db
     connect({ readonly: true })
@@ -99,7 +99,7 @@ export default async (req, res) => {
     disconnect()
     // result
     success(req, res, {
-      message: '콜렉션에 속한 에셋 데이터 목록',
+      message: '컬렉션에 속한 에셋 데이터 목록',
       data: {
         total: total.data,
         index: index.data,
@@ -113,7 +113,7 @@ export default async (req, res) => {
     // result
     error(req, res, {
       code: e.code,
-      message: '콜렉션 에셋을 가져오지 못했습니다.',
+      message: '컬렉션 에셋을 가져오지 못했습니다.',
       _file: e.code !== 204 ? __filename : undefined,
       _err: e,
     })

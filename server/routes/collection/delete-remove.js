@@ -14,7 +14,7 @@ export default async (req, res) => {
   try
   {
     const id = Number(req.params.id)
-    if (!id) throw new ServiceError('콜렉션 id 값이 없습니다.')
+    if (!id) throw new ServiceError('컬렉션 id 값이 없습니다.')
 
     // connect db
     connect({ readwrite: true })
@@ -27,7 +27,7 @@ export default async (req, res) => {
       where: 'id = $id',
       values: { '$id': id },
     })
-    if (!collection?.data) throw new ServiceError('콜렉션 데이터가 없습니다.')
+    if (!collection?.data) throw new ServiceError('컬렉션 데이터가 없습니다.')
 
     // remove files
     let filesMap = getItems({
@@ -75,7 +75,7 @@ export default async (req, res) => {
     disconnect()
     // result
     success(req, res, {
-      message: '콜렉션을 삭제했습니다.',
+      message: '컬렉션을 삭제했습니다.',
     })
   }
   catch (e)
@@ -85,7 +85,7 @@ export default async (req, res) => {
     // result
     error(req, res, {
       code: e.code,
-      message: '콜렉션을 삭제하지 못했습니다.',
+      message: '컬렉션을 삭제하지 못했습니다.',
       _file: __filename,
       _err: e,
     })

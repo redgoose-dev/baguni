@@ -67,7 +67,7 @@ export default async (req, res) => {
       disconnect()
       // result
       success(req, res, {
-        message: '콜렉션을 만들었습니다.',
+        message: '컬렉션을 만들었습니다.',
         data: {
           collectionId: collectionId.data,
         },
@@ -82,7 +82,7 @@ export default async (req, res) => {
       // result
       error(req, res, {
         code: e.code,
-        message: '콜렉션을 추가하지 못했습니다.',
+        message: '컬렉션을 추가하지 못했습니다.',
         _file: __filename,
         _err: e,
       })

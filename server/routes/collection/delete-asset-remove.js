@@ -15,7 +15,7 @@ export default async (req, res) => {
     const id = Number(req.params.id)
     const asset = Number(req.params.asset)
 
-    if (!id) throw new ServiceError('콜렉션 id 값이 없습니다.')
+    if (!id) throw new ServiceError('컬렉션 id 값이 없습니다.')
     if (!asset) throw new ServiceError('에셋 id 값이 없습니다.')
 
     // connect db
@@ -32,7 +32,7 @@ export default async (req, res) => {
         '$asset': asset,
       },
     })
-    if (!mapCount.data) throw new ServiceError('콜렉션/에셋 맵 테이블에서 데이터가 없습니다.')
+    if (!mapCount.data) throw new ServiceError('컬렉션/에셋 맵 테이블에서 데이터가 없습니다.')
 
     // remove data from map table
     removeItem({
@@ -48,7 +48,7 @@ export default async (req, res) => {
     disconnect()
     // result
     success(req, res, {
-      message: '에셋을 콜렉션에서 제거했습니다.',
+      message: '에셋을 컬렉션에서 제거했습니다.',
     })
   }
   catch (e)
@@ -58,7 +58,7 @@ export default async (req, res) => {
     // result
     error(req, res, {
       code: e.code,
-      message: '에셋을 콜렉션에 제거하지 못했습니다.',
+      message: '에셋을 컬렉션에 제거하지 못했습니다.',
       _file: __filename,
       _err: e,
     })

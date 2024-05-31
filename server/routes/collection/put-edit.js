@@ -44,7 +44,7 @@ export default async (req, res) => {
         where: 'id = $id',
         values: { '$id': id },
       })
-      if (!collection.data) throw new ServiceError('콜렉션 데이터가 없습니다.')
+      if (!collection.data) throw new ServiceError('컬렉션 데이터가 없습니다.')
       const srcMapFiles = getItems({
         table: tables.file,
         fields: [
@@ -91,7 +91,7 @@ export default async (req, res) => {
       disconnect()
       // result
       success(req, res, {
-        message: '콜렉션을 수정했습니다.',
+        message: '컬렉션을 수정했습니다.',
       })
     }
     catch (e)
@@ -103,7 +103,7 @@ export default async (req, res) => {
       // result
       error(req, res, {
         code: e.code,
-        message: '콜렉션을 수정하지 못했습니다.',
+        message: '컬렉션을 수정하지 못했습니다.',
         _file: __filename,
         _err: e,
       })

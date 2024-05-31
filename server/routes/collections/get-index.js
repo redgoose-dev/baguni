@@ -1,7 +1,7 @@
 /**
  * [GET] /collections
  *
- * 콜렉션 목록
+ * 컬렉션 목록
  */
 
 import { success, error } from '../output.js'
@@ -56,7 +56,7 @@ export default async (req, res) => {
       where,
       values,
     })
-    if (!(total.data > 0)) throw new ServiceError('콜렉션 데이터가 없습니다.', 204)
+    if (!(total.data > 0)) throw new ServiceError('컬렉션 데이터가 없습니다.', 204)
 
     // get index
     index = getItems({
@@ -80,7 +80,7 @@ export default async (req, res) => {
     disconnect()
     // result
     success(req, res, {
-      message: '콜렉션 데이터 목록',
+      message: '컬렉션 데이터 목록',
       data: {
         total: total.data,
         index: index.data,
@@ -94,7 +94,7 @@ export default async (req, res) => {
     // result
     error(req, res, {
       code: e.code,
-      message: '콜렉션을 가져오지 못했습니다.',
+      message: '컬렉션을 가져오지 못했습니다.',
       _file: e.code !== 204 ? __filename : undefined,
       _err: e,
     })

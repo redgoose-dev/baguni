@@ -2,7 +2,7 @@
  * [GET] /collection
  *
  * Get collection detail
- * 콜렉션의 상세정보를 출력한다.
+ * 컬렉션의 상세정보를 출력한다.
  */
 
 import { success, error } from '../output.js'
@@ -27,7 +27,7 @@ export default async (req, res) => {
       where: 'id = $id',
       values: { '$id': id },
     })
-    if (!collection?.data) throw new ServiceError('콜렉션 데이터가 없습니다.', 204)
+    if (!collection?.data) throw new ServiceError('컬렉션 데이터가 없습니다.', 204)
 
     // get file
     const filesData = getItems({
@@ -78,7 +78,7 @@ export default async (req, res) => {
     // result
     error(req, res, {
       code: e.code,
-      message: '콜렉션을 가져오지 못했습니다.',
+      message: '컬렉션을 가져오지 못했습니다.',
       _file: e.code !== 204 ? __filename : undefined,
       _err: e,
     })

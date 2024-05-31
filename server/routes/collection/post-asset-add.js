@@ -16,7 +16,7 @@ export default async (req, res) => {
     const asset = Number(req.body.asset)
 
     // check collection id
-    if (!id) throw new ServiceError('콜렉션 id 값이 없습니다.')
+    if (!id) throw new ServiceError('컬렉션 id 값이 없습니다.')
 
     // check asset id
     if (!asset) throw new ServiceError('에셋 id 값이 없습니다.')
@@ -32,7 +32,7 @@ export default async (req, res) => {
       where: 'id = $id',
       values: { '$id': id },
     })
-    if (!collectionCount.data) throw new ServiceError('콜렉션 데이터가 없습니다.')
+    if (!collectionCount.data) throw new ServiceError('컬렉션 데이터가 없습니다.')
 
     // check asset data
     const assetCount = getCount({
@@ -66,7 +66,7 @@ export default async (req, res) => {
     disconnect()
     // result
     success(req, res, {
-      message: '콜렉션에 에셋을 추가했습니다.',
+      message: '컬렉션에 에셋을 추가했습니다.',
       data: {
         mapCollectionAsset: mapId.data,
       },
@@ -79,7 +79,7 @@ export default async (req, res) => {
     // result
     error(req, res, {
       code: e.code,
-      message: '에셋을 콜렉션에 추가하지 못했습니다.',
+      message: '에셋을 컬렉션에 추가하지 못했습니다.',
       _file: __filename,
       _err: e,
     })
