@@ -39,9 +39,6 @@ const props = defineProps({
       border-top-right-radius: var(--button-group-radius);
       border-bottom-right-radius: var(--button-group-radius);
     }
-    &:nth-child(n+2) {
-      border-left: .5px solid mixins.mix-alpha(var(--color-dark), 35%);
-    }
     &:focus-visible {
       outline: 2px solid var(--button-focus-color, unset);
       outline-offset: -2px;

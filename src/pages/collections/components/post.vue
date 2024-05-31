@@ -5,27 +5,27 @@
   </ModalHeader>
   <form class="post__form" @submit.prevent>
     <fieldset>
-      <legend>콜렉션의 정보 입력</legend>
+      <legend>컬렉션의 정보 입력</legend>
       <div class="field">
         <p><label for="title">제목</label></p>
         <div>
           <InputText
             id="title"
-            placeholder="콜렉션의 제목"
+            placeholder="컬렉션의 제목"
             :maxlength="50"/>
         </div>
       </div>
       <div class="field">
-        <p><label for="description">콜렉션의 설명</label></p>
+        <p><label for="description">컬렉션의 설명</label></p>
         <div>
           <Textarea
             id="description"
-            placeholder="콜렉션의 설명을 입력해주세요."/>
+            placeholder="컬렉션의 설명을 입력해주세요."/>
         </div>
       </div>
     </fieldset>
     <fieldset>
-      <legend>콜렉션의 커버 이미지 만들기</legend>
+      <legend>컬렉션의 커버 이미지 만들기</legend>
       <div class="field">
         <p><label for="">커버 이미지</label></p>
         <div class="cover">
@@ -50,7 +50,7 @@
         닫기
       </Button>
       <Button type="submit" color="key-1">
-        콜렉션 만들기
+        컬렉션 만들기
       </Button>
     </nav>
   </form>
@@ -75,13 +75,13 @@ const header = computed(() => {
     case 'create':
     default:
       return {
-        title: '콜렉션 만들기',
-        description: '새로운 콜렉션을 만듭니다.',
+        title: '컬렉션 만들기',
+        description: '새로운 컬렉션을 만듭니다.',
       }
     case 'edit':
       return {
-        title: '콜렉션 수정하기',
-        description: '콜렉션 정보를 수정합니다.',
+        title: '컬렉션 수정하기',
+        description: '컬렉션 정보를 수정합니다.',
       }
   }
 })

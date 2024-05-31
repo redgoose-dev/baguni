@@ -5,37 +5,40 @@
       type="button"
       class="trigger"
       @click="">
-<!--      <img src="https://goose.redgoose.me/data/upload/original/202003/triangle-beeple-001.jpg" alt="">-->
-      <img src="https://goose.redgoose.me/data/upload/original/201905/kjh51-cs3.jpg" alt="">
+      <img src="https://goose.redgoose.me/data/upload/original/202003/triangle-beeple-001.jpg" alt="">
+<!--      <img src="https://goose.redgoose.me/data/upload/original/201905/kjh51-cs3.jpg" alt="">-->
     </button>
   </figure>
   <nav class="asset-nav">
-    <Button
-      title="콜렉션"
+    <ButtonBasic
+      title="컬렉션"
       icon="bookmark"
       theme="circle"
       size="big"
-      color="key-1"/>
-    <Button
+      color="key-1"
+      @click="collection.open = true"/>
+    <ButtonBasic
       title="다운로드"
       icon="download"
       theme="circle"
       size="big"/>
-    <Button
+    <ButtonBasic
       title="이미지 복사하기"
       icon="copy"
       theme="circle"
       size="big"/>
     <Dropdown v-model="controlOption.open">
       <template #trigger>
-        <Button
+        <ButtonBasic
           title="옵션"
           icon="more-horizontal"
           theme="circle"
           size="big"
           :color="controlOption.open ? 'blur' : ''"/>
       </template>
-      <Context :items="controlOption.context"/>
+      <Context
+        :items="controlOption.context"
+        @select="onSelectAssetManage"/>
     </Dropdown>
   </nav>
   <div class="asset-body">
@@ -81,24 +84,68 @@
     </div>
   </div>
 </article>
+<teleport to="#modal">
+  <Modal
+    :open="share.open"
+    :hide-scroll="true"
+    @close="share.open = false">
+    <ManageShare
+      :id="share.id"
+      @close="share.open = false"/>
+  </Modal>
+  <Modal
+    :open="collection.open"
+    :hide-scroll="true"
+    @close="collection.open = false">
+    <SelectCollection
+      :id="collection.id"
+      @update=""
+      @close="collection.open = false"/>
+  </Modal>
+</teleport>
 </template>
 
 <script setup>
 import { ref, reactive } from 'vue'
 import Tag from '../../components/form/tag.vue'
-import Button from '../../components/buttons/button-basic.vue'
+import ButtonBasic from '../../components/buttons/button-basic.vue'
 import Dropdown from '../../components/navigation/dropdown.vue'
 import Context from '../../components/navigation/context.vue'
 import ShadowBox from '../../components/content/shadow-box.vue'
+import Modal from '../../components/modal/index.vue'
+import ManageShare from './components/manage-share.vue'
+import SelectCollection from './components/select-collection.vue'
 
 const controlOption = reactive({
   open: false,
   context: [
-    { label: '공유하기', icon: 'share-2' },
-    { label: '수정', icon: 'edit' },
-    { label: '삭제', icon: 'trash-2', color: 'danger' },
+    { key: 'share', label: '공유하기', icon: 'share-2' },
+    { key: 'edit', label: '수정', icon: 'edit' },
+    { key: 'delete', label: '삭제', icon: 'trash-2', color: 'danger' },
   ],
 })
+const share = reactive({
+  id: undefined,
+  open: false,
+})
+const collection = reactive({
+  id: undefined,
+  open: false,
+})
+
+function onSelectAssetManage(item)
+{
+  switch (item.key)
+  {
+    case 'share':
+      share.open = true
+      break
+    case 'edit':
+      break
+    case 'delete':
+      break
+  }
+}
 </script>
 
 <style src="./detail.scss" lang="scss" scoped></style>

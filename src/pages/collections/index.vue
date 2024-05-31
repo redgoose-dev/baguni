@@ -1,6 +1,6 @@
 <template>
 <article class="collections">
-  <PageHeader title="콜렉션">
+  <PageHeader title="컬렉션">
     새로운 에셋을 만듭니다.
     <template #side>
       <Button

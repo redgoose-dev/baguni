@@ -1,0 +1,29 @@
+.share {
+  padding: 30px;
+  box-sizing: border-box;
+  width: 75vw;
+  max-width: 560px;
+  height: 312px;
+  overflow: auto;
+}
+
+.address {
+  margin: 30px 0 0;
+  padding: 0;
+  border: none;
+  > legend {
+    font-size: 0;
+  }
+  > p {
+    margin: 8px 0 0;
+    line-height: 1.25;
+    color: var(--color-weak);
+    font-size: 12px;
+  }
+}
+
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  margin: 48px 0 0;
+}

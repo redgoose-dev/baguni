@@ -83,7 +83,8 @@
             </template>
             <InputText type="search" placeholder="small" size="small"/>
             <template #right>
-              <ButtonBasic color="key-3" size="small">Submit</ButtonBasic>
+              <ButtonBasic color="key-3" size="small">button1</ButtonBasic>
+              <ButtonBasic color="key-3" size="small">button2</ButtonBasic>
             </template>
           </FormGroup>
         </div>

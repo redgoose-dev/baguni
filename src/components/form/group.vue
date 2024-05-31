@@ -5,9 +5,13 @@
   $slots.right && 'is-right',
   props.size && `form-group--${props.size}`,
 ]">
-  <slot v-if="$slots.left" name="left"/>
+  <div v-if="$slots.left" class="side side--left">
+    <slot name="left"/>
+  </div>
   <slot/>
-  <slot v-if="$slots.right" name="right"/>
+  <div v-if="$slots.right" class="side side--right">
+    <slot name="right"/>
+  </div>
 </nav>
 </template>
 
@@ -48,11 +52,11 @@ const props = defineProps({
   &:is(.is-left.is-right) {
     grid-template-columns: auto 1fr auto;
   }
-  :slotted(:first-child) {
+  > :slotted(:first-child) {
     border-top-left-radius: var(--size-form-radius);
     border-bottom-left-radius: var(--size-form-radius);
   }
-  :slotted(:last-child) {
+  > :slotted(:last-child) {
     border-top-right-radius: var(--size-form-radius);
     border-bottom-right-radius: var(--size-form-radius);
   }
@@ -61,6 +65,23 @@ const props = defineProps({
     --form-group-height: var(--size-form-height-small);
     :slotted(.button--small) {
       padding: 0 12px;
+    }
+  }
+}
+.side {
+  display: flex;
+  height: 100%;
+  gap: 0 1px;
+  &--left {
+    :slotted(:first-child) {
+      border-top-left-radius: var(--size-form-radius);
+      border-bottom-left-radius: var(--size-form-radius);
+    }
+  }
+  &--right {
+    :slotted(:last-child) {
+      border-top-right-radius: var(--size-form-radius);
+      border-bottom-right-radius: var(--size-form-radius);
     }
   }
 }

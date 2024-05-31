@@ -21,7 +21,7 @@
           <RouterLink
             to="/collections"
             :class="[ activeMenuItem === 'collection' && 'on' ]">
-            콜렉션
+            컬렉션
           </RouterLink>
         </li>
         <li>

@@ -1,12 +1,12 @@
 <template>
 <article class="collection">
-  <PageHeader title="콜렉션 에셋">
-    콜렉션에 담겨있는 에셋의 목록입니다.
+  <PageHeader title="컬렉션 에셋">
+    컬렉션에 담겨있는 에셋의 목록입니다.
   </PageHeader>
   <div class="collection__body">
     <ShadowBox tag="article" class="info">
       <div class="info__body">
-        <h2 class="info__title">콜렉션 제목</h2>
+        <h2 class="info__title">컬렉션 제목</h2>
         <p class="info__description">
           뉴스 기사가 조회될 때마다 해당 뉴스 기사의 조회수를 증가시키는 쿼리를 실행합니다. 이는 클라이언트에서 뉴스를 조회할 때마다 서버 측에서 실행될 수 있습니다.
         </p>
@@ -50,7 +50,7 @@
             <nav class="item-nav">
               <router-link to="/asset/edit/123">수정</router-link>
               <a href="#">공유하기</a>
-              <a href="#">콜렉션에서 제거</a>
+              <a href="#">컬렉션에서 제거</a>
             </nav>
           </template>
         </ImageItem>
@@ -65,7 +65,7 @@
     </div>
     <NavigationBottom class="bottom">
       <template #center>
-        <Button href="/collections">콜렉션 목록</Button>
+        <Button href="/collections">컬렉션 목록</Button>
       </template>
     </NavigationBottom>
   </div>
