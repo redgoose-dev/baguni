@@ -12,7 +12,6 @@ import { uploadFields, fileTypes } from '../../libs/consts.js'
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem, getItems, editItem, addItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
-import { addLog } from '../../libs/log.js'
 import { parseJSON, compareArrays, checkExistValueInObject, findObjectByValue } from '../../libs/objects.js'
 import { filteringTitle } from '../../libs/strings.js'
 import { addTag, removeTag, addFileData, editFileData, removeJunkFiles } from '../../libs/service.js'
@@ -130,7 +129,7 @@ export default async (req, res) => {
       // close db
       disconnect()
       // result
-      success(res, {
+      success(req, res, {
         message: '에셋을 수정했습니다.',
       })
     }
@@ -138,14 +137,14 @@ export default async (req, res) => {
     {
       // 이미 업로드한 파일들은 전부 삭제한다.
       removeJunkFiles(req.files)
-      // add log
-      addLog({ mode: 'error', message: e.message })
       // close db
       disconnect()
       // result
-      error(res, {
+      error(req, res, {
         code: e.code,
         message: '에셋을 수정하지 못했습니다.',
+        _file: __filename,
+        _err: e,
       })
     }
   })

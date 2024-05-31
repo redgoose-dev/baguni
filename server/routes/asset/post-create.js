@@ -11,7 +11,6 @@ import { uploadFields, fileTypes } from '../../libs/consts.js'
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, addItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
-import { addLog } from '../../libs/log.js'
 import { parseJSON } from '../../libs/objects.js'
 import { filteringTitle } from '../../libs/strings.js'
 import { addTag, addFileData, removeJunkFiles } from '../../libs/service.js'
@@ -90,7 +89,7 @@ export default async (req, res) => {
       // close db
       disconnect()
       // result
-      success(res, {
+      success(req, res, {
         message: '에셋을 만들었습니다.',
         data: {
           assetId,
@@ -101,14 +100,14 @@ export default async (req, res) => {
     {
       // 이미 업로드한 파일들은 전부 삭제한다.
       removeJunkFiles(req.files)
-      // add log
-      addLog({ mode: 'error', message: e.message })
       // close db
       disconnect()
       // result
-      error(res, {
-        message: '에셋을 추가하지 못했습니다.',
+      error(req, res, {
         code: e.code,
+        message: '에셋을 추가하지 못했습니다.',
+        _file: __filename,
+        _err: e,
       })
     }
   })

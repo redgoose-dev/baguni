@@ -6,7 +6,6 @@
 
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, removeItem } from '../../libs/db.js'
-import { addLog } from '../../libs/log.js'
 import { getTokenFromHeader } from '../../libs/token.js'
 import { cookie } from '../../libs/consts.js'
 
@@ -29,14 +28,17 @@ export default async (req, res) => {
     res.cookie(`${cookie.prefix}-access`, '', cookieOptions)
     res.cookie(`${cookie.prefix}-refresh`, '', cookieOptions)
     // response
-    success(res)
+    success(req, res, {
+      message: '로그아웃 성공',
+    })
   }
   catch (e)
   {
-    addLog({ mode: 'error', message: e.message })
-    error(res, {
-      message: '로그아웃 오류',
+    error(req, res, {
       code: e.code,
+      message: '로그아웃 오류',
+      _file: __filename,
+      _err: e,
     })
   }
 }

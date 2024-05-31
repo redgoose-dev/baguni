@@ -7,7 +7,6 @@
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, editItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
-import { addLog } from '../../libs/log.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -60,20 +59,20 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    success(res, {
+    success(req, res, {
       message: '유저를 수정했습니다.',
     })
   }
   catch (e)
   {
-    // add log
-    addLog({ mode: 'error', message: e.message })
     // close db
     disconnect()
     // result
-    error(res, {
+    error(req, res, {
       code: e.code,
       message: '유저를 수정하지 못했습니다.',
+      _file: __filename,
+      _err: e,
     })
   }
 }

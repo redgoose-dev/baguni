@@ -15,7 +15,7 @@ const pathList = [
   `${dataPath}/original`,
   `${dataPath}/cover`,
   `${dataPath}/cache`,
-  `${dataPath}/log`,
+  `${dataPath}/logs`,
   `${dataPath}/tmp`,
 ]
 let db

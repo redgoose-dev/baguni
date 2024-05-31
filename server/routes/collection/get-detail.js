@@ -9,7 +9,6 @@ import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem, getItems } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { fileTypes } from '../../libs/consts.js'
-import { addLog } from '../../libs/log.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -61,7 +60,7 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    success(res, {
+    success(req, res, {
       message: '에셋의 상세정보',
       data: {
         id: collection.data.id,
@@ -74,14 +73,14 @@ export default async (req, res) => {
   }
   catch (e)
   {
-    // add log
-    addLog({ mode: 'error', message: e.message })
     // close db
     disconnect()
     // result
-    error(res, {
+    error(req, res, {
       code: e.code,
       message: '콜렉션을 가져오지 못했습니다.',
+      _file: e.code !== 204 ? __filename : undefined,
+      _err: e,
     })
   }
 }

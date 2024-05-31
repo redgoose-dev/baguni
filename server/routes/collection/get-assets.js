@@ -98,7 +98,7 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    success(res, {
+    success(req, res, {
       message: '콜렉션에 속한 에셋 데이터 목록',
       data: {
         total: total.data,
@@ -111,9 +111,11 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    error(res, {
+    error(req, res, {
       code: e.code,
       message: '콜렉션 에셋을 가져오지 못했습니다.',
+      _file: e.code !== 204 ? __filename : undefined,
+      _err: e,
     })
   }
 }

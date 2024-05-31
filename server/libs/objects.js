@@ -49,24 +49,6 @@ export function parseJSON(src = '')
 }
 
 /**
- * convert pure object
- * `proxy`, `observable`객체를 순수한 객체로 변환해준다.
- * TODO: 사용할 일이 있다면 사용하기
- */
-export function pureObject(src)
-{
-  if (!src) return null
-  try
-  {
-    return JSON.parse(JSON.stringify(src))
-  }
-  catch(_)
-  {
-    return null
-  }
-}
-
-/**
  * 배열 두개를 비교하여 추가, 중복, 삭제 상황의 값들을 가져올 수 있다.
  * @param {array} a
  * @param {array} b

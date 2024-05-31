@@ -7,7 +7,6 @@
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, addItem, getCount } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
-import { addLog } from '../../libs/log.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -66,7 +65,7 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    success(res, {
+    success(req, res, {
       message: '콜렉션에 에셋을 추가했습니다.',
       data: {
         mapCollectionAsset: mapId.data,
@@ -75,14 +74,14 @@ export default async (req, res) => {
   }
   catch (e)
   {
-    // add log
-    addLog({ mode: 'error', message: e.message })
     // close db
     disconnect()
     // result
-    error(res, {
-      message: '에셋을 콜렉션에 추가하지 못했습니다.',
+    error(req, res, {
       code: e.code,
+      message: '에셋을 콜렉션에 추가하지 못했습니다.',
+      _file: __filename,
+      _err: e,
     })
   }
 }

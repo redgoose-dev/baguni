@@ -7,7 +7,6 @@
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
-import { addLog } from '../../libs/log.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -21,7 +20,7 @@ export default async (req, res) => {
     const auth = checkAuthorization(req.headers.authorization)
 
     // check id (현재는 본인만 접근할 수 있도록 만들어두지만 나중에는 타인이 접근할 수 있을것이다.)
-    if (auth.id !== id)
+    if (auth?.id !== id)
     {
       throw new ServiceError('토큰 아이디가 서로 다릅니다.', 204)
     }
@@ -40,8 +39,8 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    success(res, {
-      message: '유저의 상세정보',
+    success(req, res, {
+      message: '유저 상세정보',
       data: {
         id: user.data.id,
         name: user.data.name,
@@ -52,14 +51,14 @@ export default async (req, res) => {
   }
   catch (e)
   {
-    // add log
-    addLog({ mode: 'error', message: e.message })
     // close db
     disconnect()
     // result
-    error(res, {
+    error(req, res, {
       code: e.code,
       message: '유저를 가져오지 못했습니다.',
+      _file: e.code !== 204 ? __filename : undefined,
+      _err: e,
     })
   }
 }

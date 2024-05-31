@@ -7,7 +7,6 @@
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, getCount, removeItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
-import { addLog } from '../../libs/log.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -48,18 +47,20 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    success(res, { message: '에셋을 콜렉션에서 제거했습니다.' })
+    success(req, res, {
+      message: '에셋을 콜렉션에서 제거했습니다.',
+    })
   }
   catch (e)
   {
-    // add log
-    addLog({ mode: 'error', message: e.message })
     // close db
     disconnect()
     // result
-    error(res, {
+    error(req, res, {
       code: e.code,
       message: '에셋을 콜렉션에 제거하지 못했습니다.',
+      _file: __filename,
+      _err: e,
     })
   }
 }

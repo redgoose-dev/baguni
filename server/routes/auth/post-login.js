@@ -11,7 +11,6 @@ import { success, error } from '../output.js'
 import { checkExistValue } from '../../libs/objects.js'
 import { connect, disconnect, tables, getItem, addItem } from '../../libs/db.js'
 import { verifyPassword } from '../../libs/strings.js'
-import { addLog } from '../../libs/log.js'
 import { createToken } from '../../libs/token.js'
 import { cookie } from '../../libs/consts.js'
 import ServiceError from '../../libs/ServiceError.js'
@@ -82,7 +81,7 @@ export default async (req, res) => {
       secure: req.secure,
     })
     disconnect()
-    success(res, {
+    success(req, res, {
       message: '로그인 성공',
       data: {
         accessToken: tokens.accessToken.value,
@@ -96,10 +95,11 @@ export default async (req, res) => {
   }
   catch (e)
   {
-    addLog({ mode: 'error', message: e.message })
-    error(res, {
-      message: '인증 실패했습니다.',
+    error(req, res, {
       code: e.code,
+      message: '인증 실패했습니다.',
+      _file: __filename,
+      _err: e,
     })
   }
 }

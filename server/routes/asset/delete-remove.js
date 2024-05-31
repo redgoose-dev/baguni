@@ -8,14 +8,13 @@ import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem, getItems, removeItem, getCount } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { removeFile } from '../../libs/service.js'
-import { addLog } from '../../libs/log.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
   try
   {
     const id = Number(req.params.id)
-    if (!id) throw new ServiceError('id 값이 없습니다.')
+    if (!id) throw new ServiceError('id 값이 없습니다.', 500)
     // connect db
     connect({ readwrite: true })
     // check auth
@@ -27,7 +26,7 @@ export default async (req, res) => {
       where: 'id = $id',
       values: { '$id': id },
     })
-    if (!asset?.data) throw new ServiceError('에셋 데이터가 없습니다.')
+    if (!asset?.data) throw new ServiceError('에셋 데이터가 없습니다.', 500)
 
     // remove files
     const filesMap = getItems({
@@ -99,18 +98,18 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    success(res, { message: '에셋을 삭제했습니다.' })
+    success(req, res, { message: '에셋을 삭제했습니다.' })
   }
   catch (e)
   {
-    // add log
-    addLog({ mode: 'error', message: e.message })
     // close db
     disconnect()
     // result
-    error(res, {
+    error(req, res, {
       code: e.code,
       message: '에셋을 삭제하지 못했습니다.',
+      _file: __filename,
+      _err: e,
     })
   }
 }

@@ -155,13 +155,3 @@ export function removeFile(file)
   if (!existsSync(file)) return
   rmSync(file)
 }
-
-/**
- * remove files
- * @param {string[]} files
- */
-export function removeFiles(files)
-{
-  if (!(files?.length > 0)) return
-  files.forEach(file => removeFile(file))
-}

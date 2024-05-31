@@ -6,9 +6,9 @@
  */
 
 import { existsSync } from 'node:fs'
+import { download, end } from '../output.js'
 import { connect, disconnect, tables, getItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
-import { addLog } from '../../libs/log.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -34,15 +34,22 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    res.download(file.data.path, file.data.name)
+    download(req, res, {
+      path: file.data.path,
+      name: file.data.name,
+      _message: '파일 다운로드',
+    })
   }
   catch (e)
   {
-    // add log
-    addLog({ mode: 'error', message: e.message })
     // close db
     disconnect()
-    // add log
-    res.status(e.code).end()
+    // result
+    end(req, res, 'error', {
+      code: e.code || 500,
+      message: '파일을 다운로드하지 못했습니다.',
+      _file: __filename,
+      _err: e,
+    })
   }
 }

@@ -45,7 +45,7 @@ function appRoutes()
  */
 function setup(req, res, _next)
 {
-  // set cookie
+  // next
   _next()
 }
 
@@ -58,4 +58,14 @@ export default function(_app)
   const { VITE_LOCAL_PATH, VITE_LOCAL_PATH_NAME } = import.meta.env
   app.use(setup)
   app.use(`${VITE_LOCAL_PATH}/${VITE_LOCAL_PATH_NAME}/`.replace(/\/\//gi, '/'), appRoutes())
+}
+
+/**
+ * 로컬 패스인지 검사한다.
+ */
+function checkLocalPath(path)
+{
+  const { VITE_LOCAL_PATH, VITE_LOCAL_PATH_NAME } = import.meta.env
+  const regExp = new RegExp(`^${VITE_LOCAL_PATH}/${VITE_LOCAL_PATH_NAME}/`.replace(/\/\//gi, '/'))
+  return regExp.test(path)
 }

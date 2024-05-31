@@ -1,6 +1,5 @@
 import { sign, verify } from 'jsonwebtoken'
 import { tables, getCount, getItem } from './db.js'
-import { addLog } from './log.js'
 
 const {
   ACCESS_TOKEN_SECRET,

@@ -73,25 +73,22 @@ export default async (req, res) => {
       where,
       values,
     })
+    if (!(total.data > 0)) throw new ServiceError('에셋 데이터가 없습니다.', 204)
 
     // get index
-    if (total.data > 0)
+    const ids = {}
+    index = getItems({
+      table: tables.asset,
+      fields,
+      join,
+      where,
+      order,
+      sort,
+      limit,
+      values,
+    })
+    if (index.data?.length > 0)
     {
-      const ids = {}
-      index = getItems({
-        table: tables.asset,
-        fields,
-        join,
-        where,
-        order,
-        sort,
-        limit,
-        values,
-      })
-      if (!(index.data?.length > 0))
-      {
-        throw new ServiceError('에셋 데이터가 없습니다.', 204)
-      }
       // 목록에서 데이터를 돌리면서 값을 조정한다.
       for (let i=0; i<index.data.length; i++)
       {
@@ -112,7 +109,7 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    success(res, {
+    success(req, res, {
       message: '에셋 데이터 목록',
       data: {
         total: total.data,
@@ -125,9 +122,11 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    error(res, {
+    error(req, res, {
       code: e.code,
       message: '에셋을 가져오지 못했습니다.',
+      _file: e.code !== 204 ? __filename : undefined,
+      _err: e,
     })
   }
 }

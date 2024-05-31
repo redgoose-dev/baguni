@@ -8,7 +8,6 @@ import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem, getItems, removeItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { removeFile } from '../../libs/service.js'
-import { addLog } from '../../libs/log.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -75,18 +74,20 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    success(res, { message: '콜렉션을 삭제했습니다.' })
+    success(req, res, {
+      message: '콜렉션을 삭제했습니다.',
+    })
   }
   catch (e)
   {
-    // add log
-    addLog({ mode: 'error', message: e.message })
     // close db
     disconnect()
     // result
-    error(res, {
+    error(req, res, {
       code: e.code,
       message: '콜렉션을 삭제하지 못했습니다.',
+      _file: __filename,
+      _err: e,
     })
   }
 }

@@ -4,7 +4,7 @@
  * 인증 검사하기
  */
 
-import { success } from '../output.js'
+import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem, getCount, editItem } from '../../libs/db.js'
 import { cookie } from '../../libs/consts.js'
 import { createToken, decodeToken } from '../../libs/token.js'
@@ -14,7 +14,7 @@ export default async (req, res) => {
   function output(op)
   {
     disconnect()
-    success(res, op)
+    success(req, res, op)
   }
   function getUser(id)
   {
@@ -113,9 +113,11 @@ export default async (req, res) => {
   }
   catch (e)
   {
-    success(res, {
+    error(req, res, {
+      code: 401,
       message: '인증하지 못했습니다.',
-      data: undefined,
+      _file: __filename,
+      _err: e,
     })
   }
 }
