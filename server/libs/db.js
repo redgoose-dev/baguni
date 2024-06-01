@@ -156,6 +156,27 @@ export function addItem(options)
 }
 
 /**
+ * add items
+ * @param {string} [options.table]
+ * @param {array} [options.fields]
+ * @param {array} [options.values]
+ * @param {boolean} [options.run]
+ * @return {object}
+ */
+export function addItems(options = {})
+{
+  const { table, fields, values, run } = options
+  const placeholders = values.map(() => `(${fields.map(() => ('?')).join(',')})`).join(', ')
+  const sql = optimiseSql(`insert into ${table} (${fields.join(', ')}) values ${placeholders}`)
+  if (run !== false) db.run(sql, [].concat(...values))
+  return {
+    sql,
+    values,
+    data: true,
+  }
+}
+
+/**
  * edit item
  * @param {string} [options.table]
  * @param {string[]} [options.set]

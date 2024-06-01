@@ -56,10 +56,20 @@ export function parseJSON(src = '')
  */
 export function compareArrays(a, b)
 {
+  function filter(s)
+  {
+    return typeof s === 'string' ? s.trim() : s
+  }
   return {
-    added: b.filter(x => (!!x && !a.includes(x.trim()))),
-    duplicate: b.filter(x => (!!x && a.includes(x.trim()))),
-    removed: a.filter(x => (!!x && !b.includes(x.trim()))),
+    added: b.filter(x => {
+      return !!x && !a.includes(filter(x))
+    }),
+    duplicate: b.filter(x => {
+      return !!x && a.includes(filter(x))
+    }),
+    removed: a.filter(x => {
+      return !!x && !b.includes(filter(x))
+    }),
   }
 }
 

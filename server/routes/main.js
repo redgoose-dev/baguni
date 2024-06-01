@@ -17,6 +17,7 @@ function appRoutes()
   router.post('/asset/', map.assetCreate)
   router.put('/asset/:id/', map.assetEdit)
   router.delete('/asset/:id/', map.assetRemove)
+  router.put('/asset/:id/collections/', map.assetUpdateCollections)
   // collection
   router.get('/collections/', map.collections)
   router.get('/collection/:id/', map.collectionDetail)

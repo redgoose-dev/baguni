@@ -6,6 +6,7 @@ export { default as assetDetail } from './asset/get-detail.js'
 export { default as assetCreate } from './asset/post-create.js'
 export { default as assetEdit } from './asset/put-edit.js'
 export { default as assetRemove } from './asset/delete-remove.js'
+export { default as assetUpdateCollections } from './asset/put-update-collection.js'
 
 // collections
 export { default as collections } from './collections/get-index.js'

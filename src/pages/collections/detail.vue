@@ -15,24 +15,6 @@
           <span>메타 항항목</span>
         </p>
       </div>
-      <nav class="info__nav">
-        <Dropdown v-model="openDropdownCollection" position="right">
-          <template #trigger>
-            <ButtonBasic
-              size="small"
-              right-icon="chevron-down"
-              :color="openDropdownCollection ? 'weak' : ''">
-              옵션
-            </ButtonBasic>
-          </template>
-          <Context
-            :items="[
-              { label: '수정', icon: 'edit' },
-              { label: '삭제', icon: 'trash-2', color: 'danger' },
-            ]"
-            @select=""/>
-        </Dropdown>
-      </nav>
     </ShadowBox>
     <div class="index-head">
       <p class="index-head__total">총 <strong>{{20}}</strong>개의 에셋이 있습니다.</p>
@@ -50,6 +32,7 @@
             <nav class="item-nav">
               <router-link to="/asset/edit/123">수정</router-link>
               <a href="#">공유하기</a>
+              <a href="#">컬렉션에서 제거</a>
             </nav>
           </template>
         </ImageItem>
@@ -64,7 +47,19 @@
     </div>
     <NavigationBottom class="bottom">
       <template #left>
-        <ButtonBasic href="/collections" size="big">컬렉션 목록</ButtonBasic>
+        <ButtonBasic href="/collections/" left-icon="list">
+          컬렉션 목록
+        </ButtonBasic>
+      </template>
+      <template #right>
+        <ButtonGroup>
+          <ButtonBasic type="button" color="weak" left-icon="edit">
+            수정
+          </ButtonBasic>
+          <ButtonBasic type="button" color="danger" left-icon="trash-2">
+            삭제
+          </ButtonBasic>
+        </ButtonGroup>
       </template>
     </NavigationBottom>
   </div>
@@ -77,12 +72,10 @@ import PageHeader from '../../components/content/page-header.vue'
 import ImageItem from '../../components/content/image/index.vue'
 import Paginate from '../../components/navigation/paginate.vue'
 import ShadowBox from '../../components/content/shadow-box.vue'
-import Dropdown from '../../components/navigation/dropdown.vue'
-import Context from '../../components/navigation/context.vue'
 import NavigationBottom from '../../components/navigation/bottom.vue'
+import ButtonGroup from '../../components/buttons/group.vue'
 import ButtonBasic from '../../components/buttons/button-basic.vue'
 
-const openDropdownCollection = ref(false)
 const page = ref(1)
 </script>
 
