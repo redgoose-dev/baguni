@@ -161,8 +161,8 @@ async function addUser(user)
   const { email, name, password } = user
   try
   {
-    const sql = `insert into user (email, name, password, regdate) values (?, ?, ?, CURRENT_TIMESTAMP)`
-    db.run(sql, [ email, name, hashPassword(password) ])
+    const sql = `insert into user (email, name, password, json, regdate) values (?, ?, ?, ?, CURRENT_TIMESTAMP)`
+    db.run(sql, [ email, name, hashPassword(password), '{}' ])
   }
   catch (e)
   {

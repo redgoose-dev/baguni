@@ -59,6 +59,31 @@
   }
 }
 
+// custom scrollbar
+@mixin custom-scrollbar()
+{
+  --scroll-size: 14px;
+  --scroll-padding: 4px;
+  --scroll-track: hsl(0 0% 65%);
+  --scroll-track-hover: hsl(0 0% 45%);
+  --scroll-bg: hsla(0 0% 100% / 0%);
+  &::-webkit-scrollbar {
+    width: var(--scroll-size);
+  }
+  &::-webkit-scrollbar-thumb {
+    border: var(--scroll-padding) solid hsla(0 0% 100% / 0%);
+    background-clip: padding-box;
+    border-radius: 9999px;
+    background-color: var(--scroll-track);
+    &:hover {
+      background-color: var(--scroll-track-hover);
+    }
+  }
+  &::-webkit-scrollbar-track {
+    background: var(--scroll-bg);
+  }
+}
+
 
 // FUNCTIONS
 

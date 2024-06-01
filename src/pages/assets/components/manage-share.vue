@@ -2,6 +2,9 @@
 <article class="share">
   <ModalHeader title="에셋 공유하기">
     <template #description>에셋 데이터를 공개하여 공유할 수 있습니다.</template>
+    <template #side>
+      <ModalButtonClose @click="emits('close')"/>
+    </template>
   </ModalHeader>
   <fieldset class="address">
     <legend>에셋공유 주소</legend>
@@ -30,8 +33,8 @@
       공유한 에셋은 새로운 URL 주소로 만들어지며 제거하면 열 수 없게됩니다.
     </p>
   </fieldset>
-  <nav class="bottom">
-    <div>
+  <NavigationBottom class="bottom">
+    <template #left>
       <ButtonGroup>
         <ButtonBasic
           left-icon="copy"
@@ -46,26 +49,20 @@
           열기
         </ButtonBasic>
       </ButtonGroup>
-    </div>
-    <div>
-      <ButtonBasic
-        left-icon="x"
-        color="weak"
-        @click="emits('close')">
-        닫기
-      </ButtonBasic>
-    </div>
-  </nav>
+    </template>
+  </NavigationBottom>
 </article>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import ModalHeader from '../../../components/modal/header.vue'
+import ModalButtonClose from '../../../components/modal/button-close.vue'
 import FormGroup from '../../../components/form/group.vue'
 import ButtonGroup from '../../../components/buttons/group.vue'
 import InputText from '../../../components/form/input-text.vue'
 import ButtonBasic from '../../../components/buttons/button-basic.vue'
+import NavigationBottom from '../../../components/navigation/bottom.vue'
 
 const emits = defineEmits([ 'close' ])
 

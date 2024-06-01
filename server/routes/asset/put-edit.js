@@ -25,6 +25,8 @@ export default async (req, res) => {
     { name: uploadFields.coverCreate, maxCount: 1 },
   ])
   upload(req, res, async () => {
+    // TODO: 첨부파일 삭제에 대한 대책이 없는데 방법을 찾아야 할것이다.
+    // TODO: 첨부파일의 종류가 메인파일, 커버 원본, 커버 제작 세가지가 있다.
     try
     {
       const id = req.params.id

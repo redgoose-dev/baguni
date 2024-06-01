@@ -1,0 +1,32 @@
+@use '../../../assets/scss/mixins';
+
+.collections {
+  padding: 30px;
+  box-sizing: border-box;
+  width: 75vw;
+  max-width: 560px;
+}
+
+.index {
+  height: 75vh;
+  max-height: 360px;
+  margin: 20px 0 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: 1px solid mixins.mix-alpha(var(--color-base), 15%);
+  border-radius: 2px;
+  overflow: auto;
+  @include mixins.custom-scrollbar();
+  ul {
+    display: grid;
+    gap: 6px 0;
+    margin: 0;
+    padding: 12px;
+    list-style: none;
+    box-sizing: border-box;
+  }
+}
+
+.bottom {
+  margin: 36px 0 0;
+}

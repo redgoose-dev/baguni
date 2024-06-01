@@ -18,12 +18,12 @@
       <nav class="info__nav">
         <Dropdown v-model="openDropdownCollection" position="right">
           <template #trigger>
-            <Button
+            <ButtonBasic
               size="small"
               right-icon="chevron-down"
               :color="openDropdownCollection ? 'weak' : ''">
               옵션
-            </Button>
+            </ButtonBasic>
           </template>
           <Context
             :items="[
@@ -50,7 +50,6 @@
             <nav class="item-nav">
               <router-link to="/asset/edit/123">수정</router-link>
               <a href="#">공유하기</a>
-              <a href="#">컬렉션에서 제거</a>
             </nav>
           </template>
         </ImageItem>
@@ -64,8 +63,8 @@
         :range="5"/>
     </div>
     <NavigationBottom class="bottom">
-      <template #center>
-        <Button href="/collections">컬렉션 목록</Button>
+      <template #left>
+        <ButtonBasic href="/collections" size="big">컬렉션 목록</ButtonBasic>
       </template>
     </NavigationBottom>
   </div>
@@ -81,7 +80,7 @@ import ShadowBox from '../../components/content/shadow-box.vue'
 import Dropdown from '../../components/navigation/dropdown.vue'
 import Context from '../../components/navigation/context.vue'
 import NavigationBottom from '../../components/navigation/bottom.vue'
-import Button from '../../components/buttons/button-basic.vue'
+import ButtonBasic from '../../components/buttons/button-basic.vue'
 
 const openDropdownCollection = ref(false)
 const page = ref(1)

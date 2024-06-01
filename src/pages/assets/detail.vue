@@ -99,14 +99,13 @@
     @close="collection.open = false">
     <SelectCollection
       :id="collection.id"
-      @update=""
       @close="collection.open = false"/>
   </Modal>
 </teleport>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { reactive } from 'vue'
 import Tag from '../../components/form/tag.vue'
 import ButtonBasic from '../../components/buttons/button-basic.vue'
 import Dropdown from '../../components/navigation/dropdown.vue'
@@ -114,7 +113,7 @@ import Context from '../../components/navigation/context.vue'
 import ShadowBox from '../../components/content/shadow-box.vue'
 import Modal from '../../components/modal/index.vue'
 import ManageShare from './components/manage-share.vue'
-import SelectCollection from './components/select-collection.vue'
+import SelectCollection from '../collections/select-collection/index.vue'
 
 const controlOption = reactive({
   open: false,

@@ -46,6 +46,7 @@ CREATE TABLE `user`
   `email` TEXT NOT NULL UNIQUE,
   `name` TEXT NOT NULL,
   `password` TEXT NOT NULL UNIQUE,
+  `json` TEXT NULL,
   `regdate` TEXT NOT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT)
 );

@@ -18,27 +18,23 @@
         </i>
       </button>
       <div class="body">
-        <nav>
-          <Button
-            size="big"
-            color="key-1"
-            theme="circle"
-            icon="upload"
-            @click=""/>
-          <Button
-            size="big"
-            color=""
-            theme="circle"
-            icon="edit"
-            @click=""/>
-          <Button
-            size="big"
-            color="danger"
-            theme="circle"
-            icon="trash-2"
-            @click=""/>
-        </nav>
         <p>- 사이즈: 140px * 140px</p>
+        <nav>
+          <Dropdown :use-value="true">
+            <template #trigger>
+              <ButtonBasic size="small" right-icon="chevron-down" color="weak">
+                커버 이미지 컨트롤
+              </ButtonBasic>
+            </template>
+            <Context
+              :items="[
+                { key: 'context-1', label: '이미지 업로드' },
+                { key: 'context-2', label: '편집' },
+                { key: 'context-3', label: '삭제하기' },
+              ]"
+              @select=""/>
+          </Dropdown>
+        </nav>
       </div>
     </div>
   </ShadowBox>
@@ -48,7 +44,9 @@
 <script setup>
 import ShadowBox from '../../../components/content/shadow-box.vue'
 import Icon from '../../../components/icons/index.vue'
-import Button from '../../../components/buttons/button-basic.vue'
+import ButtonBasic from '../../../components/buttons/button-basic.vue'
+import Context from '../../../components/navigation/context.vue'
+import Dropdown from '../../../components/navigation/dropdown.vue'
 </script>
 
 <style src="./manage-cover-image.scss" lang="scss" scoped></style>
