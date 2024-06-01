@@ -8,24 +8,21 @@
   </ModalHeader>
   <fieldset class="address">
     <legend>에셋공유 주소</legend>
-    <FormGroup v-if="true">
+    <FormGroup>
       <InputText
+        :model-value="forms.url"
         type="search"
-        placeholder="type=text"
-        value="아직 공유되지 않았습니다."
+        placeholder="https://"
         :readonly="true"/>
       <template #right>
-        <ButtonBasic color="key-1" left-icon="square-plus">
-          공유 만들기
-        </ButtonBasic>
-      </template>
-    </FormGroup>
-    <FormGroup v-else>
-      <InputText type="search" placeholder="https://" :readonly="true"/>
-      <template #right>
-        <ButtonBasic color="danger" left-icon="eraser">
-          공유삭제
-        </ButtonBasic>
+        <Select
+          v-model="forms.permission"
+          placeholder=""
+          :options="[
+            { value: 'public', label: '공개' },
+            { value: 'private', label: '비공개' },
+          ]"
+          class="permission"/>
       </template>
     </FormGroup>
     <p>
@@ -55,7 +52,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import ModalHeader from '../../../components/modal/header.vue'
 import ModalButtonClose from '../../../components/modal/button-close.vue'
 import FormGroup from '../../../components/form/group.vue'
@@ -63,8 +60,13 @@ import ButtonGroup from '../../../components/buttons/group.vue'
 import InputText from '../../../components/form/input-text.vue'
 import ButtonBasic from '../../../components/buttons/button-basic.vue'
 import NavigationBottom from '../../../components/navigation/bottom.vue'
+import Select from '../../../components/form/select.vue'
 
 const emits = defineEmits([ 'close' ])
+const forms = reactive({
+  url: 'https://localhost:4200/share/123123/',
+  permission: 'public',
+})
 
 onMounted(() => {
   //

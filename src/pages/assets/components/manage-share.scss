@@ -4,7 +4,6 @@
   width: 75vw;
   max-width: 560px;
   height: 312px;
-  overflow: auto;
 }
 
 .address {
@@ -19,6 +18,19 @@
     line-height: 1.25;
     color: var(--color-weak);
     font-size: 12px;
+  }
+}
+
+.permission {
+  width: 110px;
+  margin-left: -1px;
+  --icon-color: var(--color-light);
+  &:deep(> select) {
+    padding-left: 16px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    background: var(--color-weak);
+    color: var(--color-light);
   }
 }
 
