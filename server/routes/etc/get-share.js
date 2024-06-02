@@ -1,13 +1,12 @@
 /**
- * [GET] /asset
+ * [GET] /share/:code/
  *
- * Get asset
- * 에셋 상세보기 데이터 가져오기
+ * Get share data
+ * 공유코드로 에셋 상세보기 데이터를 가져온다.
  */
 
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem, getItems } from '../../libs/db.js'
-import { checkAuthorization } from '../../libs/token.js'
 import { fileTypes } from '../../libs/consts.js'
 import { parseJSON } from '../../libs/objects.js'
 import ServiceError from '../../libs/ServiceError.js'
@@ -17,19 +16,21 @@ export default async (req, res) => {
   const timer = new RunningTimer()
   try
   {
-    const id = Number(req.params.id)
-    if (!id) throw new ServiceError('id 값이 없습니다.', 204)
+    const code = req.params.code
+    if (!code) throw new ServiceError('code 값이 없습니다.', 204)
 
     // connect db
     connect({ readwrite: true })
-    // check auth
-    checkAuthorization(req.headers.authorization)
 
-    // get data
+    // get asset
     const asset = getItem({
       table: tables.asset,
-      where: 'id = $id',
-      values: { '$id': id },
+      fields: [ `${tables.asset}.*` ],
+      join: `join ${tables.share} on ${tables.share}.asset = ${tables.asset}.id`,
+      where: `${tables.share}.code = $code`,
+      values: {
+        '$code': code,
+      },
     })
     if (!asset?.data) throw new ServiceError('에셋 데이터가 없습니다.', 204)
     asset.data.json = parseJSON(asset.data.json)
@@ -62,9 +63,6 @@ export default async (req, res) => {
             date: o.regdate,
           }
           break
-        case fileTypes.coverOriginal:
-          files.coverOriginal = o.id
-          break
         case fileTypes.coverCreate:
           files.coverCreate = o.id
           break
@@ -84,37 +82,20 @@ export default async (req, res) => {
       values: { '$id': asset.data.id },
     })
 
-    // get collections
-    let collections = getItems({
-      table: tables.mapCollectionAsset,
-      fields: [ 'collection' ],
-      where: 'asset = $asset',
-      values: { '$asset': asset.data.id },
-    })
-    if (collections.data?.length > 0)
-    {
-      collections = collections.data.map(o => (o.collection))
-    }
-    else
-    {
-      collections = null
-    }
-
     // close db
     disconnect()
     // result
     success(req, res, {
-      message: '에셋의 상세정보',
+      message: '공유용 에셋의 상세정보',
+      processingTime: timer.end(),
       data: {
         id: asset.data.id,
         title: asset.data.title,
         description: asset.data.description,
         files,
         tags: tags?.data?.length > 0 ? tags.data.map(tag => (tag.name)) : [],
-        collections,
         regdate: asset.data.regdate,
       },
-      runTime: timer.end(),
     })
   }
   catch (e)
@@ -124,8 +105,8 @@ export default async (req, res) => {
     // result
     error(req, res, {
       code: e.code,
-      message: '에셋을 가져오지 못했습니다.',
-      runTime: timer.end(),
+      message: '공유용 에셋을 가져오지 못했습니다.',
+      processingTime: timer.end(),
       _file: e.code !== 204 ? __filename : undefined,
       _err: e,
     })

@@ -18,6 +18,8 @@ function appRoutes()
   router.put('/asset/:id/', map.assetEdit)
   router.delete('/asset/:id/', map.assetRemove)
   router.put('/asset/:id/collections/', map.assetUpdateCollections)
+  router.get('/asset/:id/share', map.assetGetShareCode)
+  router.put('/asset/:id/share', map.assetUpdateShare)
   // collection
   router.get('/collections/', map.collections)
   router.get('/collection/:id/', map.collectionDetail)
@@ -37,6 +39,7 @@ function appRoutes()
   // etc
   router.get('/file/:id/', map.file)
   router.get('/download/:id/', map.download)
+  router.get('/share/:code/', map.share)
   router.all('*', map.notFound)
   return router
 }

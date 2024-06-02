@@ -41,3 +41,8 @@ export const fileTypes = {
 }
 
 export const defaultPageSize = 24
+
+export const permissions = {
+  PUBLIC: 'PUBLIC',
+  PRIVATE: 'PRIVATE',
+}

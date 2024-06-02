@@ -12,9 +12,11 @@ const ipWareInstance = ipware()
  */
 export function success(req, res, options = {})
 {
+  const { code, message, runTime } = options
   writeLog(req, res, 'success', {
-    status: options.code || 200,
-    message: options.message,
+    status: code || 200,
+    message,
+    ...(runTime ? { runTime: runTime } : {}),
   })
   res
     .status(options.code || 200)
@@ -33,17 +35,19 @@ export function success(req, res, options = {})
  */
 export function error(req, res, options = {})
 {
-  const { message, code, _file, _err } = options
+  const { message, code, runTime, _file, _err } = options
   writeLog(req, res, 'error', {
     status: code || 500,
     message: _err?.message || message,
     ...(_file ? { file: _file } : {}),
+    ...(runTime ? { runTime: runTime } : {}),
   })
   res
     .status(code || 500)
     .json({
       message: message || '알 수 없는 오류',
       time: dateFormat(new Date(), '{yyyy}-{MM}-{dd} {hh}:{mm}:{ss}'),
+      ...(runTime ? { runTime: runTime } : {}),
     })
 }
 
@@ -56,11 +60,12 @@ export function error(req, res, options = {})
  */
 export function end(req, res, type = 'error', options = {})
 {
-  const { message, code, _file, _err } = options
+  const { message, code, runTime, _file, _err } = options
   writeLog(req, res, type, {
     status: code || 500,
     message: _err?._message || message,
     ...(_file ? { file: _file } : {}),
+    ...(runTime ? { runTime: runTime } : {}),
   })
   res.status(code || 500).end()
 }
@@ -70,10 +75,11 @@ export function end(req, res, type = 'error', options = {})
  */
 export function download(req, res, options = {})
 {
-  const { path, name, _message } = options
+  const { path, name, runTime, _message } = options
   writeLog(req, res, 'success', {
     status: 200,
     message: _message,
+    ...(runTime ? { runTime: runTime } : {}),
   })
   res.download(path, name)
 }
@@ -83,10 +89,11 @@ export function download(req, res, options = {})
  */
 export function outFile(req, res, options = {})
 {
-  const { type, buffer, _message } = options
+  const { type, buffer, runTime, _message } = options
   writeLog(req, res, 'success', {
     status: 200,
     message: _message,
+    ...(runTime ? { runTime: runTime } : {}),
   })
   res.writeHead(200, { 'Content-Type': type })
   res.end(buffer)

@@ -15,7 +15,7 @@ export default async (req, res) => {
   {
     // check id
     const id = Number(req.params.id)
-    if (!id) throw new ServiceError('id 값이 없습니다.', 500)
+    if (!id) throw new ServiceError('id 값이 없습니다.')
     // check collections
     let collections = req.body.collections
     if (collections === undefined) throw new ServiceError('콜렉션 아이디가 없습니다.', 500)

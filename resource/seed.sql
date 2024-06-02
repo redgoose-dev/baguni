@@ -51,6 +51,17 @@ CREATE TABLE `user`
   PRIMARY KEY (`id` AUTOINCREMENT)
 );
 
+-- Share
+CREATE TABLE `share` (
+  `id` INTEGER NOT NULL UNIQUE,
+  `code` TEXT NOT NULL UNIQUE,
+  `asset` INTEGER NOT NULL UNIQUE,
+  `permission` TEXT NOT NULL DEFAULT 'PUBLIC',
+  `regdate` TEXT NOT NULL,
+  PRIMARY KEY (`id` AUTOINCREMENT),
+  FOREIGN KEY (`asset`) REFERENCES `asset` (`id`)
+);
+
 -- asset/file 매핑 테이블
 CREATE TABLE `map_asset_file` (
   `id` INTEGER NOT NULL UNIQUE,

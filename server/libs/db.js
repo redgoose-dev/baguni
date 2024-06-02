@@ -11,6 +11,7 @@ export const tables = {
   file: 'file',
   tag: 'tag',
   user: 'user',
+  share: 'share',
   tokens: 'tokens',
   mapAssetFile: 'map_asset_file',
   mapAssetTag: 'map_asset_tag',
