@@ -78,7 +78,7 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    success(req, res, { message: '에엣-콜렉션 맵을 업데이트 했습니다.' })
+    success(req, res, { message: '에셋-콜렉션 맵을 업데이트 했습니다.' })
   }
   catch (e)
   {
@@ -88,7 +88,7 @@ export default async (req, res) => {
     // result
     error(req, res, {
       code: e.code,
-      message: '에엣-콜렉션 맵을 업데이트하지 못했습니다.',
+      message: '에셋-콜렉션 맵을 업데이트하지 못했습니다.',
       _file: __filename,
       _err: e,
     })
