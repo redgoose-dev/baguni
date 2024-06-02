@@ -2,14 +2,11 @@
  * [404] Not found
  */
 
-import { writeLog } from '../output.js'
+import { error } from '../output.js'
 
 export default async (req, res) => {
-  const code = 404
-  const message = 'Not found.'
-  writeLog(req, res, 'error', {
-    status: code,
-    message,
+  error(req, res, {
+    code: 404,
+    message: 'Not found.',
   })
-  res.status(code).json({ message })
 }

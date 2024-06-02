@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import * as map from './map.js'
+import RunningTimer from '../libs/RunningTimer.js'
 
 /** @var {Express} app */
 let app
@@ -49,6 +50,8 @@ function appRoutes()
  */
 function setup(req, res, _next)
 {
+  // start running timer
+  res.runTime = new RunningTimer()
   // next
   _next()
 }

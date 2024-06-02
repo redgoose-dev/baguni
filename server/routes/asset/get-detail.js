@@ -11,10 +11,8 @@ import { checkAuthorization } from '../../libs/token.js'
 import { fileTypes } from '../../libs/consts.js'
 import { parseJSON } from '../../libs/objects.js'
 import ServiceError from '../../libs/ServiceError.js'
-import RunningTimer from '../../libs/RunningTimer.js'
 
 export default async (req, res) => {
-  const timer = new RunningTimer()
   try
   {
     const id = Number(req.params.id)
@@ -114,7 +112,6 @@ export default async (req, res) => {
         collections,
         regdate: asset.data.regdate,
       },
-      runTime: timer.end(),
     })
   }
   catch (e)
@@ -125,7 +122,6 @@ export default async (req, res) => {
     error(req, res, {
       code: e.code,
       message: '에셋을 가져오지 못했습니다.',
-      runTime: timer.end(),
       _file: e.code !== 204 ? __filename : undefined,
       _err: e,
     })
