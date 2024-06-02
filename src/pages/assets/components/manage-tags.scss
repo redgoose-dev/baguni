@@ -27,3 +27,10 @@
   align-items: center;
   gap: 4px 8px;
 }
+
+.empty {
+  margin: 0;
+  font-size: 12px;
+  color: var(--color-weak);
+  line-height: 1.15;
+}

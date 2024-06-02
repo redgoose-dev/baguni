@@ -1,6 +1,6 @@
 <template>
 <fieldset class="manage-file-upload">
-  <legend>에셋 이미지</legend>
+  <legend>에셋 파일</legend>
   <div
     v-if="uploaded"
     ref="$uploadedFile"
@@ -9,10 +9,13 @@
       <figure class="uploaded-file__image">
         <button
           type="button"
-          title="Open image on overlay"
+          :title="meta.name"
           class="image"
-          @click="">
-          <img src="https://goose.redgoose.me/data/upload/original/202003/triangle-beeple-001.jpg" alt="">
+          @click="openFile">
+          <img
+            v-if="_preview.type === 'image'"
+            :src="_preview.src"
+            alt="preview image">
         </button>
         <nav>
           <Button
@@ -20,7 +23,7 @@
             icon="trash-2"
             theme="circle"
             color="danger"
-            @click=""/>
+            @click="removeFile"/>
         </nav>
       </figure>
       <fieldset class="uploaded-file__body">
@@ -28,27 +31,28 @@
         <div class="filename">
           <label for="filename">파일이름</label>
           <InputText
+            v-model="meta.filename"
             name="filename"
             id="filename"
             placeholder="filename.jpg"
             size="small"/>
         </div>
         <div class="info">
-          <dl>
+          <dl v-if="meta.type">
             <dt>타입</dt>
-            <dd>image/jpeg</dd>
+            <dd>{{meta.type}}</dd>
           </dl>
-          <dl>
+          <dl v-if="meta.size">
             <dt>사이즈</dt>
-            <dd>320kb</dd>
+            <dd>{{getByte(meta.size)}}</dd>
           </dl>
-          <dl>
+          <dl v-if="meta.imageSize">
             <dt>이미지 크기</dt>
-            <dd>100px*100px</dd>
+            <dd>{{meta.imageSize}}</dd>
           </dl>
-          <dl>
+          <dl v-if="meta.date">
             <dt>날짜</dt>
-            <dd>0000-00-00 22:22:22</dd>
+            <dd>{{meta.date}}</dd>
           </dl>
         </div>
       </fieldset>
@@ -59,7 +63,7 @@
     ref="$uploadFile"
     :class="[
       'upload-file',
-      false && 'uploading',
+      false && 'dropzone',
     ]">
     <ShadowBox class="upload-file__box">
       <figure class="upload-file__body">
@@ -73,27 +77,95 @@
         <Button
           type="button"
           color="key-1"
-          @click="">
+          @click="onClickUploadFile">
           찾아보기..
         </Button>
       </nav>
     </ShadowBox>
   </div>
+  <pre class="pre-code">{{}}</pre>
 </fieldset>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch, reactive, onMounted } from 'vue'
+import { fileUploader, getImageSize } from '../../../libs/files.js'
+import { getByte } from '../../../libs/strings.js'
+import { dateFormat } from '../../../libs/dates.js'
 import Button from '../../../components/buttons/button-basic.vue'
 import ShadowBox from '../../../components/content/shadow-box.vue'
 import InputText from '../../../components/form/input-text.vue'
 
 const $uploadFile = ref()
 const $uploadedFile = ref()
+const props = defineProps({
+  file: null,
+})
+const emits = defineEmits([ 'update', 'open' ])
+const meta = reactive({
+  filename: '',
+  type: '',
+  size: '',
+  imageSize: '',
+  date: '',
+})
 
 const uploaded = computed(() => {
-  return false
+  return !!props.file
 })
+const _preview = computed(() => {
+  if (!props.file) return null
+  return {
+    type: meta.type?.split('/')?.[0],
+    src: URL.createObjectURL(props.file),
+  }
+})
+
+watch(() => props.file, async (value, oldValue) => {
+  await setMeta(value)
+})
+onMounted(async () => {
+  if (props.file) await setMeta(props.file)
+})
+
+async function setMeta(value)
+{
+  if (value)
+  {
+    meta.filename = value.name
+    meta.date = value.lastModifiedDate ? dateFormat(value.lastModifiedDate, '{yyyy}-{MM}-{dd} {hh}:{mm}:{ss}') : null
+    meta.size = value.size
+    meta.type = value.type
+    meta.imageSize = await getImageSize(value)
+    if (meta.imageSize) meta.imageSize = `${meta.imageSize.width}px * ${meta.imageSize.height}px`
+  }
+  else
+  {
+    meta.filename = null
+    meta.date = null
+    meta.size = null
+    meta.type = null
+    meta.imageSize = null
+  }
+}
+
+async function onClickUploadFile()
+{
+  const file = await fileUploader({
+    accept: 'image',
+  })
+  emits('update', file)
+}
+
+function openFile()
+{
+  emits('open', props.file)
+}
+
+function removeFile()
+{
+  emits('update', undefined)
+}
 </script>
 
 <style src="./upload-file.scss" lang="scss" scoped></style>

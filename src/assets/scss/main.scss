@@ -72,3 +72,10 @@ html.mode-not-scroll {
     overflow: hidden;
   }
 }
+
+// etc
+.pre-code {
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-size: 10px;
+}

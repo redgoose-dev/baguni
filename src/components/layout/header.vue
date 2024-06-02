@@ -44,10 +44,11 @@
       <template v-if="isLogin">
         <div>
           <ButtonBasic
-            href="/asset/create"
+            href="/asset/create/"
             size="small"
+            left-icon="upload"
             color="key-1">
-            등록하기
+            에셋 만들기
           </ButtonBasic>
         </div>
         <div>
