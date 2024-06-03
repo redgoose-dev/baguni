@@ -12,12 +12,15 @@ const ipWareInstance = ipware()
  */
 export function success(req, res, options = {})
 {
-  const { code, message } = options
+  const { code, message, useLog } = options
   res.runTime.stop()
-  writeLog(req, res, 'success', {
-    status: code || 200,
-    message,
-  })
+  if (useLog !== false)
+  {
+    writeLog(req, res, 'success', {
+      status: code || 200,
+      message,
+    })
+  }
   res
     .status(options.code || 200)
     .json({
@@ -36,13 +39,16 @@ export function success(req, res, options = {})
  */
 export function error(req, res, options = {})
 {
-  const { message, code, _file, _err } = options
+  const { message, code, useLog, _file, _err } = options
   res.runTime.stop()
-  writeLog(req, res, 'error', {
-    status: code || 500,
-    message: _err?.message || message,
-    ...(_file ? { file: _file } : {}),
-  })
+  if (useLog !== false)
+  {
+    writeLog(req, res, 'error', {
+      status: code || 500,
+      message: _err?.message || message,
+      ...(_file ? { file: _file } : {}),
+    })
+  }
   res
     .status(code || 500)
     .json({
@@ -61,13 +67,16 @@ export function error(req, res, options = {})
  */
 export function end(req, res, type = 'error', options = {})
 {
-  const { message, code, _file, _err } = options
+  const { message, code, useLog, _file, _err } = options
   res.runTime.stop()
-  writeLog(req, res, type, {
-    status: code || 500,
-    message: _err?._message || message,
-    ...(_file ? { file: _file } : {}),
-  })
+  if (useLog !== false)
+  {
+    writeLog(req, res, type, {
+      status: code || 500,
+      message: _err?._message || message,
+      ...(_file ? { file: _file } : {}),
+    })
+  }
   res.status(code || 500).end()
 }
 
@@ -76,12 +85,15 @@ export function end(req, res, type = 'error', options = {})
  */
 export function download(req, res, options = {})
 {
-  const { path, name, _message } = options
+  const { path, name, useLog, _message } = options
   res.runTime.stop()
-  writeLog(req, res, 'success', {
-    status: 200,
-    message: _message,
-  })
+  if (useLog !== false)
+  {
+    writeLog(req, res, 'success', {
+      status: 200,
+      message: _message,
+    })
+  }
   res.download(path, name)
 }
 
@@ -90,12 +102,15 @@ export function download(req, res, options = {})
  */
 export function outFile(req, res, options = {})
 {
-  const { type, buffer, _message } = options
+  const { type, buffer, useLog, _message } = options
   res.runTime.stop()
-  writeLog(req, res, 'success', {
-    status: 200,
-    message: _message,
-  })
+  if (useLog !== false)
+  {
+    writeLog(req, res, 'success', {
+      status: 200,
+      message: _message,
+    })
+  }
   res.writeHead(200, { 'Content-Type': type })
   res.end(buffer)
 }

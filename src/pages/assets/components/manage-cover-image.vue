@@ -6,47 +6,153 @@
       <button
         type="button"
         title="Open image on overlay"
-        :disabled="false"
+        :disabled="!$previewSrc"
         class="image"
-        @click="">
-        <img
-          v-if="true"
-          src="https://goose.redgoose.me/data/upload/original/202003/triangle-beeple-001.jpg"
-          alt="">
+        @click="onClickPreviewImage">
+        <img v-if="$previewSrc" :src="$previewSrc" alt="preview image">
         <i v-else>
           <Icon name="image"/>
         </i>
       </button>
       <div class="body">
-        <p>- 사이즈: 140px * 140px</p>
-        <nav>
-          <Dropdown :use-value="true">
-            <template #trigger>
-              <ButtonBasic size="small" right-icon="chevron-down" color="weak">
-                커버 이미지 컨트롤
-              </ButtonBasic>
-            </template>
-            <Context
-              :items="[
-                { key: 'context-1', label: '이미지 업로드' },
-                { key: 'context-2', label: '편집' },
-                { key: 'context-3', label: '삭제하기' },
-              ]"
-              @select=""/>
-          </Dropdown>
-        </nav>
+        <p>- 사이즈: {{createSize[0]}}px * {{createSize[1]}}px</p>
+        <div class="nav">
+          <ButtonGroup size="small">
+            <ButtonBasic
+              size="small"
+              color="key-1"
+              left-icon="upload"
+              @click="fileUpload">
+              업로드
+            </ButtonBasic>
+            <Dropdown v-if="props.image" :use-value="true">
+              <template #trigger>
+                <ButtonBasic size="small" right-icon="chevron-down">
+                  설정
+                </ButtonBasic>
+              </template>
+              <Context
+                :items="[
+                  { key: 'edit', label: '편집', icon: 'crop' },
+                  { key: 'delete', label: '삭제하기', color: 'danger', icon: 'trash-2' },
+                ].filter(Boolean)"
+                @select="selectControlMenuItem"/>
+            </Dropdown>
+          </ButtonGroup>
+        </div>
       </div>
     </div>
   </ShadowBox>
+  <teleport to="#modal">
+    <Modal
+      :open="currentCropper.open"
+      :hide-scroll="true"
+      @close="cancelCreateCoverImage">
+      <ImageCropper
+        :src="$createImageSrc"
+        title="커버 이미지 만들기"
+        submit-label="커버 이미지 만들기"
+        :crop-size="createSize"
+        :default-coordinates="currentCropper.coordinates"
+        @submit="createCoverImage"
+        @close="cancelCreateCoverImage"/>
+    </Modal>
+  </teleport>
 </fieldset>
 </template>
 
 <script setup>
+import { ref, computed, reactive, onMounted } from 'vue'
+import { fileUploader } from '../../../libs/files.js'
 import ShadowBox from '../../../components/content/shadow-box.vue'
 import Icon from '../../../components/icons/index.vue'
+import ButtonGroup from '../../../components/buttons/group.vue'
 import ButtonBasic from '../../../components/buttons/button-basic.vue'
 import Context from '../../../components/navigation/context.vue'
 import Dropdown from '../../../components/navigation/dropdown.vue'
+import Modal from '../../../components/modal/index.vue'
+import ImageCropper from '../../../components/content/image-cropper/index.vue'
+
+const props = defineProps({
+  image: null,
+  preview: null,
+  coordinates: null,
+})
+const emits = defineEmits([ 'update', 'open-image' ])
+const createSize = [ 640, 480 ]
+const readyOriginalImage = ref(null)
+const currentCropper = reactive({
+  open: false,
+  coordinates: null,
+})
+
+const $createImageSrc = computed(() => {
+  if (readyOriginalImage.value) return URL.createObjectURL(readyOriginalImage.value)
+  if (!props.image) return null
+  // TODO: 이 부분 수정할때의 값과 파일을 선택할때의 값을 분기둬야할거같다.
+  return URL.createObjectURL(props.image)
+})
+const $previewSrc = computed(() => {
+  if (!props.preview) return null
+  return URL.createObjectURL(props.preview)
+})
+
+function selectControlMenuItem({ key })
+{
+  switch (key)
+  {
+    case 'upload':
+      fileUpload().then()
+      break
+    case 'edit':
+      currentCropper.coordinates = props.coordinates
+      currentCropper.open = true
+      break
+    case 'delete':
+      deleteCoverImage()
+      break
+  }
+}
+
+async function fileUpload()
+{
+  const file = await fileUploader({ accept: 'image/*' })
+  if (!file) return
+  readyOriginalImage.value = file
+  currentCropper.coordinates = null
+  currentCropper.open = true
+}
+
+async function createCoverImage({ coordinates, blob })
+{
+  emits('update', {
+    coordinates,
+    original: readyOriginalImage.value,
+    create: blob,
+  })
+  readyOriginalImage.value = null
+  currentCropper.open = false
+}
+
+function deleteCoverImage()
+{
+  emits('update', {
+    removed: true,
+  })
+  readyOriginalImage.value = null
+}
+
+function cancelCreateCoverImage()
+{
+  readyOriginalImage.value = null
+  currentCropper.open = false
+}
+
+function onClickPreviewImage()
+{
+  if (!$previewSrc.value) return
+  emits('open-image', $previewSrc.value)
+}
 </script>
 
 <style src="./manage-cover-image.scss" lang="scss" scoped></style>

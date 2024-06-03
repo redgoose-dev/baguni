@@ -17,7 +17,9 @@ export function fileUploader(options = {})
       input.value = null
       resolve((options.multiple === true) ? files : files[0])
     })
-    input.addEventListener('cancel', () => resolve([]))
+    input.addEventListener('cancel', () => {
+      resolve((options.multiple === true) ? [] : null)
+    })
     input.click()
   })
 }

@@ -32,7 +32,7 @@ import Icon from '../icons/index.vue'
 
 const $root = ref()
 const props = defineProps({
-  position: String, // right
+  position: String, // right,top-left,top-right
   icon: { type: String, default: 'more-horizontal' },
   modelValue: Boolean,
   useValue: Boolean,

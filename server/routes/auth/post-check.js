@@ -57,6 +57,7 @@ export default async (req, res) => {
           accessToken,
           user,
         },
+        useLog: false,
       })
     }
     catch (e)
@@ -104,6 +105,7 @@ export default async (req, res) => {
           accessToken: newAccessToken.value,
           user,
         },
+        useLog: false,
       })
     }
     catch (e)

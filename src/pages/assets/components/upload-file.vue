@@ -2,7 +2,7 @@
 <fieldset class="manage-file-upload">
   <legend>에셋 파일</legend>
   <div
-    v-if="uploaded"
+    v-if="$uploaded"
     ref="$uploadedFile"
     class="uploaded-file">
     <ShadowBox class="uploaded-file__box">
@@ -13,8 +13,8 @@
           class="image"
           @click="openFile">
           <img
-            v-if="_preview.type === 'image'"
-            :src="_preview.src"
+            v-if="$preview?.type === 'image'"
+            :src="$preview.src"
             alt="preview image">
         </button>
         <nav>
@@ -31,28 +31,29 @@
         <div class="filename">
           <label for="filename">파일이름</label>
           <InputText
-            v-model="meta.filename"
+            v-model="meta.name"
             name="filename"
             id="filename"
             placeholder="filename.jpg"
-            size="small"/>
+            size="small"
+            @update:model-value="updateMeta"/>
         </div>
         <div class="info">
-          <dl v-if="meta.type">
+          <dl v-if="$meta.type">
             <dt>타입</dt>
-            <dd>{{meta.type}}</dd>
+            <dd>{{$meta.type}}</dd>
           </dl>
-          <dl v-if="meta.size">
+          <dl v-if="$meta.size">
             <dt>사이즈</dt>
-            <dd>{{getByte(meta.size)}}</dd>
+            <dd>{{$meta.size}}</dd>
           </dl>
-          <dl v-if="meta.imageSize">
+          <dl v-if="$meta.imageSize">
             <dt>이미지 크기</dt>
-            <dd>{{meta.imageSize}}</dd>
+            <dd>{{$meta.imageSize}}</dd>
           </dl>
-          <dl v-if="meta.date">
+          <dl v-if="$meta.date">
             <dt>날짜</dt>
-            <dd>{{meta.date}}</dd>
+            <dd>{{$meta.date}}</dd>
           </dl>
         </div>
       </fieldset>
@@ -83,7 +84,6 @@
       </nav>
     </ShadowBox>
   </div>
-  <pre class="pre-code">{{}}</pre>
 </fieldset>
 </template>
 
@@ -101,51 +101,64 @@ const $uploadedFile = ref()
 const props = defineProps({
   file: null,
 })
-const emits = defineEmits([ 'update', 'open' ])
+const emits = defineEmits([ 'change-file', 'update-meta', 'open-image' ])
 const meta = reactive({
   filename: '',
   type: '',
-  size: '',
+  size: 0,
   imageSize: '',
   date: '',
 })
 
-const uploaded = computed(() => {
-  return !!props.file
+const $uploaded = computed(() => {
+  return !!props.file?.name
 })
-const _preview = computed(() => {
-  if (!props.file) return null
+const $preview = computed(() => {
+  if (!props.file?.name) return null
   return {
     type: meta.type?.split('/')?.[0],
     src: URL.createObjectURL(props.file),
   }
 })
+const $meta = computed(() => {
+  let result = {
+    name: meta.name,
+    size: getByte(meta.size),
+    type: meta.type,
+  }
+  if (meta.date) result.date = dateFormat(meta.date, '{yyyy}-{MM}-{dd} {hh}:{mm}:{ss}')
+  if (meta.image) result.imageSize = `${meta.image.width}px * ${meta.image.height}px`
+  return result
+})
 
-watch(() => props.file, async (value, oldValue) => {
+watch(() => props.file, async (value, _) => {
   await setMeta(value)
 })
 onMounted(async () => {
   if (props.file) await setMeta(props.file)
 })
 
+/**
+ * 파일 데이터를 메타 객체로 이전한다.
+ */
 async function setMeta(value)
 {
-  if (value)
+  if (value?.name)
   {
-    meta.filename = value.name
-    meta.date = value.lastModifiedDate ? dateFormat(value.lastModifiedDate, '{yyyy}-{MM}-{dd} {hh}:{mm}:{ss}') : null
+    // TODO: value 값이 File일수도 있고 번호일수도 있다. 번호라면 수정 데이터로 보고 번호를 file id로 사용하고 메타 데이터로 값으로 사용하는게 좋겠다.
+    meta.name = value.name
+    meta.date = value.lastModifiedDate
     meta.size = value.size
     meta.type = value.type
-    meta.imageSize = await getImageSize(value)
-    if (meta.imageSize) meta.imageSize = `${meta.imageSize.width}px * ${meta.imageSize.height}px`
+    meta.image = await getImageSize(value)
   }
   else
   {
-    meta.filename = null
+    meta.name = null
     meta.date = null
-    meta.size = null
+    meta.size = 0
     meta.type = null
-    meta.imageSize = null
+    meta.image = null
   }
 }
 
@@ -154,17 +167,24 @@ async function onClickUploadFile()
   const file = await fileUploader({
     accept: 'image',
   })
-  emits('update', file)
+  emits('change-file', file)
+}
+
+function updateMeta()
+{
+  emits('update-meta', {
+    name: meta.name,
+  })
 }
 
 function openFile()
 {
-  emits('open', props.file)
+  if (!props.file) return
+  emits('open-image', URL.createObjectURL(props.file))
 }
-
 function removeFile()
 {
-  emits('update', undefined)
+  emits('change-file', undefined)
 }
 </script>
 

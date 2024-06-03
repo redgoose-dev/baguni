@@ -1,0 +1,16 @@
+.image-cropper {
+  padding: 24px;
+}
+
+.cropper {
+  margin: 16px 0 0;
+  width: calc(86vw - 48px);
+  height: calc(78vh - 172px);
+  max-width: 960px;
+  max-height: 540px;
+  background: var(--color-blur);
+}
+
+.bottom {
+  margin: 24px 0 0;
+}

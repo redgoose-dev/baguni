@@ -44,6 +44,18 @@ const props = defineProps({
       outline-offset: -2px;
     }
   }
+  &:deep(.context-dropdown .trigger > .button) {
+    border-radius: 0;
+    box-shadow: none;
+  }
+  &:deep(.context-dropdown:first-child .trigger > .button) {
+    border-top-left-radius: var(--button-group-radius);
+    border-bottom-left-radius: var(--button-group-radius);
+  }
+  &:deep(.context-dropdown:last-child .trigger > .button) {
+    border-top-right-radius: var(--button-group-radius);
+    border-bottom-right-radius: var(--button-group-radius);
+  }
 
   // size
   &--small {

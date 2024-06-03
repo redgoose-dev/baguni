@@ -2,7 +2,7 @@
 <button
   type="button"
   title="닫기"
-  @click="emits('click')">
+  @click="emits('close')">
   <Icon name="x"/>
 </button>
 </template>

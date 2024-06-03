@@ -5,10 +5,16 @@
       :meta="forms.mainFile"
       :file="files.main"
       class="upload"
-      @update="updateMainFile"
-      @open="openMainFile"/>
+      @change-file="onChangeMainFile"
+      @update-meta="onUpdateMainFileMeta"
+      @open-image="onOpenImage"/>
     <ManageCoverImage
-      class="cover-image"/>
+      :image="files.coverOriginal"
+      :preview="files.coverCreate"
+      :coordinates="forms.cover.coordinates"
+      class="cover-image"
+      @update="onUpdateCoverImage"
+      @open-image="onOpenImage"/>
   </aside>
   <div class="post__body">
     <fieldset class="field">
@@ -34,6 +40,7 @@
       </div>
     </fieldset>
     <ManageTags v-model="forms.tags"/>
+    <pre class="pre-code">{{forms}}</pre>
     <nav class="submit">
       <Button
         type="submit"
@@ -42,10 +49,9 @@
         :disabled="processing"
         :rotate-icon="processing"
         :left-icon="processing ? 'loader' : 'check'">
-        {{processing ? '처리중' : submitLabel}}
+        {{$submitLabel}}
       </Button>
     </nav>
-    <pre class="pre-code">{{forms}}</pre>
   </div>
 </form>
 <teleport to="#modal">
@@ -73,7 +79,10 @@ const forms = reactive({
   title: '',
   description: '',
   tags: [],
-  mainFile: undefined,
+  mainFile: {},
+  cover: {
+    coordinates: null,
+  },
 })
 const files = reactive({
   main: undefined,
@@ -83,7 +92,8 @@ const files = reactive({
 const processing = ref(false)
 const lightboxImage = ref('')
 
-const submitLabel = computed(() => {
+const $submitLabel = computed(() => {
+  if (processing.value) return '처리중'
   switch (props.mode)
   {
     case 'create': return '등록하기'
@@ -91,28 +101,47 @@ const submitLabel = computed(() => {
   }
 })
 
-async function updateMainFile(file)
+async function onChangeMainFile(file)
 {
   if (file)
   {
     forms.mainFile = {
       name: file.name,
-      size: file.size,
       type: file.type,
+      size: file.size,
       date: file.lastModifiedDate,
     }
     files.main = file
   }
   else
   {
-    forms.mainFile = undefined
+    forms.mainFile = {}
     files.main = undefined
   }
 }
-
-function openMainFile(file)
+function onUpdateMainFileMeta(newValue)
 {
-  lightboxImage.value = URL.createObjectURL(file)
+  forms.mainFile.name = newValue.name
+}
+
+function onUpdateCoverImage(src)
+{
+  const { coordinates, original, create, removed } = src
+  if (removed)
+  {
+    forms.cover.coordinates =  null
+    files.coverOriginal = null
+    files.coverCreate = null
+  }
+  forms.cover.coordinates = coordinates
+  if (original) files.coverOriginal = original
+  files.coverCreate = create
+}
+
+function onOpenImage(file)
+{
+  if (!file) return
+  lightboxImage.value = file
 }
 
 async function onSubmit()

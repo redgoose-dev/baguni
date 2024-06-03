@@ -1,6 +1,6 @@
 <template>
 <article class="create-asset">
-  <PageHeader title="에셋 등록하기">
+  <PageHeader title="에셋 만들기">
     새로운 에셋을 만듭니다.
   </PageHeader>
   <Post mode="create"/>

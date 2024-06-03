@@ -25,7 +25,7 @@
     display: grid;
     margin: 0;
     padding: 0;
-    height: 100px;
+    height: 90px;
     aspect-ratio: 4/3;
     border: none;
     background: none;
@@ -48,7 +48,10 @@
       object-fit: cover;
     }
     i {
-      display: block;
+      display: grid;
+      place-content: center;
+      background: var(--color-blur);
+      height: 100%;
       --icon-size: 32px;
       --icon-color: var(--color-light);
       --icon-stroke: 1.5;
@@ -57,7 +60,7 @@
 }
 
 .body {
-  nav {
+  .nav {
     display: flex;
     gap: 0 10px;
   }
