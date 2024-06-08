@@ -24,11 +24,15 @@ export function fileUploader(options = {})
   })
 }
 
+/**
+ * get image size
+ * @param {File|string} file
+ * @return {Promise<object>}
+ */
 export function getImageSize(file)
 {
   return new Promise(resolve => {
     if (!file) return resolve()
-    const url = URL.createObjectURL(file)
     let img = new Image()
     img.onload = function()
     {
@@ -37,6 +41,18 @@ export function getImageSize(file)
         height: this.height,
       })
     }
-    img.src = url
+    img.src = (file instanceof File) ? URL.createObjectURL(file) : file
   })
+}
+
+/**
+ * blob to file
+ * @param {Blob} blob
+ * @param {string} name
+ * @param {string} type
+ * @return {File}
+ */
+export function blobToFile(blob, name, type)
+{
+  return new File([blob], name, { type })
 }

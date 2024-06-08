@@ -12,7 +12,7 @@
         placeholder="태그이름"
         size="small"
         :maxlength="20"
-        @keydown.enter="addTag"/>
+        @keydown.enter.prevent="addTag"/>
       <template #right>
         <Button
           size="small"
@@ -57,7 +57,7 @@ const _existInputTag = computed(() => {
   return inputTag.value.length > 0
 })
 
-function onClickAddTag()
+function onClickAddTag(e)
 {
   addTag()
   $inputTagName.value.focus()
@@ -66,6 +66,7 @@ function onClickAddTag()
 const addTag = debounce(_addTag, 30)
 function _addTag()
 {
+  if (!inputTag.value) return
   if (props.modelValue.includes(inputTag.value)) return
   updateTags([
     ...props.modelValue,

@@ -43,7 +43,9 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { Cropper } from 'vue-advanced-cropper'
-import ImageResize from 'image-resize'
+import imageResize from 'image-resize'
+import { blobToFile } from '../../../libs/files.js'
+import { createRandomText } from '../../../libs/strings.js'
 import ModalHeader from '../../modal/header.vue'
 import ModalButtonClose from '../../modal/button-close.vue'
 import NavigationBottom from '../../navigation/bottom.vue'
@@ -59,15 +61,6 @@ const props = defineProps({
   submitLabel: String,
 })
 const emits = defineEmits([ 'close', 'submit' ])
-const imageResize = new ImageResize({
-  format: 'webp',
-  quality: .72,
-  width: props.cropSize[0],
-  height: props.cropSize[1],
-  outputType: 'blob',
-  reSample: 2,
-  sharpen: .5,
-})
 const transitions = ref(false)
 
 const $ratio = computed(() => {
@@ -90,9 +83,20 @@ async function onSubmit()
 {
   const result = _cropper.value.getResult()
   const { coordinates, canvas } = result
+  const blob = await imageResize(canvas, {
+    format: 'webp',
+    quality: .72,
+    width: props.cropSize[0],
+    height: props.cropSize[1],
+    outputType: 'blob',
+    reSample: 2,
+    sharpen: .5,
+    bgColor: '#ffffff',
+  })
+  const file = blobToFile(blob, `${Date.now()}-${createRandomText(4)}.webp`, 'image/webp')
   emits('submit', {
     coordinates,
-    blob: await imageResize.play(canvas.toDataURL()),
+    file,
   })
 }
 </script>

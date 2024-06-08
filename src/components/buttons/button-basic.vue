@@ -1,5 +1,5 @@
 <template>
-<component :is="tag" v-bind="wrapProps">
+<component ref="$root" :is="tag" v-bind="wrapProps">
   <Body :is-label="!!$slots.default" v-bind="bodyProps">
     <slot v-if="$slots.default"/>
   </Body>
@@ -7,9 +7,10 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import Body from './body.vue'
 
+const $root = ref()
 const props = defineProps({
   type: String, // button,submit,reset,text
   href: String,
@@ -24,7 +25,6 @@ const props = defineProps({
   rotateIcon: Boolean,
   theme: String, // circle
 })
-
 const type = computed(() => {
   if (props.href) return /^http/.test(props.href) ? 'a' : 'router'
   else return props.type || 'button'
@@ -75,6 +75,10 @@ const bodyProps = computed(() => {
     rightIcon: props.rightIcon,
     rotateIcon: props.rotateIcon,
   }
+})
+
+defineExpose({
+  focus: () => $root.value.focus(),
 })
 </script>
 

@@ -22,7 +22,7 @@
               class="item">
               <template #body>
                 <nav class="item-nav">
-                  <router-link to="/asset/edit/123">수정</router-link>
+                  <router-link to="/asset/edit/123/">수정</router-link>
                   <a href="#">공유하기</a>
                   <a href="#">삭제하기</a>
                 </nav>

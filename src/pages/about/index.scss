@@ -1,6 +1,5 @@
 .about {
-  max-width: var(--size-content-width);
-  margin: 0 auto;
+  padding: 12px 0 0;
 }
 
 .header {
@@ -16,23 +15,25 @@
     margin: 8px 0 0;
     img {
       display: block;
-      width: 116px;
+      width: 142px;
       margin: 0 auto;
     }
   }
 }
 
 .symbol-image {
-  margin: 10px 0 0;
+  margin: 24px 0 0;
   user-select: none;
   img {
     display: block;
-    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
   }
 }
 
 .content {
-  margin: 50px 0 0;
+  margin: 60px auto 0;
+  max-width: var(--size-content-width);
 }
 
 .description {
@@ -45,12 +46,12 @@
 .feature {
   display: grid;
   gap: 24px 0;
-  margin: 36px 0 0;
+  margin: 42px 0 0;
   section {
     h1 {
       margin: 0 0 8px;
-      font-size: 20px;
-      font-weight: 600;
+      font-size: 18px;
+      font-weight: 700;
       line-height: 1.15;
     }
     p {
@@ -62,7 +63,7 @@
 }
 
 .line {
-  margin: 70px auto;
+  margin: 64px auto 52px;
   width: 16px;
   height: 1px;
   border: none;
@@ -74,7 +75,7 @@
     margin: 0 0 16px;
     font-size: 24px;
     line-height: 1.05;
-    font-weight: 800;
+    font-weight: 700;
   }
   ul {
     margin: 0;

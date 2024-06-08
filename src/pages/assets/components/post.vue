@@ -2,8 +2,9 @@
 <form class="post" @submit.prevent="onSubmit">
   <aside class="post__side">
     <UploadFile
-      :meta="forms.mainFile"
+      ref="$uploadFile"
       :file="files.main"
+      :meta="forms.file"
       class="upload"
       @change-file="onChangeMainFile"
       @update-meta="onUpdateMainFileMeta"
@@ -40,15 +41,14 @@
       </div>
     </fieldset>
     <ManageTags v-model="forms.tags"/>
-    <pre class="pre-code">{{forms}}</pre>
     <nav class="submit">
       <Button
         type="submit"
         size="big"
         color="key-1"
-        :disabled="processing"
-        :rotate-icon="processing"
-        :left-icon="processing ? 'loader' : 'check'">
+        :disabled="props.processing"
+        :rotate-icon="props.processing"
+        :left-icon="props.processing ? 'loader' : 'check'">
         {{$submitLabel}}
       </Button>
     </nav>
@@ -63,7 +63,7 @@
 
 <script setup>
 import { ref, computed, reactive } from 'vue'
-import { request } from '../../../libs/api.js'
+import { pureObject } from '../../../libs/objects.js'
 import Button from '../../../components/buttons/button-basic.vue'
 import UploadFile from './upload-file.vue'
 import ManageCoverImage from './manage-cover-image.vue'
@@ -72,70 +72,83 @@ import InputText from '../../../components/form/input-text.vue'
 import Textarea from '../../../components/form/textarea.vue'
 import Lightbox from '../../../components/content/lightbox/index.vue'
 
+const $uploadFile = ref()
 const props = defineProps({
-  mode: { type: String, required: true }, // create,edit
+  data: Object, // create,edit
+  processing: Boolean,
 })
+const emits = defineEmits([ 'submit' ])
 const forms = reactive({
-  title: '',
-  description: '',
-  tags: [],
-  mainFile: {},
+  title: props.data?.title || '',
+  description: props.data?.description || '',
+  tags: pureObject(props.data?.tags) || [],
+  file: props.data?.file ? {
+    name: props.data.file.name,
+    size: props.data.file.size,
+    type: props.data.file.type,
+    date: new Date(props.data.file.date),
+  } : {},
   cover: {
-    coordinates: null,
+    coordinates: pureObject(props.data?.json?.cover?.coordinates),
   },
 })
 const files = reactive({
-  main: undefined,
-  coverOriginal: undefined,
-  coverCreate: undefined,
+  main: props.data?.file?.id || undefined,
+  coverOriginal: props.data?.cover_original || undefined,
+  coverCreate: props.data?.cover_create || undefined,
+  removedMain: !Boolean(props.data?.file?.id),
+  removedCover: !Boolean(props.data?.cover_original),
 })
-const processing = ref(false)
 const lightboxImage = ref('')
 
+const $isEdit = computed(() => (!!props.data))
 const $submitLabel = computed(() => {
-  if (processing.value) return '처리중'
-  switch (props.mode)
-  {
-    case 'create': return '등록하기'
-    case 'edit': return '수정하기'
-  }
+  if (props.processing) return '처리중'
+  return $isEdit.value ? '수정하기' : '만들기'
 })
 
 async function onChangeMainFile(file)
 {
   if (file)
   {
-    forms.mainFile = {
+    forms.file = {
       name: file.name,
       type: file.type,
       size: file.size,
       date: file.lastModifiedDate,
     }
     files.main = file
+    files.removedMain = false
   }
   else
   {
-    forms.mainFile = {}
-    files.main = undefined
+    forms.file = {}
+    files.main = null
+    files.removedMain = true
   }
 }
 function onUpdateMainFileMeta(newValue)
 {
-  forms.mainFile.name = newValue.name
+  forms.file.name = newValue.name
 }
 
 function onUpdateCoverImage(src)
 {
-  const { coordinates, original, create, removed } = src
-  if (removed)
+  const { coordinates, original, create, removedCover } = src
+  if (removedCover)
   {
-    forms.cover.coordinates =  null
+    forms.cover.coordinates = null
     files.coverOriginal = null
     files.coverCreate = null
   }
-  forms.cover.coordinates = coordinates
+  else
+  {
+    if (forms.cover) forms.cover.coordinates = coordinates
+    else forms.cover = { coordinates }
+  }
+  files.removedCover = Boolean(removedCover)
   if (original) files.coverOriginal = original
-  files.coverCreate = create
+  if (create) files.coverCreate = create
 }
 
 function onOpenImage(file)
@@ -146,16 +159,24 @@ function onOpenImage(file)
 
 async function onSubmit()
 {
-  try
-  {
-    processing.value = true
-    console.log('on submit')
-    processing.value = false
+  let json = {
+    cover: forms.cover,
   }
-  catch (e)
-  {
-    processing.value = false
+  let body = {
+    title: forms.title || '',
+    description: forms.description || '',
+    json: JSON.stringify(json),
   }
+  if (forms.tags?.length > 0) body.tags = forms.tags.join(',')
+  if (files.main && files.main instanceof File) body.file = files.main
+  if (files.coverOriginal && files.coverOriginal instanceof File) body.cover_original = files.coverOriginal
+  if (files.coverCreate && files.coverCreate instanceof File) body.cover_create = files.coverCreate
+  body.remove_files = [
+    files.removedMain && 'main',
+    files.removedCover && 'cover-original',
+    files.removedCover && 'cover-create',
+  ].filter(Boolean).join(',')
+  emits('submit', body)
 }
 </script>
 

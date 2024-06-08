@@ -27,6 +27,7 @@ export default async (req, res) => {
   upload(req, res, async () => {
     // TODO: 첨부파일 삭제에 대한 대책이 없는데 방법을 찾아야 할것이다.
     // TODO: 첨부파일의 종류가 메인파일, 커버 원본, 커버 제작 세가지가 있다.
+    // TODO: remove_files 값이 있으면 어떤 부분의 파일을 삭제해야 한다는 의미로 간주하고 작동한다. (main,cover-original,cover-create)
     try
     {
       const id = req.params.id

@@ -16,16 +16,15 @@ function setup()
     responseType: 'json',
   })
   headers = {
-    'Authorization': `Bearer ${auth.token}`
+    'Authorization': `Bearer ${auth.token}`,
   }
 }
 
 /**
  * 요청 (request)
- * // TODO: 이 부분은 실제로 사용해보면서 검증하기 (아직 검증이 안되어있다.)
  * @param {string} url
  * @param {object} [options]
- * @param {?string} [options.method]
+ * @param {'get'|'post'|'put'|'delete'} [options.method]
  * @param {?object} [options.query]
  * @param {?object} [options.body]
  * @param {?object} [options.headers]
@@ -44,7 +43,19 @@ export async function request(url, options = {})
     ...headers,
     ...(options.headers || {}),
   }
-  let res = await instance(url, _options)
-  console.warn('API RES:', res)
+  const res = await instance(url, _options)
   return res
+}
+
+/**
+ * form data
+ * @param {object} src
+ * @return {FormData}
+ */
+export function formData(src)
+{
+  if (!src) return null
+  let data = new FormData()
+  Object.keys(src).forEach(o => data.append(o, src[o]))
+  return data
 }

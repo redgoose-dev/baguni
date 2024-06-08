@@ -17,14 +17,20 @@
             :src="$preview.src"
             alt="preview image">
         </button>
-        <nav>
-          <Button
-            type="button"
-            icon="trash-2"
-            theme="circle"
-            color="danger"
-            @click="removeFile"/>
-        </nav>
+        <Dropdown
+          :use-value="true"
+          position="right"
+          class="dropdown">
+          <template #trigger>
+            <Button type="button" icon="ellipsis" theme="circle" color="weak"/>
+          </template>
+          <Context
+            :items="[
+              { key: 'upload', label: '다시 업로드', icon: 'upload' },
+              { key: 'remove', label: '삭제', icon: 'trash-2', color: 'danger' },
+            ]"
+            @select="onSelectAssetFileMenu"/>
+        </Dropdown>
       </figure>
       <fieldset class="uploaded-file__body">
         <legend class="hidden">파일정보와 파일이름 변경 폼</legend>
@@ -76,6 +82,7 @@
       </figure>
       <nav class="upload-file__button">
         <Button
+          ref="$uploadButton"
           type="button"
           color="key-1"
           @click="onClickUploadFile">
@@ -92,14 +99,19 @@ import { ref, computed, watch, reactive, onMounted } from 'vue'
 import { fileUploader, getImageSize } from '../../../libs/files.js'
 import { getByte } from '../../../libs/strings.js'
 import { dateFormat } from '../../../libs/dates.js'
+import { apiPath } from '../../../libs/api.js'
 import Button from '../../../components/buttons/button-basic.vue'
 import ShadowBox from '../../../components/content/shadow-box.vue'
 import InputText from '../../../components/form/input-text.vue'
+import Dropdown from '../../../components/navigation/dropdown.vue'
+import Context from '../../../components/navigation/context.vue'
 
 const $uploadFile = ref()
+const $uploadButton = ref()
 const $uploadedFile = ref()
 const props = defineProps({
   file: null,
+  meta: Object,
 })
 const emits = defineEmits([ 'change-file', 'update-meta', 'open-image' ])
 const meta = reactive({
@@ -111,13 +123,26 @@ const meta = reactive({
 })
 
 const $uploaded = computed(() => {
-  return !!props.file?.name
+  return (!!props.file?.name || !!props.meta?.name)
 })
 const $preview = computed(() => {
-  if (!props.file?.name) return null
-  return {
-    type: meta.type?.split('/')?.[0],
-    src: URL.createObjectURL(props.file),
+  if (typeof props.file === 'number')
+  {
+    return {
+      type: $meta.value.type?.split('/')?.[0],
+      src: `${apiPath}/file/${props.file}/`,
+    }
+  }
+  else if (props.file instanceof File)
+  {
+    return {
+      type: $meta.value.type?.split('/')?.[0],
+      src: URL.createObjectURL(props.file),
+    }
+  }
+  else
+  {
+    return null
   }
 })
 const $meta = computed(() => {
@@ -132,25 +157,48 @@ const $meta = computed(() => {
 })
 
 watch(() => props.file, async (value, _) => {
-  await setMeta(value)
+  await setMeta('file', value)
 })
 onMounted(async () => {
-  if (props.file) await setMeta(props.file)
+  if (props.meta)
+  {
+    await setMeta('meta', {
+      ...props.meta,
+      file: props.file,
+    })
+  }
+})
+defineExpose({
+  focus,
 })
 
 /**
  * 파일 데이터를 메타 객체로 이전한다.
  */
-async function setMeta(value)
+async function setMeta(type, value)
 {
-  if (value?.name)
+  if (value)
   {
-    // TODO: value 값이 File일수도 있고 번호일수도 있다. 번호라면 수정 데이터로 보고 번호를 file id로 사용하고 메타 데이터로 값으로 사용하는게 좋겠다.
     meta.name = value.name
-    meta.date = value.lastModifiedDate
     meta.size = value.size
     meta.type = value.type
-    meta.image = await getImageSize(value)
+    switch (type)
+    {
+      case 'file':
+        meta.date = value.lastModifiedDate
+        if (/^image/.test(value.type))
+        {
+          meta.image = await getImageSize(value)
+        }
+        break
+      case 'meta':
+        meta.date = value.date
+        if (/^image/.test(props.meta.type))
+        {
+          meta.image = await getImageSize(`${apiPath}/file/${props.file}/`)
+        }
+        break
+    }
   }
   else
   {
@@ -177,6 +225,19 @@ function updateMeta()
   })
 }
 
+function onSelectAssetFileMenu({ key })
+{
+  switch (key)
+  {
+    case 'upload':
+      onClickUploadFile()
+      break
+    case 'remove':
+      removeFile()
+      break
+  }
+}
+
 function openFile()
 {
   if (!props.file) return
@@ -185,6 +246,11 @@ function openFile()
 function removeFile()
 {
   emits('change-file', undefined)
+}
+
+function focus()
+{
+  if ($uploadButton.value) $uploadButton.value.focus()
 }
 </script>
 

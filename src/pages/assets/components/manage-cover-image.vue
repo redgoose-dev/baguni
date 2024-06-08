@@ -64,6 +64,7 @@
 <script setup>
 import { ref, computed, reactive, onMounted } from 'vue'
 import { fileUploader } from '../../../libs/files.js'
+import { apiPath } from '../../../libs/api.js'
 import ShadowBox from '../../../components/content/shadow-box.vue'
 import Icon from '../../../components/icons/index.vue'
 import ButtonGroup from '../../../components/buttons/group.vue'
@@ -88,13 +89,32 @@ const currentCropper = reactive({
 
 const $createImageSrc = computed(() => {
   if (readyOriginalImage.value) return URL.createObjectURL(readyOriginalImage.value)
-  if (!props.image) return null
-  // TODO: 이 부분 수정할때의 값과 파일을 선택할때의 값을 분기둬야할거같다.
-  return URL.createObjectURL(props.image)
+  if (props.image instanceof File)
+  {
+    return URL.createObjectURL(props.image)
+  }
+  else if (props.image && typeof props.image === 'number')
+  {
+    return `${apiPath}/file/${props.image}/`
+  }
+  else
+  {
+    return null
+  }
 })
 const $previewSrc = computed(() => {
-  if (!props.preview) return null
-  return URL.createObjectURL(props.preview)
+  if (props.preview instanceof File)
+  {
+    return URL.createObjectURL(props.preview)
+  }
+  else if (props.preview && typeof props.preview === 'number')
+  {
+    return `${apiPath}/file/${props.preview}/`
+  }
+  else
+  {
+    return null
+  }
 })
 
 function selectControlMenuItem({ key })
@@ -123,12 +143,12 @@ async function fileUpload()
   currentCropper.open = true
 }
 
-async function createCoverImage({ coordinates, blob })
+async function createCoverImage({ coordinates, file })
 {
   emits('update', {
     coordinates,
     original: readyOriginalImage.value,
-    create: blob,
+    create: file,
   })
   readyOriginalImage.value = null
   currentCropper.open = false
@@ -137,7 +157,7 @@ async function createCoverImage({ coordinates, blob })
 function deleteCoverImage()
 {
   emits('update', {
-    removed: true,
+    removedCover: true,
   })
   readyOriginalImage.value = null
 }

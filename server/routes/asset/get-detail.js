@@ -107,6 +107,7 @@ export default async (req, res) => {
         id: asset.data.id,
         title: asset.data.title,
         description: asset.data.description,
+        json: asset.data.json || {},
         files,
         tags: tags?.data?.length > 0 ? tags.data.map(tag => (tag.name)) : [],
         collections,

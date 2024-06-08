@@ -72,16 +72,11 @@
   &__image {
     position: relative;
     margin: 0;
-    nav {
+    .dropdown {
       position: absolute;
       right: -12px;
       top: -12px;
-      .button {
-        --button-width: 40px;
-        --button-height: 40px;
-        --icon-size: 22px;
-        --icon-stroke: 1.75;
-      }
+      --context-width: 128px;
     }
   }
   &__body {

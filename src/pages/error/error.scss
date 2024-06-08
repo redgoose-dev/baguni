@@ -1,0 +1,53 @@
+@use '../../assets/scss/mixins';
+
+.error {
+  padding: 64px 0;
+  user-select: none;
+}
+
+.error-content {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0 52px;
+  width: 820px;
+  margin: 0 auto;
+}
+
+.error-image {
+  margin: 0;
+  img {
+    width: 300px;
+    height: auto;
+  }
+}
+
+.error-body {
+  h1 {
+    margin: 0;
+    font-size: 42px;
+    line-height: 1.05;
+    font-weight: 900;
+    color: var(--color-key-3);
+  }
+  code {
+    display: block;
+    margin: 6px 0 0;
+    font-family: var(--font-base);
+    font-size: 13px;
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: var(--color-danger);
+  }
+  p {
+    margin: 16px 0 36px;
+    font-size: 15px;
+    line-height: 1.25;
+    font-weight: 400;
+  }
+  nav {
+    display: flex;
+    margin: 32px 0 0;
+  }
+}

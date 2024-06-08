@@ -6,7 +6,7 @@
   z-index: 2;
   box-sizing: border-box;
   @include mixins.background-blur(16px);
-  background: color-mix(in hsl, var(--color-bg), transparent 15%);
+  background: color-mix(in hsl, var(--color-base), transparent 96%);
   padding: 0 var(--size-side-padding);
   &__wrap {
     display: grid;

@@ -23,8 +23,26 @@ export function getByte(bytes)
 
 /**
  * 숫자 한자리라면 앞에 `0`을 붙인다.
+ * @param {number} n
  */
-export function twoDigit(day)
+export function twoDigit(n)
 {
-  return `0${day}`.slice(-2)
+  return `0${n}`.slice(-2)
+}
+
+/**
+ * create random text
+ * @param {number} length
+ * @return {string}
+ */
+export function createRandomText(length)
+{
+  let result = ''
+  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let len = characters.length
+  for (let i = 0; i < length; i++)
+  {
+    result += characters.charAt(Math.floor(Math.random() * len))
+  }
+  return result
 }
