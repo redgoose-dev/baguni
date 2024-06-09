@@ -1,4 +1,5 @@
 import { existsSync, rmSync } from 'node:fs'
+import sizeOf from 'image-size'
 import { tables, getItem, addItem, removeItem, getCount, editItem } from './db.js'
 
 /**
@@ -101,7 +102,12 @@ export function addFileData(file)
       { key: 'name', value: originalname },
       { key: 'type', value: mimetype },
       { key: 'size', value: size },
-      { key: 'meta', value: JSON.stringify(restFile) },
+      {
+        key: 'meta',
+        value: JSON.stringify({
+          ...getImageSize(path, mimetype),
+        }),
+      },
       { key: 'regdate', valueName: 'CURRENT_TIMESTAMP' },
       { key: 'updated_at', valueName: 'CURRENT_TIMESTAMP' },
     ].filter(Boolean),
@@ -132,7 +138,9 @@ export function editFileData(file, id)
       '$name': originalname,
       '$type': mimetype,
       '$size': size,
-      '$meta': JSON.stringify(restFile),
+      '$meta': JSON.stringify({
+        ...getImageSize(path, mimetype),
+      }),
     },
   })
 }
@@ -154,4 +162,17 @@ export function removeFile(file)
   if (!file) return
   if (!existsSync(file)) return
   rmSync(file)
+}
+
+/**
+ * 이미지 사이즈를 가져온다.
+ * @param {string} path
+ * @param {strong} type
+ * @return {object|undefined}
+ */
+export function getImageSize(path, type)
+{
+  if (!(path && type && /^image/.test(type))) return undefined
+  const { width, height } = sizeOf(path)
+  return { width, height }
 }

@@ -6,18 +6,23 @@
     ref="$uploadedFile"
     class="uploaded-file">
     <ShadowBox class="uploaded-file__box">
-      <figure class="uploaded-file__image">
+      <figure class="uploaded-file__preview">
         <button
           type="button"
           :title="meta.name"
-          class="image"
+          :disabled="$preview?.type !== 'image'"
+          class="preview"
           @click="openFile">
           <img
             v-if="$preview?.type === 'image'"
             :src="$preview.src"
             alt="preview image">
+          <i v-else>
+            <Icon :name="$preview.icon"/>
+          </i>
         </button>
         <Dropdown
+          ref="$manage"
           :use-value="true"
           position="right"
           class="dropdown">
@@ -35,14 +40,7 @@
       <fieldset class="uploaded-file__body">
         <legend class="hidden">파일정보와 파일이름 변경 폼</legend>
         <div class="filename">
-          <label for="filename">파일이름</label>
-          <InputText
-            v-model="meta.name"
-            name="filename"
-            id="filename"
-            placeholder="filename.jpg"
-            size="small"
-            @update:model-value="updateMeta"/>
+          <p>{{meta.name}}</p>
         </div>
         <div class="info">
           <dl v-if="$meta.type">
@@ -96,24 +94,25 @@
 
 <script setup>
 import { ref, computed, watch, reactive, onMounted } from 'vue'
-import { fileUploader, getImageSize } from '../../../libs/files.js'
+import { fileUploader, getImageSize, getFileIcon } from '../../../libs/files.js'
 import { getByte } from '../../../libs/strings.js'
 import { dateFormat } from '../../../libs/dates.js'
 import { apiPath } from '../../../libs/api.js'
 import Button from '../../../components/buttons/button-basic.vue'
 import ShadowBox from '../../../components/content/shadow-box.vue'
-import InputText from '../../../components/form/input-text.vue'
 import Dropdown from '../../../components/navigation/dropdown.vue'
 import Context from '../../../components/navigation/context.vue'
+import Icon from '../../../components/icons/index.vue'
 
 const $uploadFile = ref()
 const $uploadButton = ref()
 const $uploadedFile = ref()
+const $manage = ref()
 const props = defineProps({
   file: null,
   meta: Object,
 })
-const emits = defineEmits([ 'change-file', 'update-meta', 'open-image' ])
+const emits = defineEmits([ 'change-file', 'open-image' ])
 const meta = reactive({
   filename: '',
   type: '',
@@ -131,6 +130,7 @@ const $preview = computed(() => {
     return {
       type: $meta.value.type?.split('/')?.[0],
       src: `${apiPath}/file/${props.file}/`,
+      icon: getFileIcon($meta.value.type),
     }
   }
   else if (props.file instanceof File)
@@ -138,6 +138,7 @@ const $preview = computed(() => {
     return {
       type: $meta.value.type?.split('/')?.[0],
       src: URL.createObjectURL(props.file),
+      icon: getFileIcon($meta.value.type),
     }
   }
   else
@@ -215,14 +216,8 @@ async function onClickUploadFile()
   const file = await fileUploader({
     accept: 'image',
   })
+  if (!file) return
   emits('change-file', file)
-}
-
-function updateMeta()
-{
-  emits('update-meta', {
-    name: meta.name,
-  })
 }
 
 function onSelectAssetFileMenu({ key })
@@ -236,12 +231,13 @@ function onSelectAssetFileMenu({ key })
       removeFile()
       break
   }
+  $manage.value.close()
 }
 
 function openFile()
 {
-  if (!props.file) return
-  emits('open-image', URL.createObjectURL(props.file))
+  if (!$preview.value?.src) return
+  emits('open-image', $preview.value?.src)
 }
 function removeFile()
 {

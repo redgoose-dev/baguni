@@ -1,9 +1,6 @@
 <template>
   <component v-if="layout" :is="layout">
-    <ErrorApp
-      v-if="errorData"
-      :message="errorData.message"
-      :code="errorData.code || 500"/>
+    <ErrorApp v-if="errorData" :error="errorData"/>
     <router-view v-else/>
   </component>
   <router-view v-else/>
@@ -12,7 +9,7 @@
 <script setup>
 import { ref, computed, watch, onErrorCaptured } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { error } from './libs/reactions.js'
+import AppError from './modules/AppError.js'
 import { LayoutDefault } from './layouts'
 import ErrorApp from './pages/error/500.vue'
 
@@ -39,9 +36,9 @@ watch(() => route.name, () => {
 })
 
 onErrorCaptured((e) => {
-  if (typeof e === 'string') errorData.value = new Error(String(e))
-  else if (e instanceof Error) errorData.value = e
-  else errorData.value = new Error('Unknown Error')
+  if (typeof e === 'string') errorData.value = new AppError(String(e))
+  else if (e instanceof Error || e instanceof AppError) errorData.value = e
+  else errorData.value = new AppError('Unknown Error', 500)
 })
 
 // router error

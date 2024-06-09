@@ -40,6 +40,7 @@ export default async (req, res) => {
         `${tables.file}.name`,
         `${tables.file}.type as mime`,
         `${tables.file}.size`,
+        `${tables.file}.meta`,
         `${tables.file}.regdate`,
         `${tables.mapAssetFile}.type`,
       ],
@@ -57,6 +58,7 @@ export default async (req, res) => {
             name: o.name,
             type: o.mime,
             size: o.size,
+            meta: parseJSON(o.meta),
             date: o.regdate,
           }
           break
@@ -117,6 +119,7 @@ export default async (req, res) => {
   }
   catch (e)
   {
+    console.log(e)
     // close db
     disconnect()
     // result

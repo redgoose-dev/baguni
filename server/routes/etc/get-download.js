@@ -20,7 +20,8 @@ export default async (req, res) => {
     // connect db
     connect({ readonly: true })
     // check auth
-    checkAuthorization(req.headers.authorization)
+    // checkAuthorization(req.headers.authorization)
+    // TODO: 여기는 쿠키로 검사해야할거 같은데.. 이미지 태그에서 쓰는데 헤더를 어떻게 붙인다고..
 
     // get data
     const file = getItem({

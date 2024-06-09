@@ -1,7 +1,11 @@
 <template>
-<h3 v-if="props.title" class="title">
-  <router-link v-if="props.to" :to="props.to">{{props.title}}</router-link>
-  <span v-else>{{props.title}}</span>
+<h3 :class="[ 'title', !props.title && 'no-title' ]">
+  <router-link v-if="props.to" :to="props.to">
+    {{props.title || noTitleName}}
+  </router-link>
+  <span v-else>
+    {{props.title || noTitleName}}
+  </span>
 </h3>
 <p v-if="props.description" class="description">
   {{props.description}}
@@ -18,6 +22,7 @@ const props = defineProps({
   description: String,
   meta: Array,
 })
+const noTitleName = 'Unknown title'
 </script>
 
 <style lang="scss" scoped>
@@ -44,7 +49,12 @@ const props = defineProps({
       text-decoration: underline;
     }
   }
-  span {}
+  &.no-title {
+    font-style: italic;
+    &, a {
+      color: var(--color-blur);
+    }
+  }
 }
 .description {
   min-width: 0;

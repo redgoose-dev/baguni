@@ -55,12 +55,20 @@ import NavigationBottom from '../../../components/navigation/bottom.vue'
 import Item from './item.vue'
 
 const props = defineProps({
-  id: Number,
+  assetId: Number,
+  selectedCollections: Array,
 })
 const emits = defineEmits([ 'close' ])
 const ids = ref([])
 const create = reactive({
   open: false,
+})
+
+onMounted(async () => {
+  console.log('mounted')
+  console.log('assetId', props.assetId)
+  console.log('active', props.selectedCollections)
+  // TODO: 이 부분은 콜렉션 부분 작업 끝나고 진행하자.
 })
 
 function onCheckItem(id)

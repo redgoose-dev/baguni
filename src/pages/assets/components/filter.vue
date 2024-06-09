@@ -3,7 +3,7 @@
   <form @submit.prevent="onSubmit">
     <div class="field total">
       <h3>모두</h3>
-      <strong>12,000</strong>
+      <strong>{{props.total}}</strong>
     </div>
     <div class="field">
       <label>등록일 범위</label>
@@ -89,6 +89,10 @@ import ButtonBasic from '../../../components/buttons/button-basic.vue'
 import InputText from '../../../components/form/input-text.vue'
 import Select from '../../../components/form/select.vue'
 import FormGroup from '../../../components/form/group.vue'
+
+const props = defineProps({
+  total: Number,
+})
 
 async function onSubmit()
 {

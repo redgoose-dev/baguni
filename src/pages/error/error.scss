@@ -3,51 +3,56 @@
 .error {
   padding: 64px 0;
   user-select: none;
-}
-
-.error-content {
   display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: 0 52px;
-  width: 820px;
-  margin: 0 auto;
-}
-
-.error-image {
-  margin: 0;
-  img {
-    width: 300px;
-    height: auto;
+  justify-content: center;
+  &.full {
+    height: 100dvh;
+    padding: 0;
+    justify-content: unset;
+    place-content: center;
   }
 }
 
-.error-body {
-  h1 {
+.error-content {
+  gap: 0 52px;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+  figure {
     margin: 0;
-    font-size: 42px;
+    img {
+      width: 280px;
+      height: auto;
+    }
+  }
+  h1 {
+    margin: 24px 0 0;
+    font-size: 64px;
     line-height: 1.05;
-    font-weight: 900;
+    font-weight: 100;
+    letter-spacing: -3px;
     color: var(--color-key-3);
   }
   code {
     display: block;
-    margin: 6px 0 0;
+    margin: 8px 0 0;
     font-family: var(--font-base);
-    font-size: 13px;
+    font-size: 20px;
     line-height: 1.15;
     font-weight: 700;
-    letter-spacing: -1px;
+    letter-spacing: -.5px;
     color: var(--color-danger);
   }
   p {
-    margin: 16px 0 36px;
+    margin: 24px 0 0;
     font-size: 15px;
     line-height: 1.25;
     font-weight: 400;
   }
   nav {
+    margin: 54px 0 0;
     display: flex;
-    margin: 32px 0 0;
+    justify-content: center;
   }
 }
+

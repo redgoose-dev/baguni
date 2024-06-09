@@ -56,3 +56,21 @@ export function blobToFile(blob, name, type)
 {
   return new File([blob], name, { type })
 }
+
+export function getFileIcon(type)
+{
+  if (!type) return 'file'
+  switch (type.split('/')[0])
+  {
+    case 'image':
+      return 'image'
+    case 'text':
+      return 'file-text'
+    case 'audio':
+      return 'file-music'
+    case 'video':
+      return 'tv-minimal-play'
+    default:
+      return 'file'
+  }
+}

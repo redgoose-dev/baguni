@@ -17,6 +17,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { error, success } from '../../libs/reactions.js'
 import { request, formData } from '../../libs/api.js'
+import AppError from '../../modules/AppError.js'
 import PageHeader from '../../components/content/page-header.vue'
 import Post from './components/post.vue'
 import LoadingScreen from '../../components/asset/loading/screen.vue'
@@ -30,11 +31,11 @@ const data = ref({})
 onMounted(async () => {
   ready.value = true
   const { id } = route.params
-  if (!id) throw new Error('에셋 아이디가 없습니다.')
+  if (!id) throw new AppError('에셋 아이디가 없습니다.', 204)
   const res = await request(`/asset/${id}/`, {
     method: 'get',
   })
-  if (!res?.data) throw new Error('에셋 데이터가 없습니다.')
+  if (!res?.data) throw new AppError('에셋 데이터가 없습니다.', 204)
   const { title, description, files, json, tags } = res.data
   data.value = {
     id: Number(id),
@@ -53,12 +54,29 @@ async function onSubmit(body)
 {
   try
   {
+    const { id } = route.params
     processing.value = true
-    console.log('onSubmit()', body)
+    // API 요청
+    await request(`/asset/${id}/`, {
+      method: 'put',
+      body: formData(body),
+    })
+    // off processing
     processing.value = false
+    // reaction
+    success('에셋을 수정했습니다.')
+    if (router.options.history?.state?.back)
+    {
+      await router.push(String(router.options.history.state.back))
+    }
+    else
+    {
+      await router.push(`/asset/${id}/`)
+    }
   }
   catch (e)
   {
+    error('에셋을 만들지 못했습니다.', e)
     processing.value = false
   }
 }

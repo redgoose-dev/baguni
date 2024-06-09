@@ -69,7 +69,7 @@
   &__box {
     padding: 20px;
   }
-  &__image {
+  &__preview {
     position: relative;
     margin: 0;
     .dropdown {
@@ -84,7 +84,7 @@
     padding: 0;
     border: none;
   }
-  .image {
+  .preview {
     display: block;
     width: 100%;
     border: none;
@@ -94,25 +94,39 @@
     border-radius: 2px;
     user-select: none;
     @include mixins.focus-content();
+    &:disabled {
+      cursor: default;
+    }
     img {
       display: block;
       width: 100%;
       object-fit: contain;
       border-radius: 2px;
     }
+    i {
+      display: grid;
+      place-content: center;
+      aspect-ratio: 3 / 2;
+      background: var(--color-blur);
+      --icon-size: 52px;
+      --icon-stroke: .75;
+      --icon-color: var(--color-light);
+    }
   }
   .filename {
+    min-width: 0;
     display: grid;
     grid-template-columns: auto 1fr;
     align-items: center;
     gap: 0 12px;
-    label {
+    p {
       display: block;
+      margin: 0;
       font-size: 12px;
       font-weight: 500;
-      color: var(--color-weak);
       letter-spacing: -.25px;
-      user-select: none;
+      line-height: 1.25;
+      word-break: break-all;
     }
   }
   .info {

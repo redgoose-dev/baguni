@@ -14,6 +14,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { error, success } from '../../libs/reactions.js'
 import { request, formData } from '../../libs/api.js'
+import AppError from '../../modules/AppError.js'
 import PageHeader from '../../components/content/page-header.vue'
 import Post from './components/post.vue'
 
@@ -24,12 +25,10 @@ async function onSubmit(body)
 {
   try
   {
-    console.log(body)
-    return
     // on processing
     processing.value = true
     // 에셋파일이 없으면 오류로 처리한다.
-    if (!body.file) throw new Error('에셋 파일이 없습니다.')
+    if (!body.file) throw new AppError('에셋 파일이 없습니다.')
     // API 요청
     await request('/asset/', {
       method: 'post',

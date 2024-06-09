@@ -7,7 +7,6 @@
       :meta="forms.file"
       class="upload"
       @change-file="onChangeMainFile"
-      @update-meta="onUpdateMainFileMeta"
       @open-image="onOpenImage"/>
     <ManageCoverImage
       :image="files.coverOriginal"
@@ -126,10 +125,6 @@ async function onChangeMainFile(file)
     files.main = null
     files.removedMain = true
   }
-}
-function onUpdateMainFileMeta(newValue)
-{
-  forms.file.name = newValue.name
 }
 
 function onUpdateCoverImage(src)

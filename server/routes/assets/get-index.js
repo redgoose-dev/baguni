@@ -56,12 +56,10 @@ export default async (req, res) => {
     }
 
     // set limit
-    if (Number(page) > 0)
-    {
-      limit = `limit $limit offset $offset`
-      values['$limit'] = (Number(size) > 0) ? Number(size) : defaultPageSize
-      values['$offset'] = (page - 1) * values['$limit']
-    }
+    let _page = Number(page) > 0 ? Number(page) : 1
+    limit = `limit $limit offset $offset`
+    values['$limit'] = (Number(size) > 0) ? Number(size) : defaultPageSize
+    values['$offset'] = (_page - 1) * values['$limit']
 
     // repair where
     where = where.trim().replace(/^and|or/, ' ')

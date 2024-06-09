@@ -1,13 +1,25 @@
 <template>
-<article class="asset">
+<LoadingScreen v-if="loading"/>
+<article v-else class="asset">
   <figure class="asset-image">
     <button
+      v-if="$file"
       type="button"
+      :disabled="$file.type !== 'image'"
       class="trigger"
-      @click="">
-      <img src="https://goose.redgoose.me/data/upload/original/202003/triangle-beeple-001.jpg" alt="">
-<!--      <img src="https://goose.redgoose.me/data/upload/original/201905/kjh51-cs3.jpg" alt="">-->
+      @click="onClickFile">
+      <img
+        v-if="$file.type === 'image'"
+        :src="$file.src"
+        :alt="$file.name">
+      <i v-else>
+        <Icon :name="$file.icon"/>
+        <em>{{$file.name}}</em>
+      </i>
     </button>
+    <div v-else class="empty">
+      <Icon name="file-x"/>
+    </div>
   </figure>
   <nav class="asset-nav">
     <ButtonBasic
@@ -15,18 +27,22 @@
       icon="bookmark"
       theme="circle"
       size="big"
-      color="key-1"
+      :color="$inCollection ? 'key-1' : ''"
       @click="collection.open = true"/>
     <ButtonBasic
       title="다운로드"
       icon="download"
       theme="circle"
-      size="big"/>
+      size="big"
+      @click="onClickDownload"/>
     <ButtonBasic
       title="이미지 복사하기"
-      icon="copy"
+      :icon="processingCopyClipboard ? 'loader' : 'copy'"
+      :rotate-icon="processingCopyClipboard"
       theme="circle"
-      size="big"/>
+      size="big"
+      :disabled="!$useCopyClipboard || processingCopyClipboard"
+      @click="onClickCopyClipboard"/>
     <Dropdown v-model="controlOption.open">
       <template #trigger>
         <ButtonBasic
@@ -43,42 +59,42 @@
   </nav>
   <div class="asset-body">
     <aside class="asset-body__side">
-      <ShadowBox class="wrap">
+      <ShadowBox v-if="$fileMeta" class="wrap">
         <section>
           <h1>파일이름</h1>
-          <p>filename.jpg</p>
+          <p>{{$fileMeta.name}}</p>
         </section>
         <section>
           <h1>타입</h1>
-          <p>IMAGE</p>
+          <p>{{$fileMeta.type}}</p>
         </section>
         <section>
           <h1>사이즈</h1>
-          <p>300kb</p>
+          <p>{{$fileMeta.size}}</p>
         </section>
-        <section>
+        <section v-if="$fileMeta.width && $fileMeta.height">
           <h1>이미지 크기</h1>
-          <p>240px * 240px</p>
+          <p>{{$fileMeta.width}}px * {{$fileMeta.height}}px</p>
         </section>
         <section>
           <h1>등록일</h1>
-          <p>2024-12-12 11:11:11</p>
+          <p>{{$fileMeta.date}}</p>
         </section>
       </ShadowBox>
     </aside>
     <div class="asset-body__content">
-      <h1 class="title">에셋 제목제목</h1>
-      <div class="content-body">
-        특정 데이터의 조회수를 데이터베이스에서 구성하는 방법은 여러 가지가 있을 수 있지만, 가장 일반적인 방법은 해당 데이터를 조회할 때마다 조회수를 증가시키는 방법입니다. 이를 위해서는 두 가지 주요 요소가 필요합니다.<br/>
-        <br/>
-        조회수를 저장할 필드: 조회수를 저장할 별도의 필드가 필요합니다. 이 필드는 해당 데이터를 식별할 수 있는 고유한 식별자와 함께 저장되어야 합니다.
-      </div>
-      <article class="tags">
+      <h1 class="title">
+        <template v-if="data.title">{{data.title}}</template>
+        <em v-else>Unknown title</em>
+      </h1>
+      <div v-if="data.description" v-html="data.description" class="content-body"/>
+      <em v-else class="empty-content-body">
+        Unknown description
+      </em>
+      <article v-if="data.tags?.length > 0" class="tags">
         <h1>태그</h1>
         <p>
-          <Tag label="겨울"/>
-          <Tag label="겨울산"/>
-          <Tag label="평원"/>
+          <Tag v-for="o in data.tags" :label="o"/>
         </p>
       </article>
     </div>
@@ -88,6 +104,7 @@
   <Modal
     :open="share.open"
     :hide-scroll="true"
+    :use-shortcut="true"
     @close="share.open = false">
     <ManageShare
       :id="share.id"
@@ -96,25 +113,45 @@
   <Modal
     :open="collection.open"
     :hide-scroll="true"
+    :use-shortcut="true"
     @close="collection.open = false">
     <SelectCollection
-      :id="collection.id"
+      :asset-id="Number(route.params.id)"
+      :selected-collections="data?.collections"
       @close="collection.open = false"/>
   </Modal>
+  <Lightbox
+    :src="lightboxImage"
+    :use-shortcut="true"
+    @close="lightboxImage = ''"/>
 </teleport>
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import imageResize from 'image-resize'
+import { request, apiPath } from '../../libs/api.js'
+import { getByte } from '../../libs/strings.js'
+import { getFileIcon } from '../../libs/files.js'
+import { toast } from '../../modules/toast/index.js'
+import AppError from '../../modules/AppError.js'
 import Tag from '../../components/form/tag.vue'
 import ButtonBasic from '../../components/buttons/button-basic.vue'
+import Icon from '../../components/icons/index.vue'
 import Dropdown from '../../components/navigation/dropdown.vue'
 import Context from '../../components/navigation/context.vue'
 import ShadowBox from '../../components/content/shadow-box.vue'
 import Modal from '../../components/modal/index.vue'
 import ManageShare from './components/manage-share.vue'
 import SelectCollection from '../collections/select-collection/index.vue'
+import LoadingScreen from '../../components/asset/loading/screen.vue'
+import Lightbox from '../../components/content/lightbox/index.vue'
 
+const router = useRouter()
+const route = useRoute()
+const loading = ref(true)
+const data = ref({})
 const controlOption = reactive({
   open: false,
   context: [
@@ -131,19 +168,128 @@ const collection = reactive({
   id: undefined,
   open: false,
 })
+const lightboxImage = ref('')
+const processingCopyClipboard = ref(false)
+
+const $file = computed(() => {
+  if (!data.value?.files?.main) return null
+  const { id, name, type } = data.value.files.main
+  let icon = getFileIcon(type)
+  return {
+    src: `${apiPath}/file/${id}/`,
+    type: type.split('/')[0],
+    name,
+    icon,
+  }
+})
+const $fileMeta = computed(() => {
+  if (!data.value.files?.main) return null
+  const { id, name, type, size, meta, date } = data.value.files.main
+  return {
+    id,
+    name,
+    type,
+    size: getByte(size),
+    ...(meta.width && meta.height ? {
+      width: meta.width,
+      height: meta.height,
+    } : {}),
+    date,
+  }
+})
+const $inCollection = computed(() => (data.value?.collections?.length > 0))
+const $useCopyClipboard = computed(() => {
+  return [ 'image', 'text' ].includes($file.value.type)
+})
+
+onMounted(async () => {
+  const { id } = route.params
+  if (!id) throw new AppError('에셋 아이디가 없습니다.', 204)
+  const res = await request(`/asset/${id}/`, {
+    method: 'get',
+  })
+  if (!res?.data) throw new AppError('에셋 데이터가 없습니다.', 204)
+  data.value = res.data
+  loading.value = false
+})
 
 function onSelectAssetManage(item)
 {
+  const { id } = route.params
   switch (item.key)
   {
     case 'share':
       share.open = true
       break
     case 'edit':
+      editAsset(id)
       break
     case 'delete':
+      removeAsset(id).then()
       break
   }
+  controlOption.open = false
+}
+
+function onClickFile()
+{
+  const { type, src } = $file.value
+  if (type !== 'image') return
+  lightboxImage.value = src
+}
+
+function onClickDownload()
+{
+  if (!confirm('에셋 파일을 다운로드 합니다. 계속할까요?')) return
+  location.href = `${apiPath}/download/${$fileMeta.value.id}/`
+}
+
+async function onClickCopyClipboard()
+{
+  processingCopyClipboard.value = true
+  let blob
+  const res = await fetch($file.value.src)
+  let type = $fileMeta.value.type
+  if ([ 'image/webp', 'image/jpeg', 'image/gif' ].includes(type))
+  {
+    blob = await res.blob()
+    blob = await imageResize(blob, {
+      width: $fileMeta.value.width || 900,
+      outputType: 'blob',
+      format: 'png'
+    })
+    type = 'image/png'
+  }
+  else if (/^image/.test(type))
+  {
+    blob = await res.blob()
+  }
+  if (blob)
+  {
+    const data = [
+      new ClipboardItem({ [type]: blob })
+    ]
+    await navigator.clipboard.write(data)
+    toast.add('파일을 클립보드에 복사했습니다.', 'success').then()
+  }
+  else
+  {
+    toast.add('클립보드에 복사할 수 없습니다.', 'error').then()
+  }
+  processingCopyClipboard.value = false
+}
+
+function editAsset(id)
+{
+  router.push(`/asset/edit/${id}/`).then()
+}
+
+async function removeAsset(id)
+{
+  if (!confirm('에셋을 삭제할까요? 삭제하면 다시 복구할 수 없습니다.')) return
+  await request(`${apiPath}/asset/${id}/`, { method: 'delete' })
+  toast.add('에셋을 삭제했습니다.', 'success').then()
+  await router.replace('/')
 }
 </script>
 

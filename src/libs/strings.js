@@ -46,3 +46,21 @@ export function createRandomText(length)
   }
   return result
 }
+
+/**
+ * 객체를 queryString 형식으로 변형해준다.
+ */
+export function serialize(obj, usePrefix = false, useEncode = true)
+{
+  let str = []
+  let res
+  for (let p in obj)
+  {
+    if (!obj.hasOwnProperty(p) || obj[p] === undefined || obj[p] === null) continue
+    if (typeof obj[p] === 'number' && isNaN(obj[p])) continue
+    const value = useEncode ? encodeURIComponent(obj[p]) : obj[p]
+    str.push(encodeURIComponent(p) + '=' + value)
+  }
+  res = str.join('&')
+  return (res && usePrefix ? '?' : '') + res
+}

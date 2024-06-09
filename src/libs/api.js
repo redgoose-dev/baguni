@@ -14,6 +14,8 @@ function setup()
     baseURL: apiPath,
     retry: 0,
     responseType: 'json',
+    // onResponse({ response })
+    // {},
   })
   headers = {
     'Authorization': `Bearer ${auth.token}`,
