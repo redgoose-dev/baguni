@@ -23,6 +23,15 @@ function setup()
 }
 
 /**
+ * api 인스턴스를 못쓰도록 삭제한다.
+ */
+export function destroyApi()
+{
+  instance = undefined
+  headers = undefined
+}
+
+/**
  * 요청 (request)
  * @param {string} url
  * @param {object} [options]

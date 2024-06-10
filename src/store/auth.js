@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { ofetch } from 'ofetch'
-import { apiPath, request } from '../libs/api.js'
+import { apiPath, request, destroyApi } from '../libs/api.js'
 
 export const authStore = defineStore('auth', () => {
 
@@ -86,8 +86,8 @@ export const authStore = defineStore('auth', () => {
     })
     token.value = ''
     user.value = null
+    destroyApi()
   }
-
   return {
     token, user,
     setup, check, login, logout,
