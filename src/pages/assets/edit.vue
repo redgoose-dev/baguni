@@ -65,6 +65,7 @@ async function onSubmit(body)
     processing.value = false
     // reaction
     success('에셋을 수정했습니다.')
+    // redirect
     if (router.options.history?.state?.back)
     {
       await router.push(String(router.options.history.state.back))

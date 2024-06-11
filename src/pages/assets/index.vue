@@ -7,7 +7,7 @@
     <div class="explorer__body">
       <div class="explorer__content">
         <IndexFilter @update="onUpdateIndexFilter"/>
-        <LoadingScreen v-if="loading"/>
+        <LoadingScreen v-if="data.loading"/>
         <ul v-else :class="[
           'explorer__index',
           display.indexTheme === 'list' && 'list',
@@ -25,11 +25,11 @@
               class="item">
               <template #body>
                 <nav class="item-nav">
-                  <router-link :to="`/asset/edit/${item.id}/`">
+                  <router-link :to="`/asset/${item.id}/edit/`">
                     수정
                   </router-link>
                   <a
-                    :href="`/asset/remove/${item.id}/`"
+                    :href="`/asset/${item.id}/remove/`"
                     @click.prevent="onClickRemove(item.id)">
                     삭제하기
                   </a>
@@ -62,7 +62,6 @@ import { useRouter, useRoute } from 'vue-router'
 import { request, apiPath } from '../../libs/api.js'
 import { serialize } from '../../libs/strings.js'
 import { dateFormat } from '../../libs/dates.js'
-import AppError from '../../modules/AppError.js'
 import { toast } from '../../modules/toast/index.js'
 import PageHeader from '../../components/content/page-header.vue'
 import Filter from './components/filter.vue'
@@ -73,15 +72,14 @@ import LoadingScreen from '../../components/asset/loading/screen.vue'
 
 const router = useRouter()
 const route = useRoute()
-const loading = ref(true)
 const data = reactive({
-  loading: false,
+  loading: true,
   total: 0,
   index: [],
   page: route.query?.page ? Number(route.query.page) : 1,
 })
 const display = reactive({
-  size: 4,
+  size: 6,
   indexTheme: 'thumbnail', // list,thumbnail
   order: 'id',
   sort: 'desc',
@@ -112,7 +110,7 @@ watch(() => route.query, async (value, _oldValue) => {
 
 async function fetch()
 {
-  loading.value = true
+  data.loading = true
   const res = await request(`/assets/`, {
     method: 'get',
     query: {
@@ -125,7 +123,7 @@ async function fetch()
   const { total, index } = res.data
   data.total = total
   data.index = index
-  loading.value = false
+  data.loading = false
 }
 
 function onUpdateIndexFilter(newValue)
@@ -151,7 +149,7 @@ function onClickShare(id)
 
 async function onClickRemove(id)
 {
-  if (!confirm('에셋을 삭제할까요? 삭제하면 다시 복구할 수 없습니다.')) return
+  if (!confirm('정말로 에셋을 삭제할까요? 삭제하면 다시 복구할 수 없습니다.')) return
   await request(`${apiPath}/asset/${id}/`, { method: 'delete' })
   toast.add('에셋을 삭제했습니다.', 'success').then()
   await fetch()

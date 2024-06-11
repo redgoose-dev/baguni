@@ -73,7 +73,7 @@ import Lightbox from '../../../components/content/lightbox/index.vue'
 
 const $uploadFile = ref()
 const props = defineProps({
-  data: Object, // create,edit
+  data: Object,
   processing: Boolean,
 })
 const emits = defineEmits([ 'submit' ])

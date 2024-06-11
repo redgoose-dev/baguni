@@ -43,10 +43,9 @@ export default async (req, res) => {
     filesMap.data.forEach(item => {
       if (item.file)
       {
-        // TODO: in을 사용하여 한번에 삭제할 수 있어보인다.
         removeItem({
           table: tables.file,
-          where: '$id = $id',
+          where: 'id = $id',
           values: { '$id': item.file },
         })
       }

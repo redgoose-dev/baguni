@@ -7,7 +7,7 @@
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, getCount, getItems } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
-import { defaultPageSize } from '../../libs/consts.js'
+import { defaultPageSize, fileTypes } from '../../libs/consts.js'
 import ServiceError from "../../libs/ServiceError.js";
 
 export default async (req, res) => {
@@ -30,6 +30,7 @@ export default async (req, res) => {
     // 기본적인 쿼리 만들기
     fields.push(`${tables.collection}.*`)
     fields.push(`(select count(*) from ${tables.mapCollectionAsset} where ${tables.mapCollectionAsset}.collection = ${tables.collection}.id) as asset_count`)
+    fields.push(`(select file from ${tables.mapCollectionFile} where ${tables.mapCollectionFile}.collection = ${tables.collection}.id and type like '${fileTypes.coverCreate}') as cover_file_id`)
 
     // 키워드 검색
     if (q)

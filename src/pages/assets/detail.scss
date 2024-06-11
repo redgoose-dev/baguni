@@ -89,20 +89,30 @@
       gap: 24px;
       --shadow-box-padding: 36px 30px;
     }
-    h1 {
-      margin: 0;
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--color-weak);
-      line-height: 1.15;
-      letter-spacing: -.5px;
+    section {
+      h1 {
+        margin: 0;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--color-weak);
+        line-height: 1.15;
+        letter-spacing: -.5px;
+      }
+      p {
+        margin: 6px 0 0;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.15;
+        word-break: break-all;
+      }
     }
-    p {
-      margin: 6px 0 0;
-      font-size: 14px;
-      font-weight: 500;
-      line-height: 1.15;
-      word-break: break-all;
+    .no-file {
+      display: grid;
+      place-content: center;
+      margin: 0;
+      height: 120px;
+      font-size: 13px;
+      color: var(--color-weak);
     }
   }
   &__content {

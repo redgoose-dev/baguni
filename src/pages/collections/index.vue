@@ -1,77 +1,109 @@
 <template>
 <article class="collections">
   <PageHeader title="컬렉션">
-    새로운 에셋을 만듭니다.
+    에셋을 담아두는 컬렉션의 목록입니다.
     <template #side>
-      <Button
+      <ButtonBasic
+        href="/collection/create/"
         color="key-1"
-        left-icon="plus"
-        @click="onClickCreateCollection">
+        left-icon="plus">
         만들기
-      </Button>
+      </ButtonBasic>
     </template>
   </PageHeader>
   <div class="collections__body">
     <ul class="index">
-      <li v-for="o in 8">
-        <CollectionItem @context="onSelectContextFromItem"/>
+      <li v-for="item in $index">
+        <CollectionItem
+          v-bind="item"
+          @context="onSelectContextFromItem($event, item.id)"/>
       </li>
     </ul>
   </div>
 </article>
-<teleport to="#modal">
-  <Modal
-    :open="visibleCreateWindow"
-    :hide-scroll="true"
-    @close="visibleCreateWindow = false">
-    <PostCollection
-      mode="create"
-      @submit=""
-      @close="visibleCreateWindow = false"/>
-  </Modal>
-  <Modal
-    :open="edit.open"
-    :hide-scroll="true"
-    @close="edit.open = false">
-    <PostCollection
-      mode="edit"
-      @submit=""
-      @close="edit.open = false"/>
-  </Modal>
-</teleport>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, computed, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { request, apiPath } from '../../libs/api.js'
+import { dateFormat } from '../../libs/dates.js'
 import PageHeader from '../../components/content/page-header.vue'
-import Button from '../../components/buttons/button-basic.vue'
+import ButtonBasic from '../../components/buttons/button-basic.vue'
 import CollectionItem from '../../components/content/collection/index.vue'
-import Modal from '../../components/modal/index.vue'
-import PostCollection from './components/post.vue'
+import { toast } from "../../modules/toast/index.js";
 
-const visibleCreateWindow = ref(false)
-const edit = reactive({
-  id: undefined,
-  open: false,
+const router = useRouter()
+const route = useRoute()
+const data = reactive({
+  loading: true,
+  total: 0,
+  index: [],
+})
+const display = reactive({
+  order: 'id',
+  sort: 'desc',
 })
 
-function onSelectContextFromItem(method, key)
+const $index = computed(() => {
+  if ( !(data.index?.length > 0) ) return []
+  return data.index.map(item => {
+    const { id, title, description, asset_count, regdate, cover_file_id } = item
+    return {
+      id,
+      title,
+      description,
+      assetsCount: asset_count || 0,
+      regdate: dateFormat(new Date(regdate), '{yyyy}-{MM}-{dd}'),
+      thumbnail: cover_file_id ? `${apiPath}/file/${cover_file_id}/` : undefined,
+    }
+  })
+})
+
+onMounted(async () => {
+  fetch().then()
+})
+watch(() => route.query, async (value, _oldValue) => {
+  await fetch()
+})
+
+async function fetch()
 {
-  console.log('onSelectContextFromItem()', method, key)
+  data.loading = true
+  const res = await request(`/collections/`, {
+    method: 'get',
+    query: {
+      // page: data.page,
+      // size: display.size,
+      order: display.order,
+      sort: display.sort,
+    },
+  })
+  const { total, index } = res.data
+  data.total = total
+  data.index = index
+  data.loading = false
+}
+
+function onSelectContextFromItem(method, id)
+{
   switch (method)
   {
     case 'edit':
-      edit.id = key
-      edit.open = true
+      router.push(`/collection/${id}/edit/`).then()
       break
     case 'remove':
+      removeCollection(id).then()
       break
   }
 }
 
-function onClickCreateCollection()
+async function removeCollection(id)
 {
-  visibleCreateWindow.value = true
+  if (!confirm('정말로 컬렉션을 삭제할까요? 삭제하면 다시 복구할 수 없습니다.')) return
+  await request(`${apiPath}/collection/${id}/`, { method: 'delete' })
+  toast.add('컬렉션을 삭제했습니다.', 'success').then()
+  await fetch()
 }
 </script>
 

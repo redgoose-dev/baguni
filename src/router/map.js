@@ -9,15 +9,6 @@ const assets = [
     },
   },
   {
-    path: '/asset/:id',
-    name: 'asset-detail',
-    component: () => import('../pages/assets/detail.vue'),
-    meta: {
-      active: 'asset',
-      layout: 'default',
-    },
-  },
-  {
     path: '/asset/create',
     name: 'asset-create',
     component: () => import('../pages/assets/create.vue'),
@@ -26,9 +17,18 @@ const assets = [
     },
   },
   {
-    path: '/asset/edit/:id',
+    path: '/asset/:id/edit',
     name: 'asset-edit',
     component: () => import('../pages/assets/edit.vue'),
+    meta: {
+      active: 'asset',
+      layout: 'default',
+    },
+  },
+  {
+    path: '/asset/:id',
+    name: 'asset-detail',
+    component: () => import('../pages/assets/detail.vue'),
     meta: {
       active: 'asset',
       layout: 'default',
@@ -41,6 +41,24 @@ const collections = [
     path: '/collections',
     name: 'collections',
     component: () => import('../pages/collections/index.vue'),
+    meta: {
+      active: 'collection',
+      layout: 'default',
+    },
+  },
+  {
+    path: '/collection/create',
+    name: 'collection-create',
+    component: () => import('../pages/collections/create.vue'),
+    meta: {
+      active: 'collection',
+      layout: 'default',
+    },
+  },
+  {
+    path: '/collection/:id/edit/',
+    name: 'collection-edit',
+    component: () => import('../pages/collections/edit.vue'),
     meta: {
       active: 'collection',
       layout: 'default',
@@ -68,6 +86,18 @@ const about = [
     },
   },
 ]
+
+// const users = [
+//   {
+//     path: '/user/:id/',
+//     name: 'user-detail',
+//     component: () => import('../pages/auth/login.vue'),
+//     meta: {
+//       active: 'auth',
+//       layout: 'blank',
+//     },
+//   },
+// ]
 
 const auth = [
   {

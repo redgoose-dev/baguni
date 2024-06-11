@@ -54,6 +54,15 @@
       aspect-ratio: 6/4;
       object-fit: cover;
     }
+    i {
+      display: grid;
+      place-content: center;
+      aspect-ratio: 6/4;
+      background: var(--color-blur);
+      --icon-size: 42px;
+      --icon-stroke: 1;
+      --icon-color: var(--color-light);
+    }
   }
   &__body {
     margin: 0 0 0 16px;

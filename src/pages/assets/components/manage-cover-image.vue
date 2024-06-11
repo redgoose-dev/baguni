@@ -69,8 +69,8 @@ import ShadowBox from '../../../components/content/shadow-box.vue'
 import Icon from '../../../components/icons/index.vue'
 import ButtonGroup from '../../../components/buttons/group.vue'
 import ButtonBasic from '../../../components/buttons/button-basic.vue'
-import Context from '../../../components/navigation/context.vue'
 import Dropdown from '../../../components/navigation/dropdown.vue'
+import Context from '../../../components/navigation/context.vue'
 import Modal from '../../../components/modal/index.vue'
 import ImageCropper from '../../../components/content/image-cropper/index.vue'
 
@@ -121,9 +121,6 @@ function selectControlMenuItem({ key })
 {
   switch (key)
   {
-    case 'upload':
-      fileUpload().then()
-      break
     case 'edit':
       currentCropper.coordinates = props.coordinates
       currentCropper.open = true

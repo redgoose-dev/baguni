@@ -184,12 +184,14 @@ export function addItems(options = {})
  * @param {string} [options.where]
  * @param {any} [options.values]
  * @param {boolean} [options.run]
+ * @param {boolean} [options.debug]
  * @return {object}
  */
 export function editItem(options = {})
 {
-  const { table, set, where, values, run } = options
+  const { table, set, where, values, run, debug } = options
   let sql = optimiseSql(`update ${table} set ${set ? set.filter(Boolean).join(', ') : ''} ${where ? `where ${where}` : ''}`)
+  if (debug) console.warn(sql)
   if (run !== false) db.run(sql, removeUndefinedValueKey(values))
   return {
     sql,

@@ -59,27 +59,30 @@
   </nav>
   <div class="asset-body">
     <aside class="asset-body__side">
-      <ShadowBox v-if="$fileMeta" class="wrap">
-        <section>
-          <h1>파일이름</h1>
-          <p>{{$fileMeta.name}}</p>
-        </section>
-        <section>
-          <h1>타입</h1>
-          <p>{{$fileMeta.type}}</p>
-        </section>
-        <section>
-          <h1>사이즈</h1>
-          <p>{{$fileMeta.size}}</p>
-        </section>
-        <section v-if="$fileMeta.width && $fileMeta.height">
-          <h1>이미지 크기</h1>
-          <p>{{$fileMeta.width}}px * {{$fileMeta.height}}px</p>
-        </section>
-        <section>
-          <h1>등록일</h1>
-          <p>{{$fileMeta.date}}</p>
-        </section>
+      <ShadowBox class="wrap">
+        <template v-if="$fileMeta">
+          <section>
+            <h1>파일이름</h1>
+            <p>{{$fileMeta.name}}</p>
+          </section>
+          <section>
+            <h1>타입</h1>
+            <p>{{$fileMeta.type}}</p>
+          </section>
+          <section>
+            <h1>사이즈</h1>
+            <p>{{$fileMeta.size}}</p>
+          </section>
+          <section v-if="$fileMeta.width && $fileMeta.height">
+            <h1>이미지 크기</h1>
+            <p>{{$fileMeta.width}}px * {{$fileMeta.height}}px</p>
+          </section>
+          <section>
+            <h1>등록일</h1>
+            <p>{{$fileMeta.date}}</p>
+          </section>
+        </template>
+        <p v-else class="no-file">파일이 없습니다.</p>
       </ShadowBox>
     </aside>
     <div class="asset-body__content">
@@ -199,7 +202,7 @@ const $fileMeta = computed(() => {
 })
 const $inCollection = computed(() => (data.value?.collections?.length > 0))
 const $useCopyClipboard = computed(() => {
-  return [ 'image', 'text' ].includes($file.value.type)
+  return [ 'image', 'text' ].includes($file.value?.type)
 })
 
 onMounted(async () => {
@@ -281,7 +284,7 @@ async function onClickCopyClipboard()
 
 function editAsset(id)
 {
-  router.push(`/asset/edit/${id}/`).then()
+  router.push(`/asset/${id}/edit/`).then()
 }
 
 async function removeAsset(id)

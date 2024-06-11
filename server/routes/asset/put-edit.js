@@ -10,7 +10,7 @@ import { existsSync, rmSync } from 'node:fs'
 import { uploader } from '../../libs/uploader.js'
 import { uploadFields, fileTypes } from '../../libs/consts.js'
 import { success, error } from '../output.js'
-import { connect, disconnect, tables, getItem, getItems, editItem, addItem } from '../../libs/db.js'
+import { connect, disconnect, tables, getItem, getItems, editItem, addItem, getCount } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { parseJSON, compareArrays, checkExistValueInObject, findObjectByValue } from '../../libs/objects.js'
 import { filteringTitle } from '../../libs/strings.js'
@@ -86,20 +86,20 @@ export default async (req, res) => {
 
       // update files
       const newFileMain = req.files?.[uploadFields.file]?.[0]
-      const fileCoverOriginal = req.files?.[uploadFields.coverOriginal]?.[0]
-      const fileCreate = req.files?.[uploadFields.coverCreate]?.[0]
       updateFile({
         file: newFileMain,
         map: srcMapFiles,
         fileType: fileTypes.main,
         assetId: id,
       })
+      const fileCoverOriginal = req.files?.[uploadFields.coverOriginal]?.[0]
       updateFile({
         file: fileCoverOriginal,
         map: srcMapFiles,
         fileType: fileTypes.coverOriginal,
         assetId: id,
       })
+      const fileCreate = req.files?.[uploadFields.coverCreate]?.[0]
       updateFile({
         file: fileCreate,
         map: srcMapFiles,
@@ -138,6 +138,7 @@ export default async (req, res) => {
     }
     catch (e)
     {
+      console.error(e)
       // 이미 업로드한 파일들은 전부 삭제한다.
       removeJunkFiles(req.files)
       // close db
@@ -166,14 +167,38 @@ function updateFile(options)
   else
   {
     const fileMainId = addFileData(file)
-    addItem({
+    const mapCount = getCount({
       table: tables.mapAssetFile,
-      values: [
-        { key: 'asset', value: assetId },
-        { key: 'file', value: fileMainId },
-        { key: 'type', value: fileType },
-      ],
+      where: 'asset = $asset and type = $type',
+      values: {
+        '$asset': assetId,
+        '$type': fileType,
+      },
     })
+    if (mapCount.data > 0)
+    {
+      editItem({
+        table: tables.mapAssetFile,
+        where: `asset = $asset and type = $type`,
+        set: [ 'file = $file' ],
+        values: {
+          '$asset': assetId,
+          '$type': fileType,
+          '$file': fileMainId,
+        },
+      })
+    }
+    else
+    {
+      addItem({
+        table: tables.mapAssetFile,
+        values: [
+          { key: 'asset', value: assetId },
+          { key: 'file', value: fileMainId },
+          { key: 'type', value: fileType },
+        ],
+      })
+    }
   }
 }
 
