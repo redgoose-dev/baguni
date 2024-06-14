@@ -7,6 +7,11 @@
   max-width: 560px;
 }
 
+.index-loading {
+  display: grid;
+  place-content: center;
+  height: 280px;
+}
 .index {
   height: 75vh;
   max-height: 360px;
@@ -25,6 +30,12 @@
     list-style: none;
     box-sizing: border-box;
   }
+}
+
+.empty {
+  display: grid;
+  place-content: center;
+  height: 160px;
 }
 
 .bottom {

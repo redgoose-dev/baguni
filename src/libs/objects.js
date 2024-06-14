@@ -4,10 +4,17 @@
  */
 export function pureObject(src)
 {
-  if (!src) return null
   try
   {
-    return JSON.parse(JSON.stringify(src))
+    if (!src) throw new Error('no src')
+    try
+    {
+      return structuredClone(src)
+    }
+    catch (e)
+    {
+      return JSON.parse(JSON.stringify(src))
+    }
   }
   catch(_)
   {

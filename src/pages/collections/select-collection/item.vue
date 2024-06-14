@@ -11,16 +11,20 @@
   @keydown="onKeydown">
   <figure class="item__image">
     <img
-      src="https://goose.redgoose.me/files/resize/?path=/original/202405/cannedgoods_combining_liquid_kittens_from_science_glass_into_fl.webp&type=&width=150&quality=85"
+      v-if="props.thumbnail"
+      :src="props.thumbnail"
       draggable="false"
       alt="Collection cover image"/>
+    <i v-else>
+      <Icon name="image"/>
+    </i>
     <span v-if="props.active">
       <Icon name="check"/>
     </span>
   </figure>
   <div class="item__body">
-    <h3>망고 컬렉션 선택된거</h3>
-    <p>데이터베이스에서의 필드랑 연결되어 있는 각 항목의 데이터 목록이다.</p>
+    <h3>{{props.title}}</h3>
+    <p>{{props.description}}</p>
   </div>
 </div>
 </template>
@@ -30,13 +34,17 @@ import { ref } from 'vue'
 import Icon from '../../../components/icons/index.vue'
 
 const props = defineProps({
+  id: Number,
+  title: String,
+  description: String,
+  thumbnail: String,
   active: Boolean,
 })
 const emits = defineEmits([ 'check' ])
 
 function onClick()
 {
-  emits('check')
+  emits('check', props.id)
 }
 
 function onKeydown(e)

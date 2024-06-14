@@ -1,28 +1,18 @@
 @use '../../../assets/scss/mixins';
 
 .post {
-  padding: 30px;
-  box-sizing: border-box;
-  width: 75vw;
-  max-width: 560px;
-  height: 75vh;
-  max-height: 580px;
-  overflow: auto;
-  &__form {
-    margin: 30px 0 0;
+  display: grid;
+  gap: 24px 0;
+  > fieldset {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border: none;
     display: grid;
     gap: 24px 0;
-    > fieldset {
-      position: relative;
-      margin: 0;
-      padding: 0;
-      border: none;
-      display: grid;
-      gap: 24px 0;
-      > legend {
-        font-size: 0;
-        position: absolute;
-      }
+    > legend {
+      font-size: 0;
+      position: absolute;
     }
   }
   &__submit {

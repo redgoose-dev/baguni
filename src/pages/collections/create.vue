@@ -5,6 +5,7 @@
   </PageHeader>
   <Post
     :processing="processing"
+    class="post"
     @submit="onSubmit"/>
 </article>
 </template>
@@ -12,7 +13,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { apiPath, request, formData } from '../../libs/api.js'
+import { request, formData } from '../../libs/api.js'
 import { error, success } from '../../libs/reactions.js'
 import PageHeader from '../../components/content/page-header.vue'
 import Post from './components/post.vue'
@@ -50,5 +51,8 @@ async function onSubmit(body)
 .create-collection {
   margin: 0 auto;
   max-width: var(--size-content-width);
+}
+.post {
+  margin: 30px 0 0;
 }
 </style>

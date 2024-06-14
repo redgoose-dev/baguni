@@ -1,17 +1,22 @@
 <template>
-<dialog
-  ref="$dialog"
-  v-if="props.open"
-  :class="[
-    'modal',
-    props.full ? 'modal--full' : 'modal--window',
-  ]"
-  @dblclick="onClickDialog"
-  @keydown="onKeydown">
-  <div class="modal-body">
-    <slot/>
+<transition name="modal-fade">
+  <div
+    ref="$dialog"
+    v-if="props.open"
+    tabindex="-1"
+    aria-modal="true"
+    role="dialog"
+    :class="[
+      'modal',
+      props.full ? 'modal--full' : 'modal--window',
+    ]"
+    @dblclick="onClickDialog"
+    @keydown="onKeydown">
+    <div class="modal-body">
+      <slot/>
+    </div>
   </div>
-</dialog>
+</transition>
 </template>
 
 <script setup>
@@ -25,6 +30,7 @@ const props = defineProps({
   hideScroll: Boolean,
 })
 const emits = defineEmits([ 'close' ])
+const open = ref(false)
 
 function onClickDialog(e)
 {
@@ -45,6 +51,21 @@ function onKeydown(e)
   closeDialog()
 }
 
+async function control(sw)
+{
+  if (sw)
+  {
+    open.value = true
+    await nextTick()
+    $dialog.value.focus()
+  }
+  else
+  {
+    $dialog.value.blur()
+    open.value = false
+  }
+}
+
 function controlRoot(sw)
 {
   if (!props.hideScroll) return
@@ -53,28 +74,22 @@ function controlRoot(sw)
 }
 
 onMounted(async () => {
-  if (props.open)
-  {
-    controlRoot(true)
-    $dialog.value.showModal()
-  }
+  if (props.open) controlRoot(true)
 })
 onUnmounted(() => {
-  controlRoot(false)
+  if (props.open) controlRoot(false)
 })
-
 watch(() => props.open, async (value, oldValue) => {
   if (value === oldValue) return
   if (value)
   {
-    await nextTick()
     controlRoot(true)
-    $dialog.value.showModal()
+    await control(true)
   }
   else
   {
     controlRoot(false)
-    $dialog.value.close()
+    await control(false)
   }
 })
 </script>

@@ -1,30 +1,41 @@
 @use '../../assets/scss/mixins';
 
 .modal {
+  position: fixed;
+  z-index: 100;
+  display: block;
   border: none;
   padding: 0;
   box-sizing: border-box;
   outline: none;
   background: transparent;
   overflow: clip;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
   &--window {
-    border-radius: 16px;
-    box-shadow:
-      0 100px 100px 0 hsla(0 0% 0% / 10%),
-      0 30.1px 30.1px 0 hsla(0 0% 0% / 7%),
-      0 12.5px 12.5px 0 hsla(0 0% 0% / 5%),
-      0 4.5px 4.5px 0 hsla(0 0% 0% / 4%),
-      0 0 0 .5px hsla(0 0% 0% / 10%);
-    &::backdrop {
-      background-color: mixins.mix-alpha(var(--color-bg), 65%);
-      @include mixins.background-blur(16px);
-    }
+    display: grid;
+    place-content: center;
+    background-color: mixins.mix-alpha(var(--color-bg), 65%);
+    @include mixins.background-blur(16px);
     > .modal-body {
       width: var(--modal-width, unset);
       min-width: var(--modal-min-width, unset);
       max-width: var(--modal-max-width, unset);
       padding: var(--modal-padding, unset);
       background-color: var(--modal-color-bg, var(--color-bg));
+      border-radius: 16px;
+      box-shadow:
+        0 100px 100px 0 hsla(0 0% 0% / 10%),
+        0 30.1px 30.1px 0 hsla(0 0% 0% / 7%),
+        0 12.5px 12.5px 0 hsla(0 0% 0% / 5%),
+        0 4.5px 4.5px 0 hsla(0 0% 0% / 4%),
+        0 0 0 .5px hsla(0 0% 0% / 10%);
+      transition: transform 260ms ease-out, opacity 260ms ease-out;
+      transition-delay: 120ms;
+      transform: translateY(var(--y));
+      opacity: var(--a);
     }
   }
   &--full {
@@ -34,9 +45,7 @@
     height: 100%;
     max-width: unset;
     max-height: unset;
-    &::backdrop {
-      background-color: var(--modal-color-bg, var(--color-bg));
-    }
+    background-color: var(--modal-color-bg, var(--color-bg));
     > .modal-body {
       min-height: 100%;
     }
@@ -48,5 +57,24 @@
   box-sizing: border-box;
   &.scroll {
     overflow: auto;
+  }
+}
+
+.modal-fade {
+  &-enter-active {
+    transition: opacity 200ms;
+  }
+  &-enter-from {
+    opacity: 0;
+    --y: 30px;
+    --a: 0;
+  }
+  &-leave-active {
+    transition: opacity 240ms;
+  }
+  &-leave-to {
+    opacity: 0;
+    --y: 0;
+    --a: 1;
   }
 }

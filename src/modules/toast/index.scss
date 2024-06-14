@@ -2,7 +2,7 @@
 
 .rg-toast {
   position: fixed;
-  z-index: 2147483647;
+  z-index: 1000;
   right: 16px;
   top: calc(var(--size-header-height) + 16px);
   pointer-events: none;

@@ -1,5 +1,5 @@
 <template>
-<form class="post__form" @submit.prevent="onSubmit">
+<form class="post" @submit.prevent="onSubmit">
   <fieldset>
     <legend>컬렉션의 정보 입력</legend>
     <div class="field">
@@ -87,25 +87,25 @@
       {{$submitLabel}}
     </ButtonBasic>
   </nav>
+  <teleport to="#modal">
+    <Modal
+      :open="currentCropper.open"
+      :hide-scroll="true"
+      @close="currentCropper.open = false">
+      <ImageCropper
+        :src="$createImageSrc"
+        title="커버 이미지"
+        submit-label="커버 이미지 만들기"
+        :crop-size="createSize"
+        :default-coordinates="currentCropper.coordinates"
+        @submit="createCoverImage"
+        @close="currentCropper.open = false"/>
+    </Modal>
+    <Lightbox
+      :src="lightboxImage"
+      @close="lightboxImage = ''"/>
+  </teleport>
 </form>
-<teleport to="#modal">
-  <Modal
-    :open="currentCropper.open"
-    :hide-scroll="true"
-    @close="currentCropper.open = false">
-    <ImageCropper
-      :src="$createImageSrc"
-      title="커버 이미지"
-      submit-label="커버 이미지 만들기"
-      :crop-size="createSize"
-      :default-coordinates="currentCropper.coordinates"
-      @submit="createCoverImage"
-      @close="currentCropper.open = false"/>
-  </Modal>
-  <Lightbox
-    :src="lightboxImage"
-    @close="lightboxImage = ''"/>
-</teleport>
 </template>
 
 <script setup>

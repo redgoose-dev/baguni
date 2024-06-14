@@ -105,6 +105,17 @@
 </article>
 <teleport to="#modal">
   <Modal
+    :open="collection.open"
+    :hide-scroll="true"
+    :use-shortcut="true"
+    @close="collection.open = false">
+    <SelectCollection
+      :asset-id="Number(route.params.id)"
+      :selected-collections="data?.collections || []"
+      @submit="onSubmitSelectCollection"
+      @close="collection.open = false"/>
+  </Modal>
+  <Modal
     :open="share.open"
     :hide-scroll="true"
     :use-shortcut="true"
@@ -112,16 +123,6 @@
     <ManageShare
       :id="share.id"
       @close="share.open = false"/>
-  </Modal>
-  <Modal
-    :open="collection.open"
-    :hide-scroll="true"
-    :use-shortcut="true"
-    @close="collection.open = false">
-    <SelectCollection
-      :asset-id="Number(route.params.id)"
-      :selected-collections="data?.collections"
-      @close="collection.open = false"/>
   </Modal>
   <Lightbox
     :src="lightboxImage"
@@ -232,6 +233,12 @@ function onSelectAssetManage(item)
       break
   }
   controlOption.open = false
+}
+
+function onSubmitSelectCollection(ids)
+{
+  data.value.collections = ids
+  collection.open = false
 }
 
 function onClickFile()
