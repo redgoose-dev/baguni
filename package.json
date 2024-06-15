@@ -38,6 +38,7 @@
     "esbuild-wasm": "^0.21.4",
     "image-resize": "^1.4.1",
     "lucide": "^0.390.0",
+    "marked": "^13.0.0",
     "pinia": "^2.1.7",
     "sass": "^1.77.4",
     "vite": "^5.2.13",

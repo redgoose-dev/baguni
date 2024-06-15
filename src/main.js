@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { setup as toastSetup } from './modules/toast/index.js'
 import router from './router/index.js'
+import { markedSetup } from './modules/markdown.js'
 import App from './app.vue'
 
 // load stylesheet
@@ -14,6 +15,9 @@ const pinia = createPinia()
 toastSetup({
   delay: 5000,
 })
+
+// setup marked
+markedSetup()
 
 // set app component
 const app = createApp(App, {})

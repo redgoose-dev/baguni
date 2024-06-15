@@ -92,7 +92,11 @@
         <template v-if="data.title">{{data.title}}</template>
         <em v-else>Unknown title</em>
       </h1>
-      <div v-if="data.description" v-html="data.description" class="content-body"/>
+      <div
+        ref="$content"
+        v-if="$contentBody"
+        v-html="$contentBody"
+        class="content-body"/>
       <em v-else class="empty-content-body">
         Unknown description
       </em>
@@ -136,13 +140,14 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import imageResize from 'image-resize'
 import { request, apiPath } from '../../libs/api.js'
 import { getByte } from '../../libs/strings.js'
 import { getFileIcon } from '../../libs/files.js'
 import { toast } from '../../modules/toast/index.js'
+import { parseMarkdown } from '../../modules/markdown.js'
 import AppError from '../../modules/AppError.js'
 import Tag from '../../components/form/tag.vue'
 import ButtonBasic from '../../components/buttons/button-basic.vue'
@@ -156,6 +161,7 @@ import SelectCollection from '../collections/select-collection/index.vue'
 import LoadingScreen from '../../components/asset/loading/screen.vue'
 import Lightbox from '../../components/content/lightbox/index.vue'
 
+const $content = ref()
 const router = useRouter()
 const route = useRoute()
 const loading = ref(true)
@@ -210,6 +216,10 @@ const $useCopyClipboard = computed(() => {
   if (!$file.value?.src) return false
   return [ 'image', 'text' ].includes($file.value?.type)
 })
+const $contentBody = computed(() => {
+  if (!data.value?.description) return null
+  return parseMarkdown(data.value.description)
+})
 
 onMounted(async () => {
   const { id } = route.params
@@ -220,6 +230,8 @@ onMounted(async () => {
   if (!res?.data) throw new AppError('에셋 데이터가 없습니다.', 204)
   data.value = res.data
   loading.value = false
+  await nextTick()
+  initEventsFromContent()
 })
 
 function onSelectAssetManage(item)
@@ -305,6 +317,21 @@ async function removeAsset(id)
   await request(`${apiPath}/asset/${id}/`, { method: 'delete' })
   toast.add('에셋을 삭제했습니다.', 'success').then()
   await router.replace('/')
+}
+
+function initEventsFromContent()
+{
+  const $img = $content.value?.querySelectorAll('img')
+  $img.forEach(el => {
+    el.addEventListener('click', e => {
+      lightboxImage.value = e.currentTarget.src
+    })
+  })
+}
+
+function foo()
+{
+  data.value.description += '+AAA'
 }
 </script>
 
