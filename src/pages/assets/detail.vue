@@ -129,7 +129,7 @@
     animation="bottom-up"
     @close="share.open = false">
     <ManageShare
-      :id="share.id"
+      :asset-id="data.id"
       @close="share.open = false"/>
   </Modal>
   <Lightbox
@@ -140,7 +140,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, watch, nextTick } from 'vue'
+import { ref, reactive, computed, onMounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import imageResize from 'image-resize'
 import { request, apiPath } from '../../libs/api.js'
@@ -174,10 +174,7 @@ const controlOption = reactive({
     { key: 'delete', label: '삭제', icon: 'trash-2', color: 'danger' },
   ],
 })
-const share = reactive({
-  id: undefined,
-  open: false,
-})
+const share = reactive({ open: false })
 const collection = reactive({
   id: undefined,
   open: false,
@@ -321,17 +318,14 @@ async function removeAsset(id)
 
 function initEventsFromContent()
 {
+  if (!$content.value) return
   const $img = $content.value?.querySelectorAll('img')
+  if (!($img?.length > 0)) return
   $img.forEach(el => {
     el.addEventListener('click', e => {
       lightboxImage.value = e.currentTarget.src
     })
   })
-}
-
-function foo()
-{
-  data.value.description += '+AAA'
 }
 </script>
 

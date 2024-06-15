@@ -88,6 +88,13 @@ export default async (req, res) => {
       values: { '$asset': id },
     })
 
+    // remove share
+    removeItem({
+      table: tables.share,
+      where: 'asset = $asset',
+      values: { '$asset': id },
+    })
+
     // remove data
     removeItem({
       table: tables.asset,

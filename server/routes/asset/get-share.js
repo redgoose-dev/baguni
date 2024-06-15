@@ -42,17 +42,18 @@ export default async (req, res) => {
     })
 
     // make code
-    let code
+    let code, permission
     if (share.data)
     {
       // 데이터가 있으면 그걸로 코드를 가져온다.
       code = share.data.code
+      permission = share.data.permission
     }
     else
     {
       // 데이터가 없으니 만든다.
       code = randomBytes(8).toString('hex')
-      addItem({
+      let newData = addItem({
         table: tables.share,
         values: [
           { key: 'code', value: code },
@@ -61,6 +62,14 @@ export default async (req, res) => {
           { key: 'regdate', valueName: 'CURRENT_TIMESTAMP', },
         ],
       })
+      newData = getItem({
+        table: tables.share,
+        where: 'id = $id',
+        values: { '$id': newData.data },
+      })
+      if (!newData?.data) throw new ServiceError('새로운 공유 데이터를 만드는데 실패했습니다.')
+      code = newData.data.code
+      permission = newData.data.permission
     }
 
     // close db
@@ -70,6 +79,7 @@ export default async (req, res) => {
       message: '에셋 공유코드 가져오기',
       data: {
         code,
+        permission,
       },
     })
   }

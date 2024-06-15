@@ -15,7 +15,7 @@ import ServiceError from '../../libs/ServiceError.js'
 export default async (req, res) => {
   try {
     const id = Number(req.params.id)
-    if (!id) throw new ServiceError('id 값이 없습니다.')
+    if (!id) throw new ServiceError('에셋 ID 값이 없습니다.')
 
     // check body
     const checkKey = checkExistValue(req.body, [ 'permission' ])
@@ -69,12 +69,12 @@ export default async (req, res) => {
     {
       editItem({
         table: tables.share,
-        where: 'id = $id',
+        where: 'asset = $asset',
         set: [
           readyUpdate.permission && 'permission = $permission',
         ].filter(Boolean),
         values: {
-          '$id': id,
+          '$asset': id,
           '$permission': readyUpdate.permission,
         },
       })
