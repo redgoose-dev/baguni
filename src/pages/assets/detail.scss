@@ -85,6 +85,8 @@
   gap: 0 60px;
   &__side {
     .wrap {
+      position: sticky;
+      top: calc(var(--size-header-height) + 32px);
       display: grid;
       gap: 24px;
       --shadow-box-padding: 36px 30px;
@@ -133,6 +135,9 @@
 
 .content-body {
   margin: 12px 0 0;
+  &:deep(img) {
+    cursor: pointer;
+  }
 }
 .empty-content-body {
   display: block;
@@ -144,7 +149,7 @@
 }
 
 .tags {
-  margin: 36px 0 0;
+  margin: 64px 0 0;
   h1 {
     margin: 0;
     font-size: 13px;
