@@ -1,7 +1,7 @@
 @use '../../../assets/scss/mixins';
 
 .collections {
-  padding: 30px;
+  padding: 36px;
   box-sizing: border-box;
   width: 75vw;
   max-width: 560px;
@@ -30,12 +30,6 @@
     list-style: none;
     box-sizing: border-box;
   }
-}
-
-.empty {
-  display: grid;
-  place-content: center;
-  height: 160px;
 }
 
 .bottom {

@@ -47,24 +47,6 @@ const collections = [
     },
   },
   {
-    path: '/collection/create',
-    name: 'collection-create',
-    component: () => import('../pages/collections/create.vue'),
-    meta: {
-      active: 'collection',
-      layout: 'default',
-    },
-  },
-  {
-    path: '/collection/:id/edit/',
-    name: 'collection-edit',
-    component: () => import('../pages/collections/edit.vue'),
-    meta: {
-      active: 'collection',
-      layout: 'default',
-    },
-  },
-  {
     path: '/collection/:id',
     name: 'collection-detail',
     component: () => import('../pages/collections/detail.vue'),

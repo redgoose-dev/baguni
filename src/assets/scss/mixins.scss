@@ -49,6 +49,15 @@
   overflow-x: clip;
 }
 
+@mixin multiple-line-text($line: 2)
+{
+  display: -webkit-box;
+  -webkit-line-clamp: $line;
+  -webkit-box-orient: vertical;
+  overflow: clip;
+  text-overflow: ellipsis;
+}
+
 // focus
 @mixin focus-content($color: var(--color-key-1), $offset: -2px)
 {

@@ -30,18 +30,20 @@
       :color="$inCollection ? 'key-1' : ''"
       @click="collection.open = true"/>
     <ButtonBasic
+      v-if="!!$file?.src"
       title="다운로드"
       icon="download"
       theme="circle"
       size="big"
       @click="onClickDownload"/>
     <ButtonBasic
+      v-if="$useCopyClipboard"
       title="이미지 복사하기"
       :icon="processingCopyClipboard ? 'loader' : 'copy'"
       :rotate-icon="processingCopyClipboard"
       theme="circle"
       size="big"
-      :disabled="!$useCopyClipboard || processingCopyClipboard"
+      :disabled="processingCopyClipboard"
       @click="onClickCopyClipboard"/>
     <Dropdown v-model="controlOption.open">
       <template #trigger>
@@ -108,6 +110,7 @@
     :open="collection.open"
     :hide-scroll="true"
     :use-shortcut="true"
+    animation="bottom-up"
     @close="collection.open = false">
     <SelectCollection
       :asset-id="Number(route.params.id)"
@@ -119,6 +122,7 @@
     :open="share.open"
     :hide-scroll="true"
     :use-shortcut="true"
+    animation="bottom-up"
     @close="share.open = false">
     <ManageShare
       :id="share.id"
@@ -203,6 +207,7 @@ const $fileMeta = computed(() => {
 })
 const $inCollection = computed(() => (data.value?.collections?.length > 0))
 const $useCopyClipboard = computed(() => {
+  if (!$file.value?.src) return false
   return [ 'image', 'text' ].includes($file.value?.type)
 })
 

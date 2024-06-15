@@ -4,9 +4,9 @@
     에셋을 담아두는 컬렉션의 목록입니다.
     <template #side>
       <ButtonBasic
-        href="/collection/create/"
         color="key-1"
-        left-icon="plus">
+        left-icon="plus"
+        @click="createCollection = true">
         만들기
       </ButtonBasic>
     </template>
@@ -21,6 +21,29 @@
     </ul>
   </div>
 </article>
+<teleport to="#modal">
+  <Modal
+    :open="createCollection"
+    :hide-scroll="true"
+    :use-shortcut="true"
+    animation="bottom-up"
+    @close="createCollection = false">
+    <CreateCollection
+      @submit="onSubmitCreateCollection"
+      @close="createCollection = false"/>
+  </Modal>
+  <Modal
+    :open="!!editCollection"
+    :hide-scroll="true"
+    :use-shortcut="true"
+    animation="bottom-up"
+    @close="editCollection = undefined">
+    <EditCollection
+      :id="editCollection"
+      @submit="onSubmitEditCollection"
+      @close="editCollection = undefined"/>
+  </Modal>
+</teleport>
 </template>
 
 <script setup>
@@ -28,10 +51,13 @@ import { ref, reactive, onMounted, computed, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { request, apiPath } from '../../libs/api.js'
 import { dateFormat } from '../../libs/dates.js'
+import { toast } from '../../modules/toast/index.js'
 import PageHeader from '../../components/content/page-header.vue'
 import ButtonBasic from '../../components/buttons/button-basic.vue'
 import CollectionItem from '../../components/content/collection/index.vue'
-import { toast } from "../../modules/toast/index.js";
+import Modal from '../../components/modal/index.vue'
+import CreateCollection from './components/create.vue'
+import EditCollection from './components/edit.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -42,8 +68,10 @@ const data = reactive({
 })
 const display = reactive({
   order: 'id',
-  sort: 'desc',
+  sort: 'asc',
 })
+const createCollection = ref(false)
+const editCollection = ref(undefined)
 
 const $index = computed(() => {
   if ( !(data.index?.length > 0) ) return []
@@ -90,12 +118,24 @@ function onSelectContextFromItem(method, id)
   switch (method)
   {
     case 'edit':
-      router.push(`/collection/${id}/edit/`).then()
+      editCollection.value = id
       break
     case 'remove':
       removeCollection(id).then()
       break
   }
+}
+
+function onSubmitCreateCollection()
+{
+  createCollection.value = false
+  fetch().then()
+}
+
+function onSubmitEditCollection()
+{
+  editCollection.value = undefined
+  fetch().then()
 }
 
 async function removeCollection(id)

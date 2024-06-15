@@ -1,5 +1,5 @@
 <template>
-<transition name="modal-fade">
+<transition name="modal">
   <div
     ref="$dialog"
     v-if="props.open"
@@ -9,6 +9,7 @@
     :class="[
       'modal',
       props.full ? 'modal--full' : 'modal--window',
+      props.animation && `animation--${props.animation}`,
     ]"
     @dblclick="onClickDialog"
     @keydown="onKeydown">
@@ -28,6 +29,7 @@ const props = defineProps({
   full: Boolean,
   useShortcut: Boolean,
   hideScroll: Boolean,
+  animation: String, // fade,bottom-up
 })
 const emits = defineEmits([ 'close' ])
 const open = ref(false)
@@ -57,11 +59,11 @@ async function control(sw)
   {
     open.value = true
     await nextTick()
-    $dialog.value.focus()
+    $dialog.value?.focus()
   }
   else
   {
-    $dialog.value.blur()
+    $dialog.value?.blur()
     open.value = false
   }
 }

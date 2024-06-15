@@ -21,7 +21,7 @@
       {{props.description}}
     </p>
     <p class="meta">
-      <span>총 {{props.assetsCount}}개의 에셋</span>
+      <span>{{props.assetsCount}}개의 에셋</span>
       <span>{{props.regdate}}</span>
     </p>
   </div>

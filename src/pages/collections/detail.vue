@@ -3,80 +3,275 @@
   <PageHeader title="컬렉션 에셋">
     컬렉션에 담겨있는 에셋의 목록입니다.
   </PageHeader>
-  <div class="collection__body">
+  <LoadingScreen v-if="data.loading"/>
+  <div v-else-if="$collection" class="collection__body">
     <ShadowBox tag="article" class="info">
+      <figure class="info__image">
+        <img
+          v-if="$collection.thumbnail"
+          :src="$collection.thumbnail"
+          draggable="false"
+          :alt="$collection.title"/>
+        <i v-else>
+          <Icon name="image"/>
+        </i>
+      </figure>
       <div class="info__body">
-        <h2 class="info__title">컬렉션 제목</h2>
-        <p class="info__description">
-          뉴스 기사가 조회될 때마다 해당 뉴스 기사의 조회수를 증가시키는 쿼리를 실행합니다. 이는 클라이언트에서 뉴스를 조회할 때마다 서버 측에서 실행될 수 있습니다.
-        </p>
+        <h2 class="info__title">{{$collection.title}}</h2>
+        <p class="info__description">{{$collection.description}}</p>
         <p class="info__meta">
-          <span>0000-00-00</span>
-          <span>메타 항항목</span>
+          <span>{{$collection.regdate}}</span>
         </p>
       </div>
+      <nav class="info__nav">
+        <Dropdown
+          :use-value="true"
+          position="right"
+          class="dropdown">
+          <Context
+            :items="[
+              { key: 'edit', label: '수정', icon: 'edit' },
+              { key: 'remove', label: '삭제', icon: 'trash-2', color: 'danger' },
+            ]"
+            @select="onSelectCollectionContext"/>
+        </Dropdown>
+      </nav>
     </ShadowBox>
     <div class="index-head">
-      <p class="index-head__total">총 <strong>{{20}}</strong>개의 에셋이 있습니다.</p>
+      <p class="index-head__total">총 <strong>{{$assets.total}}</strong>개의 에셋이 있습니다.</p>
     </div>
-    <ul class="index">
-      <li v-for="o in 8">
+    <LoadingScreen v-if="data.assets.loading"/>
+    <ul v-else-if="$assets.index?.length > 0" class="index">
+      <li v-for="o in $assets.index">
         <ImageItem
-          to="/asset/123"
-          image="https://goose.redgoose.me/data/upload/original/202306/on-the-clouds-006.webp"
-          title="많은 사용자분들의 사랑을 받고 있는 AI 드로잉"
-          :meta="[ '0000-00-00' ]"
+          :to="`/asset/${o.id}/`"
+          :image="o.thumbnail"
+          :title="o.title"
+          :meta="[ o.regdate ]"
           theme="thumbnail"
           class="item">
           <template #body>
             <nav class="item-nav">
-              <router-link to="/asset/123/edit/">수정</router-link>
-              <a href="#">공유하기</a>
-              <a href="#">컬렉션에서 제거</a>
+              <router-link :to="`/asset/${o.id}/edit/`">수정</router-link>
+              <button
+                type="button"
+                @click.prevent="removeAssetInCollection(o.id)">
+                컬렉션에서 제거
+              </button>
             </nav>
           </template>
         </ImageItem>
       </li>
     </ul>
-    <div class="collection__paginate">
+    <EmptyContent
+      v-else
+      message="에셋이 없습니다."
+      class="empty"/>
+    <div v-if="$assets.total > 0" class="collection__paginate">
       <Paginate
-        v-model="page"
-        :total="200"
-        :size="20"
-        :range="5"/>
+        v-model="data.page"
+        :total="data.assets.total"
+        :size="display.size"
+        :range="8"
+        @update:model-value="onChangePage"/>
     </div>
     <NavigationBottom class="bottom">
-      <template #left>
-        <ButtonBasic href="/collections/" left-icon="list">
+      <template #center>
+        <ButtonBasic href="/collections/" left-icon="list" size="big">
           컬렉션 목록
         </ButtonBasic>
-      </template>
-      <template #right>
-        <ButtonGroup>
-          <ButtonBasic type="button" color="weak" left-icon="edit">
-            수정
-          </ButtonBasic>
-          <ButtonBasic type="button" color="danger" left-icon="trash-2">
-            삭제
-          </ButtonBasic>
-        </ButtonGroup>
       </template>
     </NavigationBottom>
   </div>
 </article>
+<teleport to="#modal">
+  <Modal
+    :open="!!editCollection"
+    :hide-scroll="true"
+    :use-shortcut="true"
+    animation="bottom-up"
+    @close="editCollection = undefined">
+    <EditCollection
+      :id="editCollection"
+      @submit="onSubmitEditCollection"
+      @close="editCollection = undefined"/>
+  </Modal>
+</teleport>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { request, apiPath } from '../../libs/api.js'
+import { serialize } from '../../libs/strings.js'
+import { dateFormat } from '../../libs/dates.js'
+import { toast } from '../../modules/toast/index.js'
+import AppError from '../../modules/AppError.js'
 import PageHeader from '../../components/content/page-header.vue'
 import ImageItem from '../../components/content/image/index.vue'
 import Paginate from '../../components/navigation/paginate.vue'
 import ShadowBox from '../../components/content/shadow-box.vue'
 import NavigationBottom from '../../components/navigation/bottom.vue'
-import ButtonGroup from '../../components/buttons/group.vue'
 import ButtonBasic from '../../components/buttons/button-basic.vue'
+import Icon from '../../components/icons/index.vue'
+import LoadingScreen from '../../components/asset/loading/screen.vue'
+import EmptyContent from '../../components/content/empty-content.vue'
+import Dropdown from '../../components/navigation/dropdown.vue'
+import Context from '../../components/navigation/context.vue'
+import Modal from '../../components/modal/index.vue'
+import EditCollection from './components/edit.vue'
 
-const page = ref(1)
+const router = useRouter()
+const route = useRoute()
+const display = reactive({
+  size: 12,
+  order: 'id',
+  sort: 'desc',
+})
+const data = reactive({
+  loading: true,
+  page: route.query?.page ? Number(route.query.page) : 1,
+  collection: undefined,
+  assets: {
+    loading: false,
+    total: 0,
+    index: [],
+  },
+})
+const editCollection = ref(undefined)
+
+const $collection = computed(() => {
+  if (!data.collection) return null
+  const { id, title, description, files, regdate } = data.collection
+  return {
+    id,
+    title,
+    description,
+    regdate: dateFormat(new Date(regdate), '{yyyy}-{MM}-{dd}'),
+    thumbnail: files?.coverCreate ? `${apiPath}/file/${files.coverCreate}/?v=${Date.now()}` : null,
+  }
+})
+const $assets = computed(() => {
+  return {
+    total: data.assets.total,
+    index: data.assets.index.map(item => {
+      const { id, title, description, cover_file_id, regdate } = item
+      return {
+        id,
+        title,
+        description,
+        thumbnail: cover_file_id ? `${apiPath}/file/${cover_file_id}/` : null,
+        regdate: dateFormat(new Date(regdate), '{yyyy}-{MM}-{dd}'),
+      }
+    }),
+  }
+})
+
+onMounted(async () => {
+  data.loading = true
+  await Promise.all([
+    fetchCollection(),
+    fetchAssets(),
+  ])
+  data.loading = false
+})
+watch(() => route.query, async (value, _oldValue) => {
+  const { page } = value
+  data.page = page ? Number(page) : 1
+  await fetchAssets()
+})
+
+async function fetchCollection()
+{
+  const id = Number(route.params.id)
+  const res = await request(`/collection/${id}/`, {
+    method: 'get',
+  })
+  if (!res?.data) throw new AppError('컬렉션 데이터가 없습니다.', 204)
+  data.collection = res.data
+}
+
+async function fetchAssets()
+{
+  data.assets.loading = true
+  const id = Number(route.params.id)
+  const res = await request(`/collection/${id}/assets/`, {
+    method: 'get',
+    query: {
+      page: data.page,
+      size: display.size,
+      order: display.order,
+      sort: display.sort,
+    },
+  })
+  if (res?.data)
+  {
+    data.assets.total = res.data.total
+    data.assets.index = res.data.index
+  }
+  else
+  {
+    data.assets.total = 0
+    data.assets.index = []
+  }
+  data.assets.loading = false
+}
+
+function onChangePage(page)
+{
+  let { query } = route
+  let newQuery = {
+    ...query,
+    page,
+  }
+  if (newQuery.page === 1) delete newQuery.page
+  router.push(`./${serialize(newQuery, true)}`).then()
+}
+
+function onSelectCollectionContext({ key })
+{
+  switch (key)
+  {
+    case 'edit':
+      editCollection.value = Number(route.params.id)
+      break
+    case 'remove':
+      removeCollection().then()
+      break
+  }
+}
+
+function onSubmitEditCollection()
+{
+  editCollection.value = undefined
+  fetchCollection().then()
+}
+
+async function removeCollection()
+{
+  if (!confirm('정말로 컬렉션을 삭제할까요? 삭제하면 다시 복구할 수 없습니다.')) return
+  await request(`${apiPath}/collection/${route.params.id}/`, { method: 'delete' })
+  toast.add('컬렉션을 삭제했습니다.', 'success').then()
+  router.replace('/collections/').then()
+}
+
+async function removeAssetInCollection(id)
+{
+  try
+  {
+    if (!confirm('정말 이 컬렉션에서 에셋을 제거할까요?')) return
+    const collectionId = Number(route.params.id)
+    await request(`/collection/${collectionId}/asset/${id}/`, {
+      method: 'delete',
+    })
+    toast.add('에셋을 제거했습니다.', 'success').then()
+    await fetchAssets()
+  }
+  catch (e)
+  {
+    toast.add('에셋을 제거하지 못했습니다.', 'error').then()
+  }
+}
 </script>
 
 <style src="./detail.scss" lang="scss" scoped></style>

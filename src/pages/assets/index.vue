@@ -142,11 +142,6 @@ function onChangePage(page)
   router.push(`./${serialize(newQuery, true)}`).then()
 }
 
-function onClickShare(id)
-{
-  console.log('onClickShare()', id)
-}
-
 async function onClickRemove(id)
 {
   if (!confirm('정말로 에셋을 삭제할까요? 삭제하면 다시 복구할 수 없습니다.')) return

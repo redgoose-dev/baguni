@@ -2,9 +2,6 @@
 <article class="collections">
   <ModalHeader title="컬렉션/에셋 편집">
     <template #description>컬렉션에 담을 에셋을 선택하세요.</template>
-    <template #side>
-      <ModalButtonClose @click="emits('close')"/>
-    </template>
   </ModalHeader>
   <div v-if="data.loading" class="index-loading">
     <Loading/>
@@ -16,14 +13,12 @@
       </li>
     </ul>
   </div>
-  <div v-else class="empty">
-    .empty
-  </div>
+  <EmptyContent v-else/>
   <NavigationBottom class="bottom">
     <template #left>
       <ButtonBasic
         left-icon="plus"
-        @click="create.open = true">
+        @click="openCreateCollection = true">
         새로운 컬렉션
       </ButtonBasic>
     </template>
@@ -37,14 +32,17 @@
       </ButtonBasic>
     </template>
   </NavigationBottom>
+  <ModalClose @click="emits('close')"/>
 </article>
 <teleport to="#modal">
   <Modal
-    :open="create.open"
+    :open="openCreateCollection"
     :hide-scroll="true"
-    @close="create.open = false">
-    <PostCollection
-      :data="null"/>
+    animation="bottom-up"
+    @close="openCreateCollection = false">
+    <CreateCollection
+      @submit="onSubmitCreateCollection"
+      @close="openCreateCollection = false"/>
   </Modal>
 </teleport>
 </template>
@@ -56,12 +54,13 @@ import { pureObject } from '../../../libs/objects.js'
 import { toast } from '../../../modules/toast/index.js'
 import Modal from '../../../components/modal/index.vue'
 import ModalHeader from '../../../components/modal/header.vue'
-import ModalButtonClose from '../../../components/modal/button-close.vue'
+import ModalClose from '../../../components/modal/close.vue'
 import ButtonBasic from '../../../components/buttons/button-basic.vue'
-import PostCollection from '../components/post.vue'
 import NavigationBottom from '../../../components/navigation/bottom.vue'
 import Loading from '../../../components/asset/loading/index.vue'
+import EmptyContent from '../../../components/content/empty-content.vue'
 import Item from './item.vue'
+import CreateCollection from '../components/create.vue'
 
 const props = defineProps({
   assetId: Number,
@@ -73,9 +72,7 @@ const data = reactive({
   loading: true,
   index: [],
 })
-const create = reactive({
-  open: false,
-})
+const openCreateCollection = ref(false)
 const processing = ref(false)
 
 const $index = computed(() => {
@@ -84,13 +81,18 @@ const $index = computed(() => {
       id: o.id,
       title: o.title,
       description: o.description,
-      thumbnail: `${apiPath}/file/${o.cover_file_id}`,
+      thumbnail: o.cover_file_id ? `${apiPath}/file/${o.cover_file_id}` : null,
       active: ids.value.includes(o.id),
     }
   })
 })
 
-onMounted(async () => {
+onMounted(() => {
+  fetch().then()
+})
+
+async function fetch()
+{
   try
   {
     data.loading = true
@@ -103,11 +105,10 @@ onMounted(async () => {
   }
   catch (e)
   {
-    console.error(e)
     data.index = []
     data.loading = false
   }
-})
+}
 
 function onCheckItem(id)
 {
@@ -140,6 +141,12 @@ async function onSubmit()
     processing.value = false
     toast.add('컬렉션/에셋 편집을 하지 못했습니다.', 'error')
   }
+}
+
+function onSubmitCreateCollection()
+{
+  fetch().then()
+  openCreateCollection.value = false
 }
 </script>
 

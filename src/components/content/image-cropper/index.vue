@@ -2,9 +2,6 @@
 <article class="image-cropper">
   <ModalHeader :title="props.title">
     <template #description>이미지 영역을 설정하고 커버 이미지로 만듭니다.</template>
-    <template #side>
-      <ModalButtonClose @close="emits('close')"/>
-    </template>
   </ModalHeader>
   <div class="body">
     <Cropper
@@ -37,6 +34,7 @@
       </ButtonBasic>
     </template>
   </NavigationBottom>
+  <ModalClose @click="emits('close')"/>
 </article>
 </template>
 
@@ -47,7 +45,7 @@ import imageResize from 'image-resize'
 import { blobToFile } from '../../../libs/files.js'
 import { createRandomText } from '../../../libs/strings.js'
 import ModalHeader from '../../modal/header.vue'
-import ModalButtonClose from '../../modal/button-close.vue'
+import ModalClose from '../../modal/close.vue'
 import NavigationBottom from '../../navigation/bottom.vue'
 import ButtonBasic from '../../buttons/button-basic.vue'
 import 'vue-advanced-cropper/dist/style.css'

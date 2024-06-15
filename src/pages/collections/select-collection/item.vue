@@ -30,7 +30,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import Icon from '../../../components/icons/index.vue'
 
 const props = defineProps({

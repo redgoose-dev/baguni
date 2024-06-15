@@ -62,6 +62,7 @@ function onKeydown(e)
 
 function controlRoot(sw)
 {
+  if (!sw && document.getElementById('modal').children.length > 1) return
   document.querySelector('html').classList[sw ? 'add' : 'remove']('mode-not-scroll')
 }
 

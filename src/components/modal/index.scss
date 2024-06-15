@@ -2,7 +2,11 @@
 
 .modal {
   position: fixed;
-  z-index: 100;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: var(--modal-z-index, 100);
   display: block;
   border: none;
   padding: 0;
@@ -10,10 +14,6 @@
   outline: none;
   background: transparent;
   overflow: clip;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
   &--window {
     display: grid;
     place-content: center;
@@ -32,10 +32,10 @@
         0 12.5px 12.5px 0 hsla(0 0% 0% / 5%),
         0 4.5px 4.5px 0 hsla(0 0% 0% / 4%),
         0 0 0 .5px hsla(0 0% 0% / 10%);
-      transition: transform 260ms ease-out, opacity 260ms ease-out;
-      transition-delay: 120ms;
-      transform: translateY(var(--y));
-      opacity: var(--a);
+      transition: var(--body-transition, none);
+      transition-delay: var(--body-transition-delay, unset);
+      transform: var(--body-transform, unset);
+      opacity: var(--body-alpha, unset);
     }
   }
   &--full {
@@ -47,7 +47,8 @@
     max-height: unset;
     background-color: var(--modal-color-bg, var(--color-bg));
     > .modal-body {
-      min-height: 100%;
+      height: 100%;
+      box-sizing: border-box;
     }
   }
 }
@@ -60,21 +61,65 @@
   }
 }
 
-.modal-fade {
-  &-enter-active {
-    transition: opacity 200ms;
+// animation
+.animation--fade:is(.modal--window) {
+  --body-transition: opacity 260ms ease-out;
+  --body-transition-delay: 240ms;
+  &.modal {
+    &-enter-active {
+      transition: opacity 160ms ease-out;
+    }
+    &-enter-from {
+      opacity: 0;
+      --body-alpha: 0;
+    }
+    &-leave-active {
+      transition: opacity 240ms ease-out;
+      transition-delay: 160ms;
+      --body-transition: opacity 220ms ease-out;
+      --body-transition-delay: 0;
+    }
+    &-leave-to {
+      opacity: 0;
+      --body-alpha: 0;
+    }
   }
-  &-enter-from {
-    opacity: 0;
-    --y: 30px;
-    --a: 0;
+}
+.animation--bottom-up:is(.modal--window) {
+  --body-transition: transform 260ms ease-out, opacity 260ms ease-out;
+  --body-transition-delay: 160ms;
+  &.modal {
+    &-enter-active {
+      transition: opacity 120ms ease-out;
+    }
+    &-enter-from {
+      opacity: 0;
+      --body-transform: translateY(30px);
+      --body-alpha: 0;
+    }
+    &-leave-active {
+      transition: transform 240ms ease-out, opacity 240ms ease-out;
+      transition-delay: 200ms;
+      --body-transition: transform 160ms ease-out, opacity 160ms ease-out;
+      --body-transition-delay: 0;
+    }
+    &-leave-to {
+      opacity: 0;
+      --body-transform: translateY(30px);
+      --body-alpha: 0;
+    }
   }
-  &-leave-active {
-    transition: opacity 240ms;
-  }
-  &-leave-to {
-    opacity: 0;
-    --y: 0;
-    --a: 1;
+}
+.animation--fade:is(.modal--full),
+.animation--bottom-up:is(.modal--full) {
+  &.modal {
+    &-enter-active,
+    &-leave-active {
+      transition: opacity 200ms ease-out;
+    }
+    &-enter-from,
+    &-leave-to {
+      opacity: 0;
+    }
   }
 }

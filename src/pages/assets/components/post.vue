@@ -36,7 +36,8 @@
           v-model="forms.description"
           name="description"
           id="description"
-          placeholder="설명을 입력해주세요."/>
+          placeholder="설명을 입력해주세요."
+          :rows="16"/>
       </div>
     </fieldset>
     <ManageTags v-model="forms.tags"/>

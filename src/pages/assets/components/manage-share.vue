@@ -2,9 +2,6 @@
 <article class="share">
   <ModalHeader title="에셋 공유하기">
     <template #description>에셋 데이터를 공개하여 공유할 수 있습니다.</template>
-    <template #side>
-      <ModalButtonClose @click="emits('close')"/>
-    </template>
   </ModalHeader>
   <fieldset class="address">
     <legend>에셋공유 주소</legend>
@@ -48,13 +45,14 @@
       </ButtonGroup>
     </template>
   </NavigationBottom>
+  <ModalClose @click="emits('close')"/>
 </article>
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { reactive, onMounted } from 'vue'
 import ModalHeader from '../../../components/modal/header.vue'
-import ModalButtonClose from '../../../components/modal/button-close.vue'
+import ModalClose from '../../../components/modal/close.vue'
 import FormGroup from '../../../components/form/group.vue'
 import ButtonGroup from '../../../components/buttons/group.vue'
 import InputText from '../../../components/form/input-text.vue'

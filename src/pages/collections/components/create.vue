@@ -1,24 +1,25 @@
 <template>
-<article class="create-collection">
+<article class="create">
   <PageHeader title="컬렉션 만들기">
     새로운 컬렉션을 만듭니다.
   </PageHeader>
-  <Post
+  <PostCollection
     :processing="processing"
     class="post"
     @submit="onSubmit"/>
+  <ModalClose @click="emits('close')"/>
 </article>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { request, formData } from '../../libs/api.js'
-import { error, success } from '../../libs/reactions.js'
-import PageHeader from '../../components/content/page-header.vue'
-import Post from './components/post.vue'
+import { request, formData } from '../../../libs/api.js'
+import { error, success } from '../../../libs/reactions.js'
+import PageHeader from '../../../components/content/page-header.vue'
+import PostCollection from '../components/post.vue'
+import ModalClose from '../../../components/modal/close.vue'
 
-const router = useRouter()
+const emits = defineEmits([ 'submit', 'close' ])
 const processing = ref(false)
 
 async function onSubmit(body)
@@ -36,8 +37,7 @@ async function onSubmit(body)
     processing.value = false
     // reaction
     success('컬렉션을 만들었습니다.')
-    // go to index
-    await router.push('/collections/')
+    emits('submit')
   }
   catch (e)
   {
@@ -48,9 +48,11 @@ async function onSubmit(body)
 </script>
 
 <style lang="scss" scoped>
-.create-collection {
-  margin: 0 auto;
-  max-width: var(--size-content-width);
+.create {
+  padding: 54px;
+  box-sizing: border-box;
+  width: 75vw;
+  max-width: 640px;
 }
 .post {
   margin: 30px 0 0;

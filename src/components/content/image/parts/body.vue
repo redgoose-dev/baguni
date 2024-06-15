@@ -51,6 +51,7 @@ const noTitleName = 'Unknown title'
   }
   &.no-title {
     font-style: italic;
+    user-select: none;
     &, a {
       color: var(--color-blur);
     }
