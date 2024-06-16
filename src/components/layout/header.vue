@@ -67,7 +67,7 @@
             </template>
             <Context
               :items="[
-                { key: 'account', label: '계정정보', icon: 'user' },
+                { key: 'account', label: '계정 관리하기', icon: 'user' },
                 { key: 'logout', label: '로그아웃', icon: 'log-out', color: 'danger' },
               ]"
               @select="onSelectProfileDropdown"/>
@@ -110,6 +110,7 @@ function onSelectProfileDropdown({ key })
   switch (key)
   {
     case 'account':
+      router.push('/user/account/')
       break
     case 'logout':
       if (!confirm('정말로 로그아웃 할까요?')) return

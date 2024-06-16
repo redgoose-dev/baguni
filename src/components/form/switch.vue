@@ -21,6 +21,7 @@
       @change="onChangeInput">
     <button
       v-else
+      type="button"
       :id="props.id"
       :data-checked="sw"
       :disabled="props.disabled || props.readonly"

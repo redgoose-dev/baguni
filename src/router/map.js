@@ -69,17 +69,17 @@ const about = [
   },
 ]
 
-// const users = [
-//   {
-//     path: '/user/:id/',
-//     name: 'user-detail',
-//     component: () => import('../pages/auth/login.vue'),
-//     meta: {
-//       active: 'auth',
-//       layout: 'blank',
-//     },
-//   },
-// ]
+const users = [
+  {
+    path: '/user/account/',
+    name: 'user-account',
+    component: () => import('../pages/users/account.vue'),
+    meta: {
+      active: 'user',
+      layout: 'default',
+    },
+  },
+]
 
 const auth = [
   {
@@ -186,6 +186,7 @@ export default [
   ...assets,
   ...collections,
   ...about,
+  ...users,
   ...auth,
   ...guide,
   {

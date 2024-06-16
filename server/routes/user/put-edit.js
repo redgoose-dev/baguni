@@ -7,6 +7,7 @@
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, editItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
+import { parseJSON } from '../../libs/objects.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -15,7 +16,7 @@ export default async (req, res) => {
     const id = Number(req.params.id)
     if (!id) throw new ServiceError('id 값이 없습니다.')
 
-    let { name } = req.body
+    let { name, json } = req.body
     let readyUpdate = {
       name: undefined,
     }
@@ -37,6 +38,13 @@ export default async (req, res) => {
       readyUpdate.name = name.trim()
     }
 
+    // update json
+    if (json)
+    {
+      json = parseJSON(json) || {}
+      readyUpdate.json = JSON.stringify(json)
+    }
+
     // check ready update data
     if (!Object.values(readyUpdate).some(x => x !== undefined))
     {
@@ -49,10 +57,12 @@ export default async (req, res) => {
       where: 'id = $id',
       set: [
         readyUpdate.name && 'name = $name',
+        readyUpdate.json && 'json = $json',
       ].filter(Boolean),
       values: {
         '$id': id,
         '$name': readyUpdate.name,
+        '$json': readyUpdate.json,
       },
     })
 

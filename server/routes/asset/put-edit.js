@@ -53,7 +53,6 @@ export default async (req, res) => {
         values: { '$id': id },
       })
       if (!asset?.data) throw new ServiceError('에셋 데이터가 없습니다.')
-      // asset.json = parseJSON(asset.json)
       const srcMapFiles = getItems({
         table: tables.file,
         fields: [
