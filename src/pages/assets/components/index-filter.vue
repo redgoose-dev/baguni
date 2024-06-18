@@ -1,49 +1,64 @@
 <template>
 <form class="index-filter">
   <div class="column">
-    <label for="sort">정렬</label>
+    <label for="order" class="label">정렬</label>
     <Select
-      id="sort"
-      v-model="filterValue.sort"
+      name="order"
+      id="order"
+      :model-value="props.order"
       :options="[
-        { label: '이름', value: 'name' },
-        { label: '조회순', value: 'hit' },
+        { value: 'id', label: '아이디' },
+        { value: 'title', label: '제목' },
+        { value: 'regdate', label: '등록일' },
+        { value: 'updated_at', label: '업데이트 날짜' },
       ]"
-      placeholder="정렬"
+      placeholder=""
       size="small"
-      @update:modelValue="onUpdated"/>
+      class="order"
+      @update:modelValue="emits('update:order', $event)"/>
+    <Select
+      name="sort"
+      :model-value="props.sort"
+      placeholder=""
+      size="small"
+      :options="[
+        { value: 'asc', label: 'A to Z' },
+        { value: 'desc', label: 'Z to A' },
+      ]"
+      class="sort"
+      @update:modelValue="emits('update:sort', $event)"/>
   </div>
   <div class="column">
+    <span class="label">테마</span>
     <RadioButton
-      v-model="filterValue.theme"
-      name="index-theme"
+      :model-value="props.theme"
+      id="theme"
+      name="theme"
       size="small"
       :only-icon="true"
       :options="[
         { value: 'list', label: '목록', icon: 'menu' },
         { value: 'thumbnail', label: '썸네일', icon: 'grid' },
       ]"
-      @update:modelValue="onUpdated"/>
+      @update:modelValue="emits('update:theme', $event)"/>
   </div>
 </form>
 </template>
 
 <script setup>
-import { reactive } from 'vue'
-import { pureObject } from '../../../libs/objects'
 import Select from '../../../components/form/select.vue'
 import RadioButton from '../../../components/form/radio-button.vue'
 
-const emits = defineEmits([ 'update' ])
-const filterValue = reactive({
-  sort: '',
-  theme: 'thumbnail',
+const props = defineProps({
+  order: { type: String, default: 'id' },
+  sort: { type: String, default: 'desc' },
+  theme: { type: String, default: 'thumbnail' },
 })
-
-function onUpdated()
-{
-  emits('update', pureObject(filterValue))
-}
+const emits = defineEmits([
+  'update:order',
+  'update:sort',
+  'update:theme',
+])
 </script>
 
 <style src="./index-filter.scss" lang="scss" scoped></style>

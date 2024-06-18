@@ -119,7 +119,6 @@ export default async (req, res) => {
   }
   catch (e)
   {
-    console.log(e)
     // close db
     disconnect()
     // result
@@ -129,5 +128,7 @@ export default async (req, res) => {
       _file: e.code !== 204 ? __filename : undefined,
       _err: e,
     })
+    // TODO: 204로 나왔다면 오류로 출력하는것보다 데이터를 안주는게 좋을거 같다.
+    // TODO: 코드는 204로 넣어줬으면 구분이 될것이다.
   }
 }

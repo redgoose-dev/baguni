@@ -59,6 +59,7 @@ export function serialize(obj, usePrefix = false, useEncode = true)
     if (!obj.hasOwnProperty(p) || obj[p] === undefined || obj[p] === null) continue
     if (typeof obj[p] === 'number' && isNaN(obj[p])) continue
     const value = useEncode ? encodeURIComponent(obj[p]) : obj[p]
+    if (!value) continue
     str.push(encodeURIComponent(p) + '=' + value)
   }
   res = str.join('&')

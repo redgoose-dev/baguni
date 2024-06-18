@@ -119,9 +119,10 @@ function setupPreference(options = {})
     live: true,
     theme: 'light',
     edit: 'value',
+    openDepth: 8,
+    node: forms.json,
     ...options,
   })
-  jsonEditor.replace(forms.json, false)
   const wrap = jsonEditor.el.wrap.get(0)
   wrap.addEventListener('update', ({ detail }) => {
     forms.json = detail

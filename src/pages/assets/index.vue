@@ -6,21 +6,24 @@
     </PageHeader>
     <div class="explorer__body">
       <div class="explorer__content">
-        <IndexFilter @update="onUpdateIndexFilter"/>
+        <IndexFilter
+          v-model:order="headFilter.order"
+          v-model:sort="headFilter.sort"
+          v-model:theme="display.indexTheme"/>
         <LoadingScreen v-if="data.loading"/>
-        <ul v-else :class="[
-          'explorer__index',
-          display.indexTheme === 'list' && 'list',
-          display.indexTheme === 'thumbnail' && 'thumbnail',
-        ]">
+        <ul
+          v-else-if="$index?.length > 0"
+          :class="[
+            'explorer__index',
+            display.indexTheme === 'list' && 'list',
+            display.indexTheme === 'thumbnail' && 'thumbnail',
+          ]">
           <li v-for="item in $index">
             <ImageItem
               :to="`/asset/${item.id}/`"
               :image="item.thumbnail"
               :title="item.title"
-              :meta="[
-                item.regdate,
-              ]"
+              :meta="[ item.regdate ]"
               :theme="display.indexTheme"
               class="item">
               <template #body>
@@ -38,26 +41,38 @@
             </ImageItem>
           </li>
         </ul>
+        <EmptyContent v-else class="explorer__empty"/>
         <nav class="explorer__paginate">
           <Paginate
-            v-model="data.page"
+            v-model="routeQuery.page"
             :total="data.total"
-            :size="display.size"
-            :range="8"
+            :size="sideFilter.size"
+            :range="display.paginateRange"
             @update:model-value="onChangePage"/>
         </nav>
       </div>
       <div class="explorer__filter">
         <Filter
-          :total="data.total"/>
+          :total="data.total"
+          v-model:date-start="sideFilter.dateStart"
+          v-model:date-end="sideFilter.dateEnd"
+          v-model:file-type="sideFilter.fileType"
+          v-model:q="routeQuery.q"
+          @submit="onSubmitSideFilter"/>
       </div>
     </div>
+  </div>
+  <div>
+    <pre style="font-size:11px">{{display}}</pre>
+    <pre style="font-size:11px">{{headFilter}}</pre>
+    <pre style="font-size:11px">{{sideFilter}}</pre>
+    <pre style="font-size:11px">{{routeQuery}}</pre>
   </div>
 </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, watch } from 'vue'
+import { reactive, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { request, apiPath } from '../../libs/api.js'
 import { serialize } from '../../libs/strings.js'
@@ -69,6 +84,7 @@ import IndexFilter from './components/index-filter.vue'
 import Paginate from '../../components/navigation/paginate.vue'
 import ImageItem from '../../components/content/image/index.vue'
 import LoadingScreen from '../../components/asset/loading/screen.vue'
+import EmptyContent from '../../components/content/empty-content.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -76,13 +92,24 @@ const data = reactive({
   loading: true,
   total: 0,
   index: [],
-  page: route.query?.page ? Number(route.query.page) : 1,
 })
 const display = reactive({
-  size: 6,
   indexTheme: 'thumbnail', // list,thumbnail
+  paginateRange: 8,
+})
+const sideFilter = reactive({
+  dateStart: undefined,
+  dateEnd: undefined,
+  fileType: 'all',
+  size: 6,
+})
+const headFilter = reactive({
   order: 'id',
   sort: 'desc',
+})
+const routeQuery = reactive({
+  page: route.query?.page ? Number(route.query.page) : 1,
+  q: route.query?.q || undefined,
 })
 
 const $index = computed(() => {
@@ -102,36 +129,47 @@ const $index = computed(() => {
 onMounted(() => {
   fetch().then()
 })
-watch(() => route.query, async (value, _oldValue) => {
-  const { page } = value
-  data.page = page ? Number(page) : 1
-  await fetch()
-})
+watch(headFilter, (value, _oldValue) => onUpdateFilter())
 
-async function fetch()
+async function fetch(options = {})
 {
   data.loading = true
+  let query = {
+    page: routeQuery.page,
+    size: 6,
+    order: headFilter.order || undefined,
+    sort: headFilter.sort || undefined,
+    q: routeQuery.q,
+    date_start: sideFilter.dateStart,
+    date_end: sideFilter.dateEnd,
+    file_type: sideFilter.fileType,
+    ...options,
+  }
+  // filtering query
+  if (!(query.page > 1)) delete query.page
+  if (!query.q) delete query.q
+  if (!query.file_type || query.file_type === 'all') delete query.file_type
+  if (!query.order || query.order === 'id') delete query.order
+  if (!query.sort || query.sort === 'desc') delete query.sort
+  if (!query.size || query.size === 24) delete query.size
+  if (!(query.date_start && query.date_end))
+  {
+    delete query.date_start
+    delete query.date_end
+  }
+  // request api
   const res = await request(`/assets/`, {
     method: 'get',
-    query: {
-      page: data.page,
-      size: display.size,
-      order: display.order,
-      sort: display.sort,
-    },
+    query,
   })
+  // response data
   const { total, index } = res.data
   data.total = total
   data.index = index
   data.loading = false
 }
 
-function onUpdateIndexFilter(newValue)
-{
-  display.indexTheme = newValue.theme
-}
-
-function onChangePage(page)
+async function onChangePage(page)
 {
   let { query } = route
   let newQuery = {
@@ -139,7 +177,32 @@ function onChangePage(page)
     page,
   }
   if (newQuery.page === 1) delete newQuery.page
-  router.push(`./${serialize(newQuery, true)}`).then()
+  routeQuery.page = page
+  await router.push(`./${serialize(newQuery, true)}`)
+  await fetch()
+}
+async function onSubmitSideFilter(q)
+{
+  let { query } = route
+  let newQuery = {
+    ...query,
+    page: undefined,
+    q,
+  }
+  routeQuery.page = 1
+  await router.push(`./${serialize(newQuery, true)}`)
+  await fetch()
+}
+async function onUpdateFilter()
+{
+  let { query } = route
+  let newQuery = {
+    ...query,
+    page: undefined,
+  }
+  routeQuery.page = 1
+  await router.replace(`./${serialize(newQuery, true)}`)
+  await fetch()
 }
 
 async function onClickRemove(id)

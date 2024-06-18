@@ -10,11 +10,18 @@
   align-items: center;
   gap: 0 8px;
   user-select: none;
-  label {
+  .label {
     display: block;
     white-space: nowrap;
     font-size: 12px;
     font-weight: 500;
     line-height: 1.15;
   }
+}
+
+.order {
+  width: 130px;
+}
+.sort {
+  width: 90px;
 }

@@ -60,6 +60,9 @@
       --assets-index-gap: 32px 24px;
     }
   }
+  &__empty {
+    --empty-height: 480px;
+  }
   &__paginate {
     display: grid;
     place-content: center;

@@ -40,6 +40,7 @@ export default async (req, res) => {
     fields.push(`(select file from ${tables.mapAssetFile} where ${tables.mapAssetFile}.asset = ${tables.asset}.id and type like '${fileTypes.coverCreate}') as cover_file_id`)
 
     // 파일의 타입 (image/jpeg 에서 image 부분을 필터링하자)
+    // TODO: 타입 앞 부분이 완전하지 않기 때문에 그루핑하는것이 좋을거같다.
     if (file_type)
     {
       fields.push(`${tables.asset}.*`)
@@ -55,12 +56,6 @@ export default async (req, res) => {
       values['$endDate'] = date_end
     }
 
-    // set limit
-    let _page = Number(page) > 0 ? Number(page) : 1
-    limit = `limit $limit offset $offset`
-    values['$limit'] = (Number(size) > 0) ? Number(size) : defaultPageSize
-    values['$offset'] = (_page - 1) * values['$limit']
-
     // repair where
     where = where.trim().replace(/^and|or/, ' ')
 
@@ -73,6 +68,12 @@ export default async (req, res) => {
     })
     if (!(total.data > 0)) throw new ServiceError('에셋 데이터가 없습니다.', 204)
 
+    // set limit
+    let _page = Number(page) > 0 ? Number(page) : 1
+    limit = `limit $limit offset $offset`
+    values['$limit'] = (Number(size) > 0) ? Number(size) : defaultPageSize
+    values['$offset'] = (_page - 1) * values['$limit']
+
     // get index
     const ids = {}
     index = getItems({
@@ -80,8 +81,8 @@ export default async (req, res) => {
       fields,
       join,
       where,
-      order,
-      sort,
+      order: Boolean(order || sort) ? order : 'id',
+      sort: Boolean(order || sort) ? sort : 'desc',
       limit,
       values,
     })
@@ -120,11 +121,26 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    error(req, res, {
-      code: e.code,
-      message: '에셋을 가져오지 못했습니다.',
-      _file: e.code !== 204 ? __filename : undefined,
-      _err: e,
-    })
+    switch (e.code)
+    {
+      case 204:
+        success(req, res, {
+          message: '에셋 데이터가 없습니다.',
+          code: 204,
+          data: {
+            total: 0,
+            index: [],
+          },
+        })
+        break
+      default:
+        error(req, res, {
+          code: e.code,
+          message: '에셋을 가져오지 못했습니다.',
+          _file: __filename,
+          _err: e,
+        })
+        break
+    }
   }
 }

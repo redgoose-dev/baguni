@@ -23,6 +23,23 @@ function setup()
 }
 
 /**
+ * 쿼리 스트링 값 준비를 위하여 값을 정리한다.
+ */
+function filteringQuery(query)
+{
+  if (!query) return {}
+  Object.entries(query).forEach(([ key, value ]) => {
+    if (value === undefined)
+    {
+      delete query[key]
+      return
+    }
+    query[key] = String(value)
+  })
+  return query
+}
+
+/**
  * api 인스턴스를 못쓰도록 삭제한다.
  */
 export function destroyApi()
@@ -47,15 +64,14 @@ export async function request(url, options = {})
   const { method, query, body } = options
   let _options = {
     method,
-    query,
+    query: filteringQuery(query),
     body,
   }
   _options.headers = {
     ...headers,
     ...(options.headers || {}),
   }
-  const res = await instance(url, _options)
-  return res
+  return await instance(url, _options)
 }
 
 /**

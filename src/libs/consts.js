@@ -8,6 +8,7 @@ export const SHARE_PERMISSION = {
 export const defaultUserPreference = {
   asset: {
     index_size: 8,
+    create_fileLimitSize: 1000,
   },
   collection: {
     index_size: 8,
