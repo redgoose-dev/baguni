@@ -49,11 +49,11 @@ export default async (req, res) => {
     }
 
     // 날짜 범위
-    if (date_start || date_end)
+    if (date_start && date_end)
     {
       where += ` and ($startDate is null or ${tables.asset}.regdate >= $startDate) and ($endDate is null or ${tables.asset}.regdate <= $endDate)`
-      values['$startDate'] = date_start
-      values['$endDate'] = date_end
+      values['$startDate'] = `${date_start} 00:00:00`
+      values['$endDate'] = `${date_end} 23:59:59`
     }
 
     // repair where

@@ -14,7 +14,7 @@
   }
   &__content {}
   &__index {
-    margin: 16px 0 36px;
+    margin: 0 0 36px;
     padding: 0;
     list-style: none;
     display: grid;
@@ -56,8 +56,8 @@
       --image-item-size: 82px;
     }
     &.thumbnail {
-      --assets-index-column: 3;
-      --assets-index-gap: 32px 24px;
+      --assets-index-column: 2;
+      --assets-index-gap: 24px 20px;
     }
   }
   &__empty {
@@ -70,7 +70,22 @@
   }
   &__filter {}
 
+  @include mixins.responsive(desktop) {
+    &__index {
+      &.list {}
+      &.thumbnail {
+        --assets-index-column: 3;
+        --assets-index-gap: 32px 20px;
+      }
+    }
+  }
   @include mixins.responsive(max) {
-    --assets-index-column: 4;
+    &__index {
+      &.list {}
+      &.thumbnail {
+        --assets-index-column: 4;
+        --assets-index-gap: 36px 24px;
+      }
+    }
   }
 }

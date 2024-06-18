@@ -15,3 +15,13 @@ export const defaultUserPreference = {
   },
   account: {},
 }
+
+export const defaultAssetsIndexFilter = {
+  dateStart: undefined,
+  dateEnd: undefined,
+  fileType: 'all',
+  order: 'id',
+  sort: 'desc',
+  q: undefined,
+  indexTheme: 'thumbnail', // list,thumbnail
+}
