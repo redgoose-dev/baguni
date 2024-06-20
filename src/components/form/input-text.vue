@@ -14,6 +14,7 @@
   :max="props.max"
   :step="props.step"
   :pattern="props.pattern"
+  :list="props.list"
   :class="[
     'input-text',
     props.size && `input-text--${props.size}`,
@@ -49,6 +50,7 @@ const props = defineProps({
   size: String, // small
   color: String, // error
   pattern: String,
+  list: String,
 })
 const emits = defineEmits([ 'update:modelValue', 'position', 'submit', 'click'  ])
 

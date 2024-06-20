@@ -61,6 +61,20 @@
     </section>
     <section class="page-section">
       <header>
+        <h1>datalist</h1>
+        <p>데이터 리스트 활용</p>
+      </header>
+      <div class="page-example">
+        <InputText list="fruits"/>
+        <datalist id="fruits">
+          <option value="apple"/>
+          <option value="banana"/>
+          <option value="mango"/>
+        </datalist>
+      </div>
+    </section>
+    <section class="page-section">
+      <header>
         <h1>with button</h1>
         <p>버튼과 함께 사용합니다.</p>
       </header>
