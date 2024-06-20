@@ -122,13 +122,22 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    error(req, res, {
-      code: e.code,
-      message: '에셋을 가져오지 못했습니다.',
-      _file: e.code !== 204 ? __filename : undefined,
-      _err: e,
-    })
-    // TODO: 204로 나왔다면 오류로 출력하는것보다 데이터를 안주는게 좋을거 같다.
-    // TODO: 코드는 204로 넣어줬으면 구분이 될것이다.
+    switch (e.code)
+    {
+      case 204:
+        success(req, res, {
+          message: '에셋 데이터가 없습니다.',
+          code: 204,
+        })
+        break
+      default:
+        error(req, res, {
+          code: e.code,
+          message: '에셋을 가져오지 못했습니다.',
+          _file: __filename,
+          _err: e,
+        })
+        break
+    }
   }
 }

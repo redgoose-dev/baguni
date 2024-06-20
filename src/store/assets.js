@@ -1,4 +1,4 @@
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import { authStore } from './auth.js'
 import { pureObject } from '../libs/objects.js'
@@ -11,7 +11,7 @@ const defaultAssetsIndexFilter = {
   order: 'id',
   sort: 'desc',
   q: undefined,
-  tags: undefined,
+  tags: [],
   indexTheme: 'thumbnail', // list,thumbnail
 }
 
@@ -34,11 +34,17 @@ export const assetStore =  defineStore('filter', () => {
   {
     setStorage(STORAGE_KEYS.ASSETS_FILTER, pureObject(filter))
   }
+  function updateAll()
+  {
+    indexSize.value = auth.user?.json?.asset?.index_size || 24
+    paginateSize.value = auth.user?.json?.asset?.index_paginateRange || 8
+  }
   return {
     indexSize,
     paginateSize,
     filter,
     resetFilter,
     saveFilter,
+    updateAll,
   }
 })

@@ -35,7 +35,7 @@
       </dl>
     </div>
     <div class="field">
-      <label for="file-type" class="label">종류</label>
+      <label for="file-type" class="label">파일타입</label>
       <div>
         <Select
           id="file-type"
@@ -45,10 +45,9 @@
           placeholder=""
           :options="[
             { value: 'all', label: '모두' },
-            { value: 'image', label: '이미지' },
-            { value: 'document', label: '문서' },
-            { value: 'audio', label: '음악' },
-            { value: 'video', label: '동영상' },
+            ...(Object.entries(fileTypes).map(([ value, label ]) => {
+              return { value, label }
+            })),
           ]"
           @update:modelValue="onUpdateTrigger({ fileType: $event })"/>
       </div>
@@ -90,7 +89,7 @@
           name="theme"
           v-model="assets.filter.indexTheme"
           size="small"
-          :only-icon="true"
+          :only-icon="false"
           :options="[
             { value: 'list', label: '목록', icon: 'menu' },
             { value: 'thumbnail', label: '썸네일', icon: 'grid' },
@@ -103,7 +102,12 @@
       <div class="tags">
         <ul v-if="assets.filter.tags?.length > 0">
           <li v-for="tag in assets.filter.tags">
-            <Tag :label="tag"/>
+            <Tag
+              :label="tag.name"
+              :use-remove="true"
+              :fill="false"
+              color="weak"
+              @remove="onRemoveTag(tag.id)"/>
           </li>
         </ul>
         <nav>
@@ -157,9 +161,9 @@
       :use-shortcut="true"
       animation="bottom-up"
       @close="openSelectTags = false">
-      <SelectTags
+      <TagSelector
         :tags="assets.filter.tags"
-        :limit="3"
+        :limit="5"
         @submit="onSubmitSelectTags"
         @close="openSelectTags = false"/>
     </Modal>
@@ -168,8 +172,10 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { assetStore } from '../../../store/assets.js'
+import { fileTypes } from '../../../libs/consts.js'
+import { findObjectByKey } from '../../../libs/objects.js'
 import ButtonBasic from '../../../components/buttons/button-basic.vue'
 import InputText from '../../../components/form/input-text.vue'
 import Select from '../../../components/form/select.vue'
@@ -177,7 +183,7 @@ import FormGroup from '../../../components/form/group.vue'
 import RadioButton from '../../../components/form/radio-button.vue'
 import Tag from '../../../components/form/tag.vue'
 import Modal from '../../../components/modal/index.vue'
-import SelectTags from './select-tags.vue'
+import TagSelector from '../../../components/content/tag-selector/index.vue'
 
 const assets = assetStore()
 const props = defineProps({
@@ -217,6 +223,13 @@ function onSubmitSelectTags(tags)
   assets.filter.tags = tags
   assets.saveFilter()
   openSelectTags.value = false
+  onSubmit()
+}
+function onRemoveTag(id)
+{
+  const idx = findObjectByKey(assets.filter.tags, 'id', id)
+  assets.filter.tags.splice(idx, 1)
+  assets.saveFilter()
   onSubmit()
 }
 </script>

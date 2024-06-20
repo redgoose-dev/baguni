@@ -27,7 +27,7 @@
 import Icon from '../icons/index.vue'
 
 const props = defineProps({
-  label: String,
+  label: [ String, Number ],
   useClick: Boolean,
   useRemove: Boolean,
   color: String, // key-1,key-2,key-3,success,danger,weak

@@ -27,6 +27,8 @@ export default async (req, res) => {
     let where = ''
     let values = {}
     let limit = ''
+    let after = ''
+    let whereIn = ''
 
     // 키워드 검색
     if (q)
@@ -40,12 +42,20 @@ export default async (req, res) => {
     fields.push(`(select file from ${tables.mapAssetFile} where ${tables.mapAssetFile}.asset = ${tables.asset}.id and type like '${fileTypes.coverCreate}') as cover_file_id`)
 
     // 파일의 타입 (image/jpeg 에서 image 부분을 필터링하자)
-    // TODO: 타입 앞 부분이 완전하지 않기 때문에 그루핑하는것이 좋을거같다.
     if (file_type)
     {
-      fields.push(`${tables.asset}.*`)
       join.push(`join ${tables.mapAssetFile} on (${tables.asset}.id = ${tables.mapAssetFile}.asset and ${tables.mapAssetFile}.type like '${fileTypes.main}')`)
       join.push(`join ${tables.file} on (${tables.mapAssetFile}.file = ${tables.file}.id and ${tables.file}.type like '${file_type}%')`)
+    }
+
+    // 태그
+    if (tags)
+    {
+      const _tags = tags.split(',').filter(Boolean).join(',')
+      if (_tags)
+      {
+        where += `and ${tables.asset}.id in (select ${tables.mapAssetTag}.asset from ${tables.mapAssetTag} where ${tables.mapAssetTag}.tag in (${tags}))`
+      }
     }
 
     // 날짜 범위
@@ -78,6 +88,7 @@ export default async (req, res) => {
     const ids = {}
     index = getItems({
       table: tables.asset,
+      prefix: 'distinct',
       fields,
       join,
       where,
@@ -127,10 +138,6 @@ export default async (req, res) => {
         success(req, res, {
           message: '에셋 데이터가 없습니다.',
           code: 204,
-          data: {
-            total: 0,
-            index: [],
-          },
         })
         break
       default:

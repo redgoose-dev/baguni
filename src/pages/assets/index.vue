@@ -60,15 +60,13 @@
 </template>
 
 <script setup>
-import { reactive, computed, onMounted, watch } from 'vue'
+import { reactive, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { assetStore } from '../../store/assets.js'
 import { request, apiPath } from '../../libs/api.js'
 import { serialize } from '../../libs/strings.js'
-import { pureObject } from '../../libs/objects.js'
 import { dateFormat, getDateRangeForQuery } from '../../libs/dates.js'
 import { toast } from '../../modules/toast/index.js'
-import { defaultAssetsIndexFilter } from '../../libs/consts.js'
 import PageHeader from '../../components/content/page-header.vue'
 import Filter from './components/filter.vue'
 import Paginate from '../../components/navigation/paginate.vue'
@@ -119,7 +117,7 @@ async function fetch()
     date_start: assets.filter.dateStart,
     date_end: assets.filter.dateEnd,
     file_type: assets.filter.fileType,
-    tags: assets.filter.tags?.length > 0 ? assets.filter.tags.join(',') : undefined,
+    tags: assets.filter.tags?.length > 0 ? assets.filter.tags.map(o => (o.id)).join(',') : undefined,
     q: queryParams.q,
   }
   // filtering query

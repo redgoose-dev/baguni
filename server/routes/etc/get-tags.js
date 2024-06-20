@@ -12,7 +12,7 @@ import ServiceError from '../../libs/ServiceError.js'
 export default async (req, res) => {
   try
   {
-    const { q } = req.query
+    const { q, limit } = req.query
 
     // connect db
     connect({ readonly: true })
@@ -38,10 +38,19 @@ export default async (req, res) => {
     })
     if (!(total.data > 0)) throw new ServiceError('태그 데이터가 없습니다.', 204)
 
+    // set limit
+    let _limit
+    if (limit)
+    {
+      _limit = 'limit $limit'
+      values['$limit'] = limit
+    }
+
     // get index
     index = getItems({
       table: tables.tag,
       where,
+      limit: _limit,
       values,
     })
     if (!(index.data?.length > 0))
@@ -73,10 +82,6 @@ export default async (req, res) => {
         success(req, res, {
           message: '태그 데이터가 없습니다.',
           code: 204,
-          data: {
-            total: 0,
-            index: [],
-          },
         })
         break
       default:

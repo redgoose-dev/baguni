@@ -23,8 +23,8 @@
   @input="onChangeText"
   @click="onChangePosition"
   @keyup="onChangePosition"
-  @keyup.enter="emits('submit')"
-  @keydown.enter="emits('submit')"/>
+  @keyup.enter.prevent="emits('submit')"
+  @keydown.enter.prevent="emits('submit')"/>
 </template>
 
 <script setup>

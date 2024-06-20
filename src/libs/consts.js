@@ -17,6 +17,14 @@ export const defaultUserPreference = {
   account: {},
 }
 
+export const fileTypes = {
+  image: '이미지',
+  document: '문서',
+  audio: '음악',
+  video: '동영상',
+  application: '어플리케이션',
+}
+
 // TODO: 삭제예정
 export const defaultAssetsIndexFilter = {
   dateStart: undefined,

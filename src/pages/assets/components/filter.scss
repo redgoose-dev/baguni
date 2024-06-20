@@ -99,11 +99,4 @@ form {
     flex-wrap: wrap;
     gap: 6px;
   }
-  nav {
-    display: flex;
-    justify-content: flex-start;
-    .button {
-      width: auto;
-    }
-  }
 }

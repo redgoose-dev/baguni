@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { ofetch } from 'ofetch'
 import { apiPath, request, destroyApi } from '../libs/api.js'
 import { parseObject } from '../libs/objects.js'
+import { assetStore } from './assets.js'
 
 export const authStore = defineStore('auth', () => {
 
@@ -110,6 +111,8 @@ export const authStore = defineStore('auth', () => {
     })
     user.value.name = name
     user.value.json = json
+    const assets = assetStore()
+    assets.updateAll()
   }
 
   return {

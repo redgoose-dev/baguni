@@ -76,3 +76,27 @@ export function deepMerge(target, source)
   }
   return output
 }
+
+/**
+ * 배열 속 객체의 인덱스 번호를 가져온다.
+ * @param {array} arr
+ * @param {string|number} keyName
+ * @param {string|number|boolean} value
+ * @return {number}
+ */
+export function findObjectByKey(arr, keyName, value)
+{
+  return arr.findIndex(item => item[keyName] === value)
+}
+
+/**
+ * 배열속 객체를 찾는기능
+ * @param {array} arr
+ * @param {string|number} keyName
+ * @param {string|number|boolean} value
+ * @return {object}
+ */
+export function findObjectByValue(arr, keyName, value)
+{
+  return arr.find(obj => obj[keyName] === value)
+}

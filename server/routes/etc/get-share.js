@@ -103,12 +103,23 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    error(req, res, {
-      code: e.code,
-      message: '공유용 에셋을 가져오지 못했습니다.',
-      processingTime: timer.end(),
-      _file: e.code !== 204 ? __filename : undefined,
-      _err: e,
-    })
+    switch (e.code)
+    {
+      case 204:
+        success(req, res, {
+          message: '공유용 에셋 데이터가 없습니다.',
+          code: 204,
+        })
+        break
+      default:
+        error(req, res, {
+          code: e.code,
+          message: '공유용 에셋을 가져오지 못했습니다.',
+          processingTime: timer.end(),
+          _file: __filename,
+          _err: e,
+        })
+        break
+    }
   }
 }

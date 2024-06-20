@@ -3,44 +3,30 @@
   <PageHeader title="태그 선택하기">
     태그 목록에서 사용할 태그를 {{props.limit}}개까지 선택할 수 있습니다.
   </PageHeader>
+  <FormGroup size="small" class="search-keyword">
+    <template #left>
+      <ButtonBasic type="text" color="weak" icon="search" size="small"/>
+    </template>
+    <InputText
+      v-model="data.searchKeyword"
+      type="search"
+      size="small"
+      placeholder="키워드를 입력해주세요."
+      @update:model-value="onChangeSearchKeyword"/>
+  </FormGroup>
   <div class="tags-index">
-    <ul class="index" v-if="$index?.length > 0">
+    <ul v-if="$index?.length > 0" class="index">
       <li v-for="tag in $index">
         <Tag
-          :label="tag"
+          :label="tag.name"
           :use-click="true"
-          :color="data.selected.includes(tag) ? 'key-3' : 'weak'"
-          :fill="data.selected.includes(tag)"
+          :color="tag.active ? 'key-3' : 'weak'"
+          :fill="tag.active"
           @click="onClickTagFromIndex(tag)"/>
       </li>
     </ul>
     <p v-else class="empty">태그가 없습니다.</p>
-    <FormGroup size="small" class="search-keyword">
-      <template #left>
-        <ButtonBasic type="text" color="weak" icon="search" size="small"/>
-      </template>
-      <InputText
-        v-model="data.searchKeyword"
-        type="search"
-        size="small"
-        placeholder="키워드를 입력해주세요."
-        @update:model-value="onChangeSearchKeyword"/>
-    </FormGroup>
   </div>
-  <article class="selected-tags">
-    <h1>선택한 태그</h1>
-    <ul>
-      <li v-if="data.selected?.length > 0" v-for="tag in data.selected">
-        <Tag
-          :label="tag"
-          :use-remove="true"
-          color="key-3"
-          :fill="true"
-          @remove="onClickRemoveSelected(tag)"/>
-      </li>
-      <li v-else class="empty">태그가 없습니다.</li>
-    </ul>
-  </article>
   <NavigationBottom class="nav-bottom">
     <template #center>
       <ButtonBasic @click="emits('close')">
@@ -60,6 +46,7 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { pureObject } from '../../../libs/objects.js'
+import { findObjectByValue } from '../../../libs/objects.js'
 import { debounce } from '../../../libs/util.js'
 import { request } from '../../../libs/api.js'
 import { error } from '../../../libs/reactions.js'
@@ -78,23 +65,31 @@ const props = defineProps({
 const emits = defineEmits([ 'submit', 'close' ])
 const loading = ref(true)
 const data = reactive({
-  index: [ 'aaaa', 'bbb', 'ccc', 'abc', 'ddd', 'eee', 'fffff' ],
-  selected: props.tags?.length > 0 ? props.tags : [],
+  index: [],
+  selected: props.tags?.length > 0 ? props.tags.map(o => (o.id)) : [],
   searchKeyword: '',
   searchKeywordComplete: '',
 })
 
 const $index = computed(() => {
+  let selected = []
   if (data.searchKeywordComplete)
   {
-    return data.index.filter(tag => {
-      return tag.toLowerCase().includes(data.searchKeywordComplete.toLowerCase())
+    selected = data.index.filter(tag => {
+      if (data.selected.includes(tag.id)) return true
+      return tag.name.toLowerCase().includes(data.searchKeywordComplete.toLowerCase())
     })
   }
   else
   {
-    return data.index
+    selected = data.index
   }
+  return selected.map(o => {
+    return {
+      ...o,
+      active: data.selected.includes(o.id),
+    }
+  })
 })
 
 onMounted(async () => {
@@ -104,7 +99,16 @@ onMounted(async () => {
     const res = await request('/tags/', {
       method: 'get',
     })
-    data.index = res.data?.index?.length > 0 ? res.data?.index.map(o => (o.name)) : []
+    if (res.data?.index?.length > 0)
+    {
+      data.index = res.data?.index.map(o => {
+        return { id: o.id, name: o.name }
+      })
+    }
+    else
+    {
+      data.index = []
+    }
     loading.value = false
   }
   catch (e)
@@ -121,11 +125,11 @@ const onChangeSearchKeyword = debounce((text) => {
 
 function onClickTagFromIndex(tag)
 {
-  const idx = data.selected.indexOf(tag)
+  const idx = data.selected.indexOf(tag.id)
   if (idx < 0)
   {
     if (data.selected.length + 1 > props.limit) return
-    data.selected.push(tag)
+    data.selected.push(tag.id)
   }
   else
   {
@@ -133,16 +137,13 @@ function onClickTagFromIndex(tag)
   }
 }
 
-function onClickRemoveSelected(tag)
-{
-  const idx = data.selected.indexOf(tag)
-  data.selected.splice(idx, 1)
-}
-
 function onClickSubmit()
 {
-  emits('submit', pureObject(data.selected))
+  const result = data.selected.map(id => {
+    return findObjectByValue(data.index, 'id', id)
+  })
+  emits('submit', pureObject(result))
 }
 </script>
 
-<style src="./select-tags.scss" lang="scss" scoped></style>
+<style src="./index.scss" lang="scss" scoped></style>

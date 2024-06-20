@@ -58,7 +58,7 @@ export function disconnect()
  */
 export function getItems(options = {})
 {
-  const { table, fields, where, join, order, sort, limit, values, run, prefix } = options
+  const { table, fields, where, join, order, sort, limit, values, run, prefix, debug } = options
   const field = fields?.length ? fields.join(',') : '*'
   let _prefix = prefix || ''
   let _where = where ? `where ${where}` : ''
@@ -66,6 +66,7 @@ export function getItems(options = {})
   _order = (!order && sort) ? `order by id ${sort}` : _order
   let _limit = limit || ''
   const sql = optimiseSql(`select ${_prefix} ${field} from ${table} ${parseJoin(join)} ${_where} ${_order} ${_limit}`)
+  if (debug) console.warn('getItems():', sql)
   let data
   if (run !== false)
   {
@@ -90,11 +91,14 @@ export function getItems(options = {})
  */
 export function getCount(options)
 {
-  const { table, where, join, values, run, prefix } = options
-  const sql = optimiseSql(`select ${prefix || ''} count(*) from ${table} ${parseJoin(join)} ${where ? `where ${where}` : ''}`)
+  const { table, fields, where, join, values, run, prefix, after, debug } = options
+  let _field = fields || 'count(*) as count'
+  const sql = optimiseSql(`select ${prefix || ''} ${_field} from ${table} ${parseJoin(join)} ${where ? `where ${where}` : ''} ${after || ''}`)
+  if (debug) console.warn('getCount():', sql)
   const query = db.query(sql)
   const result = query.get(values)
-  const data = (run !== false) ? Number(result['count(*)'] || 0) : undefined
+  let data
+  if (run !== false) data = Number(result['count'] || 0)
   return {
     sql,
     values,

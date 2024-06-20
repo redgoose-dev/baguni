@@ -76,11 +76,22 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    error(req, res, {
-      code: e.code,
-      message: '컬렉션을 가져오지 못했습니다.',
-      _file: e.code !== 204 ? __filename : undefined,
-      _err: e,
-    })
+    switch (e.code)
+    {
+      case 204:
+        success(req, res, {
+          message: '컬렉션 데이터가 없습니다.',
+          code: 204,
+        })
+        break
+      default:
+        error(req, res, {
+          code: e.code,
+          message: '컬렉션을 가져오지 못했습니다.',
+          _file: __filename,
+          _err: e,
+        })
+        break
+    }
   }
 }
