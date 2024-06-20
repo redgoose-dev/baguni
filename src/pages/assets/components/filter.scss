@@ -89,3 +89,21 @@ form {
     flex: 1;
   }
 }
+
+.tags {
+  ul {
+    margin: 0 0 8px;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  nav {
+    display: flex;
+    justify-content: flex-start;
+    .button {
+      width: auto;
+    }
+  }
+}

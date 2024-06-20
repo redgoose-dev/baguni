@@ -14,7 +14,7 @@ import ServiceError from '../../libs/ServiceError.js'
 export default async (req, res) => {
   try
   {
-    const { q, date_start, date_end, file_type, order, sort, page, size } = req.query
+    const { q, date_start, date_end, file_type, order, sort, page, size, tags } = req.query
 
     // connect db
     connect({ readonly: true })

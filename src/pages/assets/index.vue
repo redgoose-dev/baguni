@@ -11,8 +11,8 @@
           v-else-if="$index?.length > 0"
           :class="[
             'explorer__index',
-            filter.indexTheme === 'list' && 'list',
-            filter.indexTheme === 'thumbnail' && 'thumbnail',
+            assets.filter.indexTheme === 'list' && 'list',
+            assets.filter.indexTheme === 'thumbnail' && 'thumbnail',
           ]">
           <li v-for="item in $index">
             <ImageItem
@@ -20,13 +20,11 @@
               :image="item.thumbnail"
               :title="item.title"
               :meta="[ item.regdate ]"
-              :theme="filter.indexTheme"
+              :theme="assets.filter.indexTheme"
               class="item">
               <template #body>
                 <nav class="item-nav">
-                  <router-link :to="`/asset/${item.id}/edit/`">
-                    수정
-                  </router-link>
+                  <router-link :to="`/asset/${item.id}/edit/`">수정</router-link>
                   <a
                     :href="`/asset/${item.id}/remove/`"
                     @click.prevent="onClickRemove(item.id)">
@@ -43,25 +41,18 @@
           class="explorer__empty"/>
         <nav class="explorer__paginate">
           <Paginate
-            v-model="params.page"
+            v-model="queryParams.page"
             :total="data.total"
-            :size="params.size"
-            :range="params.range"
+            :size="assets.indexSize"
+            :range="assets.paginateSize"
             @update:model-value="onChangePage"/>
         </nav>
       </div>
       <div class="explorer__filter">
         <Filter
           :total="data.total"
-          v-model:dateStart="filter.dateStart"
-          v-model:dateEnd="filter.dateEnd"
-          v-model:fileType="filter.fileType"
-          v-model:order="filter.order"
-          v-model:sort="filter.sort"
-          v-model:indexTheme="filter.indexTheme"
-          v-model:q="filter.q"
-          @submit="onSubmitFilter"
-          @reset="onResetFilter"/>
+          v-model:q="queryParams.q"
+          @submit="onSubmitFilter"/>
       </div>
     </div>
   </div>
@@ -71,6 +62,7 @@
 <script setup>
 import { reactive, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { assetStore } from '../../store/assets.js'
 import { request, apiPath } from '../../libs/api.js'
 import { serialize } from '../../libs/strings.js'
 import { pureObject } from '../../libs/objects.js'
@@ -86,26 +78,16 @@ import EmptyContent from '../../components/content/empty-content.vue'
 
 const router = useRouter()
 const route = useRoute()
+const assets = assetStore()
+
 const data = reactive({
   loading: true,
   total: 0,
   index: [],
 })
-const params = reactive({
-  range: 8,
-  size: 6,
+const queryParams = reactive({
   page: route.query?.page ? Number(route.query.page) : 1,
-})
-const filter = reactive({
-  ...pureObject(defaultAssetsIndexFilter),
-  // TODO: 나중에 스토리지 값으로 덮어씌운다.
-  // dateStart: undefined,
-  // dateEnd: undefined,
-  // fileType: 'all',
-  // order: 'id',
-  // sort: 'desc',
-  // q: route.query?.q || undefined,
-  // indexTheme: 'thumbnail', // list,thumbnail
+  q: route.query?.q || undefined,
 })
 
 const $index = computed(() => {
@@ -126,19 +108,19 @@ onMounted(() => {
   fetch().then()
 })
 
-async function fetch(options = {})
+async function fetch()
 {
   data.loading = true
   let query = {
-    page: params.page,
-    size: params.size,
-    order: filter.order || undefined,
-    sort: filter.sort || undefined,
-    q: filter.q,
-    date_start: filter.dateStart,
-    date_end: filter.dateEnd,
-    file_type: filter.fileType,
-    ...options,
+    page: queryParams.page,
+    size: assets.indexSize,
+    order: assets.filter.order || undefined,
+    sort: assets.filter.sort || undefined,
+    date_start: assets.filter.dateStart,
+    date_end: assets.filter.dateEnd,
+    file_type: assets.filter.fileType,
+    tags: assets.filter.tags?.length > 0 ? assets.filter.tags.join(',') : undefined,
+    q: queryParams.q,
   }
   // filtering query
   if (!(query.page > 1)) delete query.page
@@ -186,7 +168,7 @@ async function onChangePage(page)
     page,
   }
   if (newQuery.page === 1) delete newQuery.page
-  params.page = page
+  queryParams.page = page
   await router.push(`./${serialize(newQuery, true)}`)
   await fetch()
 }
@@ -202,26 +184,9 @@ async function onClickRemove(id)
 async function onSubmitFilter()
 {
   let { query } = route
-  // TODO: 로컬 스토리지 업데이트
   // reset query
   let newQuery = { ...query, page: undefined }
-  params.page = 1
-  await router.replace(`./${serialize(newQuery, true)}`)
-  // call fetch
-  await fetch()
-}
-async function onResetFilter()
-{
-  let { query } = route
-  // reset filter
-  let newFilter = pureObject(defaultAssetsIndexFilter)
-  Object.entries(newFilter).forEach(([ key, value ]) => {
-    filter[key] = value
-  })
-  // TODO: 로컬 스토리지 업데이트
-  // reset query
-  let newQuery = { ...query, page: undefined }
-  params.page = 1
+  queryParams.page = 1
   await router.replace(`./${serialize(newQuery, true)}`)
   // call fetch
   await fetch()

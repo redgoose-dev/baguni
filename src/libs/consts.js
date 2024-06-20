@@ -7,7 +7,8 @@ export const SHARE_PERMISSION = {
 
 export const defaultUserPreference = {
   asset: {
-    index_size: 8,
+    index_size: 24,
+    index_paginateRange: 10,
     create_fileLimitSize: 1000,
   },
   collection: {
@@ -16,6 +17,7 @@ export const defaultUserPreference = {
   account: {},
 }
 
+// TODO: 삭제예정
 export const defaultAssetsIndexFilter = {
   dateStart: undefined,
   dateEnd: undefined,

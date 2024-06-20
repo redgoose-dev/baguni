@@ -41,6 +41,7 @@ function appRoutes()
   router.get('/file/:id/', map.file)
   router.get('/download/:id/', map.download)
   router.get('/share/:code/', map.share)
+  router.get('/tags/', map.tags)
   router.all('*', map.notFound)
   return router
 }

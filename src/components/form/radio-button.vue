@@ -6,10 +6,11 @@
   props.onlyIcon && 'icon',
 ]">
   <label
-    v-for="item in props.options"
+    v-for="(item, key) in props.options"
     type="button">
     <input
       type="radio"
+      :id="key === 0 ? props.id : undefined"
       :name="props.name"
       :value="item.value"
       :checked="props.modelValue === item.value"
@@ -27,6 +28,7 @@ import Icon from '../../components/icons/index.vue'
 
 const props = defineProps({
   name: { type: String, required: true },
+  id: String,
   options: { type: Array, required: true },
   modelValue: [ String, Number, Boolean ],
   disabled: Boolean,

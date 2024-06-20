@@ -49,7 +49,7 @@ async function onSubmit(body)
 
 <style lang="scss" scoped>
 .create {
-  padding: 54px;
+  padding: var(--size-modal-window-padding);
   box-sizing: border-box;
   width: 75vw;
   max-width: 640px;

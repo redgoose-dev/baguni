@@ -90,7 +90,7 @@ const forms = reactive({
   email: auth.user.email,
   name: auth.user.name,
   regdate: auth.user.regdate,
-  json: deepMerge(auth.user.json, defaultUserPreference),
+  json: deepMerge(defaultUserPreference, auth.user.json),
 })
 const processing = ref(false)
 const jsonEditMode = ref(false)

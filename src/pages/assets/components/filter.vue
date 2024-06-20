@@ -1,6 +1,6 @@
 <template>
 <aside class="side-panel">
-  <form @submit.prevent="onUpdateTrigger('q')" @reset="onReset">
+  <form @submit.prevent="onSubmit">
     <div class="field total">
       <h3>모두</h3>
       <strong>{{props.total}}</strong>
@@ -14,11 +14,11 @@
         <dd>
           <InputText
             type="date"
-            :model-value="props.dateStart"
+            v-model="assets.filter.dateStart"
             id="dateStart"
             placeholder="YYYY-MM-DD"
             size="small"
-            @update:modelValue="onUpdateTrigger('dateStart', $event)"/>
+            @update:modelValue="onUpdateTrigger({ dateStart: $event })"/>
         </dd>
         <dt>
           <label for="dateEnd">종료</label>
@@ -26,11 +26,11 @@
         <dd>
           <InputText
             type="date"
-            :model-value="props.dateEnd"
+            v-model="assets.filter.dateEnd"
             id="dateEnd"
             placeholder="YYYY-MM-DD"
             size="small"
-            @update:modelValue="onUpdateTrigger('dateEnd', $event)"/>
+            @update:modelValue="onUpdateTrigger({ dateEnd: $event })"/>
         </dd>
       </dl>
     </div>
@@ -39,7 +39,7 @@
       <div>
         <Select
           id="file-type"
-          :model-value="props.fileType"
+          v-model="assets.filter.fileType"
           title="에셋의 종류"
           size="small"
           placeholder=""
@@ -50,7 +50,7 @@
             { value: 'audio', label: '음악' },
             { value: 'video', label: '동영상' },
           ]"
-          @update:modelValue="onUpdateTrigger('fileType', $event)"/>
+          @update:modelValue="onUpdateTrigger({ fileType: $event })"/>
       </div>
     </div>
     <div class="field">
@@ -59,7 +59,7 @@
         <Select
           name="order"
           id="order"
-          :model-value="props.order"
+          v-model="assets.filter.order"
           :options="[
             { value: 'id', label: '아이디' },
             { value: 'title', label: '제목' },
@@ -69,10 +69,10 @@
           placeholder=""
           size="small"
           class="order"
-          @update:modelValue="onUpdateTrigger('order', $event)"/>
+          @update:modelValue="onUpdateTrigger({ order: $event })"/>
         <Select
           name="sort"
-          :model-value="props.sort"
+          v-model="assets.filter.sort"
           placeholder=""
           size="small"
           :options="[
@@ -80,29 +80,41 @@
             { value: 'desc', label: 'Z to A' },
           ]"
           class="sort"
-          @update:modelValue="onUpdateTrigger('sort', $event)"/>
+          @update:modelValue="onUpdateTrigger({ sort: $event })"/>
       </div>
     </div>
     <div class="field">
-      <label for="theme" class="label">테마</label>
+      <span class="label">테마</span>
       <div>
         <RadioButton
-          id="theme"
           name="theme"
-          :model-value="props.indexTheme"
+          v-model="assets.filter.indexTheme"
           size="small"
           :only-icon="true"
           :options="[
             { value: 'list', label: '목록', icon: 'menu' },
             { value: 'thumbnail', label: '썸네일', icon: 'grid' },
           ]"
-          @update:modelValue="onUpdateTrigger('indexTheme', $event)"/>
+          @update:modelValue="assets.saveFilter()"/>
       </div>
     </div>
     <div class="field">
-      <label for="tag" class="label">태그</label>
-      <div>
-        TODO: 태그
+      <span class="label">태그</span>
+      <div class="tags">
+        <ul v-if="assets.filter.tags?.length > 0">
+          <li v-for="tag in assets.filter.tags">
+            <Tag :label="tag"/>
+          </li>
+        </ul>
+        <nav>
+          <ButtonBasic
+            size="small"
+            color="key-1"
+            left-icon="tag"
+            @click="onClickSelectTag">
+            태그 선택하기
+          </ButtonBasic>
+        </nav>
       </div>
     </div>
     <div class="field">
@@ -130,75 +142,82 @@
       </div>
     </div>
     <nav class="bottom-nav">
-      <ButtonBasic type="reset" size="small" color="weak">
+      <ButtonBasic
+        size="small"
+        color="weak"
+        @click="onReset">
         재설정
       </ButtonBasic>
     </nav>
   </form>
+  <teleport to="#modal">
+    <Modal
+      :open="openSelectTags"
+      :hide-scroll="true"
+      :use-shortcut="true"
+      animation="bottom-up"
+      @close="openSelectTags = false">
+      <SelectTags
+        :tags="assets.filter.tags"
+        :limit="3"
+        @submit="onSubmitSelectTags"
+        @close="openSelectTags = false"/>
+    </Modal>
+  </teleport>
 </aside>
 </template>
 
 <script setup>
+import { ref, reactive } from 'vue'
+import { assetStore } from '../../../store/assets.js'
 import ButtonBasic from '../../../components/buttons/button-basic.vue'
 import InputText from '../../../components/form/input-text.vue'
 import Select from '../../../components/form/select.vue'
 import FormGroup from '../../../components/form/group.vue'
 import RadioButton from '../../../components/form/radio-button.vue'
+import Tag from '../../../components/form/tag.vue'
+import Modal from '../../../components/modal/index.vue'
+import SelectTags from './select-tags.vue'
 
-const keys = [
-  'dateStart',
-  'dateEnd',
-  'fileType',
-  'order',
-  'sort',
-  'indexTheme',
-  'tags',
-  'q',
-]
+const assets = assetStore()
 const props = defineProps({
   total: Number,
-  dateStart: String,
-  dateEnd: String,
-  fileType: String,
-  order: String,
-  sort: String,
-  indexTheme: String,
-  tags: Array,
   q: String,
 })
 const emits = defineEmits([
-  'update:dateStart',
-  'update:dateEnd',
-  'update:fileType',
-  'update:order',
-  'update:sort',
-  'update:indexTheme',
   'update:q',
   'submit',
   'reset',
 ])
+const openSelectTags = ref(false)
 
 function onReset()
 {
-  emits('reset')
+  assets.resetFilter()
+  emits('submit')
 }
 
-function onUpdateTrigger(key, value)
+function onUpdateTrigger(obj)
 {
-  if (!keys.includes(key)) return
-  switch (key)
-  {
-    case 'indexTheme':
-      emits(`update:${key}`, value)
-      break
-    case 'q':
-      emits('submit')
-      break
-    default:
-      emits(`update:${key}`, value)
-      emits('submit')
-      break
-  }
+  if (obj) assets.saveFilter()
+  emits('submit')
+}
+
+function onSubmit()
+{
+  emits('submit')
+}
+
+function onClickSelectTag()
+{
+  openSelectTags.value = true
+}
+function onSubmitSelectTags(tags)
+{
+  assets.filter.tags = tags
+  assets.saveFilter()
+  openSelectTags.value = false
+  onSubmit()
 }
 </script>
 

@@ -40,6 +40,23 @@
     </section>
     <section class="page-section">
       <header>
+        <h1>fill</h1>
+        <p>컬러 채우기</p>
+      </header>
+      <div class="page-example">
+        <div class="page-flex" style="--gap:8px">
+          <Tag label="default" :fill="true"/>
+          <Tag label="key-1" color="key-1" :fill="true"/>
+          <Tag label="key-2" color="key-2" :fill="true"/>
+          <Tag label="key-3" color="key-3" :fill="true"/>
+          <Tag label="success" color="success" :fill="true"/>
+          <Tag label="danger" color="danger" :fill="true"/>
+          <Tag label="weak" color="weak" :fill="true"/>
+        </div>
+      </div>
+    </section>
+    <section class="page-section">
+      <header>
         <h1>button event</h1>
         <p>태그를 컨트롤할때의 이벤트입니다.</p>
       </header>
@@ -52,6 +69,17 @@
           <Tag
             label="remove"
             :use-remove="true"
+            @remove="onClickRemoveTag"/>
+          <Tag
+            label="click"
+            :use-click="true"
+            :fill="true"
+            @click="onClickTag"/>
+          <Tag
+            label="remove"
+            :use-remove="true"
+            :fill="true"
+            color="key-1"
             @remove="onClickRemoveTag"/>
         </div>
       </div>

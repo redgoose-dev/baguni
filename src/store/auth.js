@@ -113,7 +113,12 @@ export const authStore = defineStore('auth', () => {
   }
 
   return {
-    token, user,
-    setup, check, login, logout, update,
+    token,
+    user,
+    setup,
+    check,
+    login,
+    logout,
+    update,
   }
 })
