@@ -17,6 +17,9 @@
       :debounce="100"
       :auto-zoom="true"
       :transitions="transitions"
+      :resize-image="{
+        adjustStencil: false,
+      }"
       class="cropper"
       @ready="onReady"/>
   </div>

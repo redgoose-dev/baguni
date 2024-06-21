@@ -12,6 +12,7 @@
       :image="files.coverOriginal"
       :preview="files.coverCreate"
       :coordinates="forms.cover.coordinates"
+      :main-file="files.main"
       class="cover-image"
       @update="onUpdateCoverImage"
       @open-image="onOpenImage"/>

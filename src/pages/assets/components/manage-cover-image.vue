@@ -25,7 +25,15 @@
               @click="fileUpload">
               업로드
             </ButtonBasic>
-            <Dropdown v-if="props.image" :use-value="true">
+            <ButtonBasic
+              v-if="$useGetMainFile"
+              size="small"
+              color="key-2"
+              left-icon="file-input"
+              @click="getMainFile">
+              가져오기
+            </ButtonBasic>
+            <Dropdown v-if="props.image" :use-value="true" class="cover-setting">
               <template #trigger>
                 <ButtonBasic size="small" right-icon="chevron-down">
                   설정
@@ -80,8 +88,9 @@ const props = defineProps({
   image: null,
   preview: null,
   coordinates: null,
+  mainFile: null,
 })
-const emits = defineEmits([ 'update', 'open-image' ])
+const emits = defineEmits([ 'update', 'open-image', 'get-main-image' ])
 const createSize = auth.user?.json?.asset?.file_coverCreateSize || { width: 640, height: 480 }
 const readyOriginalImage = ref(null)
 const currentCropper = reactive({
@@ -117,6 +126,9 @@ const $previewSrc = computed(() => {
   {
     return null
   }
+})
+const $useGetMainFile = computed(() => {
+  return /^image/.test(props.mainFile?.type)
 })
 
 function selectControlMenuItem({ key })
@@ -171,6 +183,18 @@ function onClickPreviewImage()
 {
   if (!$previewSrc.value) return
   emits('open-image', $previewSrc.value)
+}
+
+function getMainFile()
+{
+  const newFile = new File([props.mainFile.slice(0)], props.mainFile.name, {
+    type: props.mainFile.type,
+    lastModified: props.mainFile.lastModified,
+  })
+  if (!newFile) return
+  readyOriginalImage.value = newFile
+  currentCropper.coordinates = null
+  currentCropper.open = true
 }
 </script>
 

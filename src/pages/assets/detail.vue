@@ -271,27 +271,27 @@ function onClickDownload()
 async function onClickCopyClipboard()
 {
   processingCopyClipboard.value = true
-  let blob
+  let src
   const res = await fetch($file.value.src)
   let type = $fileMeta.value.type
   if ([ 'image/webp', 'image/jpeg', 'image/gif' ].includes(type))
   {
-    blob = await res.blob()
-    blob = await imageResize(blob, {
+    src = await res.blob()
+    src = await imageResize(src, {
       width: $fileMeta.value.width || 900,
       outputType: 'blob',
       format: 'png'
     })
     type = 'image/png'
   }
-  else if (/^image/.test(type))
+  else if (/^(image|text)/.test(type))
   {
-    blob = await res.blob()
+    src = await res.blob()
   }
-  if (blob)
+  if (src)
   {
     const data = [
-      new ClipboardItem({ [type]: blob })
+      new ClipboardItem({ [type]: src })
     ]
     await navigator.clipboard.write(data)
     toast.add('파일을 클립보드에 복사했습니다.', 'success').then()
