@@ -18,7 +18,7 @@ const defaultAssetsIndexFilter = {
 export const assetStore =  defineStore('filter', () => {
   const auth = authStore()
   const indexSize = ref(auth.user?.json?.asset?.index_size || 24)
-  const paginateSize = ref(auth.user?.json?.asset?.index_paginateRange || 8)
+  const paginateSize = ref(auth.user?.json?.asset?.index_pageRange || 8)
   const filter = reactive({
     ...pureObject(defaultAssetsIndexFilter),
     ...(getStorage(STORAGE_KEYS.ASSETS_FILTER) || {}),
@@ -37,7 +37,7 @@ export const assetStore =  defineStore('filter', () => {
   function updateAll()
   {
     indexSize.value = auth.user?.json?.asset?.index_size || 24
-    paginateSize.value = auth.user?.json?.asset?.index_paginateRange || 8
+    paginateSize.value = auth.user?.json?.asset?.index_pageRange || 8
   }
   return {
     indexSize,

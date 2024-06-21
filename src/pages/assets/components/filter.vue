@@ -173,8 +173,8 @@
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
+import { authStore } from '../../../store/auth.js'
 import { assetStore } from '../../../store/assets.js'
-import { fileTypes } from '../../../libs/consts.js'
 import { findObjectByKey } from '../../../libs/objects.js'
 import ButtonBasic from '../../../components/buttons/button-basic.vue'
 import InputText from '../../../components/form/input-text.vue'
@@ -185,6 +185,7 @@ import Tag from '../../../components/form/tag.vue'
 import Modal from '../../../components/modal/index.vue'
 import TagSelector from '../../../components/content/tag-selector/index.vue'
 
+const auth = authStore()
 const assets = assetStore()
 const props = defineProps({
   total: Number,
@@ -196,6 +197,7 @@ const emits = defineEmits([
   'reset',
 ])
 const openSelectTags = ref(false)
+const fileTypes = ref(auth.user?.json?.asset?.file_types || { image: '이미지' })
 
 function onReset()
 {

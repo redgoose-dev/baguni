@@ -1,4 +1,4 @@
-const { VITE_LOCAL_PATH_NAME } = import.meta.env
+const {  } = import.meta.env
 
 export const SHARE_PERMISSION = {
   PUBLIC: 'PUBLIC',
@@ -8,30 +8,16 @@ export const SHARE_PERMISSION = {
 export const defaultUserPreference = {
   asset: {
     index_size: 24,
-    index_paginateRange: 10,
-    create_fileLimitSize: 1000,
+    index_pageRange: 10,
+    file_mainLimitSize: 10485760,
+    file_coverCreateSize: { width: 640, height: 480 },
+    file_types: {
+      image: '이미지',
+    }
   },
   collection: {
     index_size: 8,
+    file_coverCreateSize: { width: 640, height: 480 },
   },
   account: {},
-}
-
-export const fileTypes = {
-  image: '이미지',
-  document: '문서',
-  audio: '음악',
-  video: '동영상',
-  application: '어플리케이션',
-}
-
-// TODO: 삭제예정
-export const defaultAssetsIndexFilter = {
-  dateStart: undefined,
-  dateEnd: undefined,
-  fileType: 'all',
-  order: 'id',
-  sort: 'desc',
-  q: undefined,
-  indexTheme: 'thumbnail', // list,thumbnail
 }

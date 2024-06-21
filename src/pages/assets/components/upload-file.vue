@@ -94,16 +94,19 @@
 
 <script setup>
 import { ref, computed, watch, reactive, onMounted } from 'vue'
+import { authStore } from '../../../store/auth.js'
 import { fileUploader, getImageSize, getFileIcon } from '../../../libs/files.js'
 import { getByte } from '../../../libs/strings.js'
 import { dateFormat } from '../../../libs/dates.js'
 import { apiPath } from '../../../libs/api.js'
+import { toast } from '../../../modules/toast/index.js'
 import Button from '../../../components/buttons/button-basic.vue'
 import ShadowBox from '../../../components/content/shadow-box.vue'
 import Dropdown from '../../../components/navigation/dropdown.vue'
 import Context from '../../../components/navigation/context.vue'
 import Icon from '../../../components/icons/index.vue'
 
+const auth = authStore()
 const $uploadFile = ref()
 const $uploadButton = ref()
 const $uploadedFile = ref()
@@ -213,10 +216,17 @@ async function setMeta(type, value)
 
 async function onClickUploadFile()
 {
+  const { json } = auth.user
+  const limitSize = json.asset.file_mainLimitSize
   const file = await fileUploader({
     accept: 'image',
   })
   if (!file) return
+  if (json.asset.file_mainLimitSize < file.size)
+  {
+    toast.add(`파일 용량은 ${getByte(limitSize)}이상 업로드할 수 없습니다.`, 'error').then()
+    return
+  }
   emits('change-file', file)
 }
 

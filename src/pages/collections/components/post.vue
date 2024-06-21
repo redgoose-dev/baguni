@@ -46,7 +46,7 @@
           </button>
         </div>
         <nav class="cover__body">
-          <p>- 사이즈: {{createSize[0]}}px * {{createSize[1]}}px</p>
+          <p>- 사이즈: {{createSize.width}}px * {{createSize.height}}px</p>
           <div class="control">
             <ButtonGroup size="small">
               <ButtonBasic
@@ -96,7 +96,7 @@
         :src="$createImageSrc"
         title="커버 이미지"
         submit-label="커버 이미지 만들기"
-        :crop-size="createSize"
+        :crop-size="[ createSize.width, createSize.height ]"
         :default-coordinates="currentCropper.coordinates"
         @submit="createCoverImage"
         @close="currentCropper.open = false"/>
@@ -110,6 +110,7 @@
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
+import { authStore } from '../../../store/auth.js'
 import { fileUploader } from '../../../libs/files.js'
 import { apiPath } from '../../../libs/api.js'
 import InputText from '../../../components/form/input-text.vue'
@@ -121,12 +122,13 @@ import Modal from '../../../components/modal/index.vue'
 import ImageCropper from '../../../components/content/image-cropper/index.vue'
 import Lightbox from '../../../components/content/lightbox/index.vue'
 
+const auth = authStore()
 const props = defineProps({
   data: Object,
   processing: Boolean,
 })
 const emits = defineEmits([ 'close', 'submit' ])
-const createSize = [ 320, 240 ]
+const createSize = auth.user?.json?.collection?.file_coverCreateSize || { width: 640, height: 480 }
 const forms = reactive({
   title: props.data?.title || '',
   description: props.data?.description || '',
