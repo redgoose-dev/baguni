@@ -64,7 +64,9 @@
 
 <script setup>
 import { ref, computed, reactive } from 'vue'
+import { tagRegex } from '../../../../global/strings.js'
 import { debounce } from '../../../libs/util.js'
+import { toast } from '../../../modules/toast/index.js'
 import Tag from '../../../components/form/tag.vue'
 import FormGroup from '../../../components/form/group.vue'
 import InputText from '../../../components/form/input-text.vue'
@@ -95,9 +97,12 @@ const addTag = debounce(_addTag, 30)
 function _addTag()
 {
   if (!inputTag.value) return
+  if (!tagRegex().test(inputTag.value))
+  {
+    toast.add('태그의 규격에 맞지 않습니다.', 'error').then()
+    return
+  }
   if (props.modelValue.includes(inputTag.value)) return
-  console.log(inputTag.value)
-  // TODO: 태그를 추가하는데 공백이나 특수문자(,"')같은게 들어있으면 등록을 막거나 치환해줘야 한다.
   updateTags([
     ...props.modelValue,
     inputTag.value,

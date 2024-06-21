@@ -1,6 +1,8 @@
 import { existsSync, rmSync } from 'node:fs'
 import sizeOf from 'image-size'
+import { tagRegex } from '../../global/strings.js'
 import { tables, getItem, addItem, removeItem, getCount, editItem } from './db.js'
+import ServiceError from '../libs/ServiceError.js'
 
 /**
  * 태그 데이터 추가하기
@@ -8,6 +10,10 @@ import { tables, getItem, addItem, removeItem, getCount, editItem } from './db.j
 export function addTag(tag, assetId)
 {
   tag = tag.trim()
+  if (!tagRegex().test(tag))
+  {
+    throw new ServiceError('유효한 태그가 아닙니다.', 500, `"${tag}"값이 유효한 태그가 아닙니다.`)
+  }
   let tagId = getItem({
     table: tables.tag,
     fields: [ 'id' ],

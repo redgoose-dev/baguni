@@ -1,3 +1,5 @@
+const { DEV } = import.meta.env
+
 const assets = [
   {
     path: '/',
@@ -93,7 +95,7 @@ const auth = [
   },
 ]
 
-const guide = [
+const guide = DEV ? [
   {
     path: '/guide',
     name: 'guide',
@@ -180,7 +182,7 @@ const guide = [
       },
     ],
   },
-]
+] : undefined
 
 export default [
   ...assets,
@@ -188,7 +190,7 @@ export default [
   ...about,
   ...users,
   ...auth,
-  ...guide,
+  ...(guide ? guide : []),
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',

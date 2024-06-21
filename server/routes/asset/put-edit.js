@@ -7,6 +7,7 @@
 
 import multer from 'multer'
 import { existsSync, rmSync } from 'node:fs'
+import { tagRegex } from '../../../global/strings.js'
 import { uploader } from '../../libs/uploader.js'
 import { uploadFields, fileTypes } from '../../libs/consts.js'
 import { success, error } from '../output.js'
@@ -117,7 +118,11 @@ export default async (req, res) => {
       if (typeof tags === 'string')
       {
         const beforeTagsArray = srcTags.map(o => (o.name))
-        const afterTagsArray = tags.split(',').map(x => (x.trim()))
+        const afterTagsArray = tags.split(',').map(x => {
+          x = x.trim()
+          if (!tagRegex().test(x)) throw new ServiceError('유효한 태그가 아닙니다.')
+          return x
+        })
         const compare = compareArrays(beforeTagsArray, afterTagsArray)
         readyUpdate.tags = (compare.added?.length > 0 || compare.removed?.length > 0) ? compare : undefined
       }
