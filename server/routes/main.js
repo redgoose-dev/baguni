@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import * as map from './map.js'
 import RunningTimer from '../libs/RunningTimer.js'
+import { shareDetail } from "./map.js";
 
 /** @var {Express} app */
 let app
@@ -33,6 +34,8 @@ function appRoutes()
   // user
   router.get('/user/:id/', map.userDetail)
   router.put('/user/:id/', map.userEdit)
+  // share
+  router.get('/share/:code/', map.shareDetail)
   // auth
   router.post('/login/', map.login)
   router.post('/logout/', map.logout)
@@ -40,7 +43,6 @@ function appRoutes()
   // etc
   router.get('/file/:id/', map.file)
   router.get('/download/:id/', map.download)
-  router.get('/share/:code/', map.share)
   router.get('/tags/', map.tags)
   router.all('*', map.notFound)
   return router

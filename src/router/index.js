@@ -20,6 +20,7 @@ router.beforeEach(async (to, from) => {
   // check API 호출
   const isAuth = await auth.check()
   // 상황을 판단하여 이후의 행동을 실행한다.
+  if (to.name === 'share-detail') return true
   if (to.name === 'login')
   {
     return isAuth ? '/' : undefined

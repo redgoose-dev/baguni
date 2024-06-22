@@ -29,6 +29,7 @@ onUnmounted(() => {
   min-height: 24vw;
   opacity: 0;
   transition: opacity 280ms ease-out;
+  box-sizing: border-box;
   &.visible {
     opacity: 1;
   }

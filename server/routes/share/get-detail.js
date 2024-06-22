@@ -7,7 +7,8 @@
 
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem, getItems } from '../../libs/db.js'
-import { fileTypes } from '../../libs/consts.js'
+import { checkAuthorization } from '../../libs/token.js'
+import { fileTypes, permissions } from '../../libs/consts.js'
 import { parseJSON } from '../../libs/objects.js'
 import ServiceError from '../../libs/ServiceError.js'
 import RunningTimer from '../../libs/RunningTimer.js'
@@ -22,15 +23,23 @@ export default async (req, res) => {
     // connect db
     connect({ readwrite: true })
 
+    const share = getItem({
+      table: tables.share,
+      where: 'code = $code',
+      values: { '$code': code },
+    })
+    if (!share?.data) throw new ServiceError('공유 데이터가 없습니다.', 204)
+    if (share.data.permission === permissions.PRIVATE)
+    {
+      // check auth
+      checkAuthorization(req.headers.authorization)
+    }
+
     // get asset
     const asset = getItem({
       table: tables.asset,
-      fields: [ `${tables.asset}.*` ],
-      join: `join ${tables.share} on ${tables.share}.asset = ${tables.asset}.id`,
-      where: `${tables.share}.code = $code`,
-      values: {
-        '$code': code,
-      },
+      where: `id = $id`,
+      values: { '$id': share.data.asset },
     })
     if (!asset?.data) throw new ServiceError('에셋 데이터가 없습니다.', 204)
     asset.data.json = parseJSON(asset.data.json)
@@ -43,6 +52,7 @@ export default async (req, res) => {
         `${tables.file}.name`,
         `${tables.file}.type as mime`,
         `${tables.file}.size`,
+        `${tables.file}.meta`,
         `${tables.file}.regdate`,
         `${tables.mapAssetFile}.type`,
       ],
@@ -60,6 +70,7 @@ export default async (req, res) => {
             name: o.name,
             type: o.mime,
             size: o.size,
+            meta: parseJSON(o.meta),
             date: o.regdate,
           }
           break
@@ -73,27 +84,16 @@ export default async (req, res) => {
       }
     })
 
-    // get tags
-    const tags = getItems({
-      table: tables.tag,
-      fields: [ `${tables.tag}.*` ],
-      join: `join ${tables.mapAssetTag} on ${tables.tag}.id = ${tables.mapAssetTag}.tag`,
-      where: `${tables.mapAssetTag}.asset = $id`,
-      values: { '$id': asset.data.id },
-    })
-
     // close db
     disconnect()
     // result
     success(req, res, {
       message: '공유용 에셋의 상세정보',
-      processingTime: timer.end(),
       data: {
         id: asset.data.id,
         title: asset.data.title,
         description: asset.data.description,
         files,
-        tags: tags?.data?.length > 0 ? tags.data.map(tag => (tag.name)) : [],
         regdate: asset.data.regdate,
       },
     })
@@ -115,7 +115,6 @@ export default async (req, res) => {
         error(req, res, {
           code: e.code,
           message: '공유용 에셋을 가져오지 못했습니다.',
-          processingTime: timer.end(),
           _file: __filename,
           _err: e,
         })

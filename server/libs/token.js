@@ -1,5 +1,6 @@
 import { sign, verify } from 'jsonwebtoken'
 import { tables, getCount, getItem } from './db.js'
+import ServiceError from './ServiceError.js'
 
 const {
   ACCESS_TOKEN_SECRET,
@@ -106,8 +107,6 @@ export function checkAuthorization(authorization, useUser = true)
   }
   catch (e)
   {
-    const err = new Error(e.message)
-    err.code = 401
-    throw err
+    throw new ServiceError(e.message, 401)
   }
 }

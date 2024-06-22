@@ -13,6 +13,7 @@
       :preview="files.coverCreate"
       :coordinates="forms.cover.coordinates"
       :main-file="files.main"
+      :main-file-meta="forms.file"
       class="cover-image"
       @update="onUpdateCoverImage"
       @open-image="onOpenImage"/>

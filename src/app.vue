@@ -10,7 +10,7 @@
 import { ref, computed, watch, onErrorCaptured } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import AppError from './modules/AppError.js'
-import { LayoutDefault } from './layouts'
+import { LayoutDefault, LayoutShare } from './layouts'
 import ErrorApp from './pages/error/500.vue'
 
 const { DEV } = import.meta.env
@@ -24,6 +24,8 @@ const layout = computed(() => {
   {
     case 'blank':
       return null
+    case 'share':
+      return LayoutShare
     default:
       return LayoutDefault
   }

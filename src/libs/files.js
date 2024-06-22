@@ -25,6 +25,17 @@ export function fileUploader(options = {})
 }
 
 /**
+ * 이미지 주소를 Blob 형식으로 가져온다.
+ * @param {string} src
+ * @return {Blob}
+ */
+export async function getImageBlob(src)
+{
+  const res = await fetch(src)
+  return await res.blob()
+}
+
+/**
  * get image size
  * @param {File|string} file
  * @return {Promise<object>}

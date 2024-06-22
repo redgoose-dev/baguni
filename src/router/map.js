@@ -184,11 +184,24 @@ const guide = DEV ? [
   },
 ] : undefined
 
+const share = [
+  {
+    path: '/share/:code',
+    name: 'share-detail',
+    component: () => import('../pages/share/detail.vue'),
+    meta: {
+      active: 'share',
+      layout: 'share',
+    },
+  },
+]
+
 export default [
   ...assets,
   ...collections,
   ...about,
   ...users,
+  ...share,
   ...auth,
   ...(guide ? guide : []),
   {

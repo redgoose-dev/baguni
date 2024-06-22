@@ -1,0 +1,8 @@
+.layout {
+  &:deep(> .error) {
+    display: grid;
+    place-content: center;
+    height: 100dvh;
+    box-sizing: border-box;
+  }
+}

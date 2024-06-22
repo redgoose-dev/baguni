@@ -74,6 +74,8 @@ import { ref, computed, reactive, onMounted } from 'vue'
 import { authStore } from '../../../store/auth.js'
 import { fileUploader } from '../../../libs/files.js'
 import { apiPath } from '../../../libs/api.js'
+import { getImageBlob } from '../../../libs/files.js'
+import AppError from '../../../modules/AppError.js'
 import ShadowBox from '../../../components/content/shadow-box.vue'
 import Icon from '../../../components/icons/index.vue'
 import ButtonGroup from '../../../components/buttons/group.vue'
@@ -89,6 +91,7 @@ const props = defineProps({
   preview: null,
   coordinates: null,
   mainFile: null,
+  mainFileMeta: null,
 })
 const emits = defineEmits([ 'update', 'open-image', 'get-main-image' ])
 const createSize = auth.user?.json?.asset?.file_coverCreateSize || { width: 640, height: 480 }
@@ -128,7 +131,7 @@ const $previewSrc = computed(() => {
   }
 })
 const $useGetMainFile = computed(() => {
-  return /^image/.test(props.mainFile?.type)
+  return /^image/.test(props.mainFile?.type || props.mainFileMeta.type)
 })
 
 function selectControlMenuItem({ key })
@@ -185,9 +188,22 @@ function onClickPreviewImage()
   emits('open-image', $previewSrc.value)
 }
 
-function getMainFile()
+async function getMainFile()
 {
-  const newFile = new File([props.mainFile.slice(0)], props.mainFile.name, {
+  let mainFile
+  if (props.mainFile?.name)
+  {
+    mainFile = props.mainFile.slice(0)
+  }
+  else if (typeof props.mainFile === 'number')
+  {
+    mainFile = await getImageBlob(`${apiPath}/file/${props.mainFile}/`)
+  }
+  else
+  {
+    throw new AppError('이미지를 가져오지 못했습니다.')
+  }
+  const newFile = new File([mainFile], props.mainFile.name, {
     type: props.mainFile.type,
     lastModified: props.mainFile.lastModified,
   })

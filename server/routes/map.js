@@ -26,6 +26,9 @@ export { default as collectionAssetRemove } from './collection/delete-asset-remo
 export { default as userDetail } from './user/get-detail.js'
 export { default as userEdit } from './user/put-edit.js'
 
+// share
+export { default as shareDetail } from './share/get-detail.js'
+
 // auth
 export { default as login } from './auth/post-login.js'
 export { default as logout } from './auth/post-logout.js'
@@ -35,6 +38,5 @@ export { default as check } from './auth/post-check.js'
 export { default as home } from './etc/get-index.js'
 export { default as file } from './etc/get-file.js'
 export { default as download } from './etc/get-download.js'
-export { default as share } from './etc/get-share.js'
 export { default as tags } from './etc/get-tags.js'
 export { default as notFound } from './etc/not-found.js'

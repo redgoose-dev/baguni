@@ -1,6 +1,6 @@
 <template>
-<LoadingScreen v-if="loading"/>
-<article v-else class="asset">
+<LoadingScreen v-if="loading" class="loading"/>
+<article v-else class="share-detail">
   <figure class="asset-image">
     <button
       v-if="$file"
@@ -23,13 +23,6 @@
   </figure>
   <nav class="asset-nav">
     <ButtonBasic
-      title="컬렉션"
-      icon="bookmark"
-      theme="circle"
-      size="big"
-      :color="$inCollection ? 'key-1' : ''"
-      @click="collection.open = true"/>
-    <ButtonBasic
       v-if="!!$file?.src"
       title="다운로드"
       icon="download"
@@ -45,19 +38,12 @@
       size="big"
       :disabled="processingCopyClipboard"
       @click="onClickCopyClipboard"/>
-    <Dropdown v-model="controlOption.open">
-      <template #trigger>
-        <ButtonBasic
-          title="옵션"
-          icon="more-horizontal"
-          theme="circle"
-          size="big"
-          :color="controlOption.open ? 'blur' : ''"/>
-      </template>
-      <Context
-        :items="controlOption.context"
-        @select="onSelectAssetManage"/>
-    </Dropdown>
+    <ButtonBasic
+      title="공유하기"
+      icon="share-2"
+      theme="circle"
+      size="big"
+      @click="onClickCopyAddress"/>
   </nav>
   <div class="asset-body">
     <aside class="asset-body__side">
@@ -100,38 +86,10 @@
       <em v-else class="empty-content-body">
         Unknown description
       </em>
-      <article v-if="data.tags?.length > 0" class="tags">
-        <h1>태그</h1>
-        <p>
-          <Tag v-for="o in data.tags" :label="o"/>
-        </p>
-      </article>
     </div>
   </div>
 </article>
 <teleport to="#modal">
-  <Modal
-    :open="collection.open"
-    :hide-scroll="true"
-    :use-shortcut="true"
-    animation="bottom-up"
-    @close="collection.open = false">
-    <SelectCollection
-      :asset-id="Number(route.params.id)"
-      :selected-collections="data?.collections || []"
-      @submit="onSubmitSelectCollection"
-      @close="collection.open = false"/>
-  </Modal>
-  <Modal
-    :open="share.open"
-    :hide-scroll="true"
-    :use-shortcut="true"
-    animation="bottom-up"
-    @close="share.open = false">
-    <ManageShare
-      :asset-id="data.id"
-      @close="share.open = false"/>
-  </Modal>
   <Lightbox
     :src="lightboxImage"
     :use-shortcut="true"
@@ -145,42 +103,25 @@ import { useRoute, useRouter } from 'vue-router'
 import { request, apiPath } from '../../libs/api.js'
 import { getByte } from '../../libs/strings.js'
 import { getFileIcon } from '../../libs/files.js'
-import { copyClipboardFile } from '../../libs/util.js'
 import { toast } from '../../modules/toast/index.js'
+import { copyClipboardFile, createMeta, markdownToText } from '../../libs/util.js'
 import { parseMarkdown } from '../../modules/markdown.js'
 import AppError from '../../modules/AppError.js'
-import Tag from '../../components/form/tag.vue'
 import ButtonBasic from '../../components/buttons/button-basic.vue'
 import Icon from '../../components/icons/index.vue'
-import Dropdown from '../../components/navigation/dropdown.vue'
-import Context from '../../components/navigation/context.vue'
 import ShadowBox from '../../components/content/shadow-box.vue'
-import Modal from '../../components/modal/index.vue'
-import ManageShare from './components/manage-share.vue'
-import SelectCollection from '../collections/select-collection/index.vue'
 import LoadingScreen from '../../components/asset/loading/screen.vue'
 import Lightbox from '../../components/content/lightbox/index.vue'
 
+const { VITE_URL_PATH, APP_NAME } = import.meta.env
 const $content = ref()
 const router = useRouter()
 const route = useRoute()
 const loading = ref(true)
-const data = ref({})
-const controlOption = reactive({
-  open: false,
-  context: [
-    { key: 'share', label: '공유하기', icon: 'share-2' },
-    { key: 'edit', label: '수정', icon: 'edit' },
-    { key: 'delete', label: '삭제', icon: 'trash-2', color: 'danger' },
-  ],
-})
-const share = reactive({ open: false })
-const collection = reactive({
-  id: undefined,
-  open: false,
-})
-const lightboxImage = ref('')
 const processingCopyClipboard = ref(false)
+const data = ref({})
+const lightboxImage = ref('')
+const url = ref(`${VITE_URL_PATH}/share/${route.params.code}/`)
 
 const $file = computed(() => {
   if (!data.value?.files?.main) return null
@@ -194,7 +135,7 @@ const $file = computed(() => {
   }
 })
 const $fileMeta = computed(() => {
-  if (!data.value.files?.main) return null
+  if (!data.value?.files?.main) return null
   const { id, name, type, size, meta, date } = data.value.files.main
   return {
     id,
@@ -208,7 +149,6 @@ const $fileMeta = computed(() => {
     date,
   }
 })
-const $inCollection = computed(() => (data.value?.collections?.length > 0))
 const $useCopyClipboard = computed(() => {
   if (!$file.value?.src) return false
   return [ 'image', 'text' ].includes($file.value?.type)
@@ -219,41 +159,29 @@ const $contentBody = computed(() => {
 })
 
 onMounted(async () => {
-  const { id } = route.params
-  if (!id) throw new AppError('에셋 아이디가 없습니다.', 204)
-  const res = await request(`/asset/${id}/`, {
-    method: 'get',
-  })
-  if (!res?.data) throw new AppError('에셋 데이터가 없습니다.', 204)
+  const { code } = route.params
+  if (!code) throw new AppError('공유 코드가 없습니다.', 204)
+  let res
+  try
+  {
+    res = await request(`/share/${code}/`, {
+      method: 'get',
+    })
+  }
+  catch (e)
+  {
+    if (e.message.includes('401 Unauthorized'))
+    {
+      throw new AppError('권한이 없습니다.', 401)
+    }
+  }
+  if (!res?.data) throw new AppError('공유 데이터가 없습니다.', 204)
   data.value = res.data
   loading.value = false
   await nextTick()
   initEventsFromContent()
+  setupHead()
 })
-
-function onSelectAssetManage(item)
-{
-  const { id } = route.params
-  switch (item.key)
-  {
-    case 'share':
-      share.open = true
-      break
-    case 'edit':
-      editAsset(id)
-      break
-    case 'delete':
-      removeAsset(id).then()
-      break
-  }
-  controlOption.open = false
-}
-
-function onSubmitSelectCollection(ids)
-{
-  data.value.collections = ids
-  collection.open = false
-}
 
 function onClickFile()
 {
@@ -284,17 +212,10 @@ async function onClickCopyClipboard()
   }
 }
 
-function editAsset(id)
+async function onClickCopyAddress()
 {
-  router.push(`/asset/${id}/edit/`).then()
-}
-
-async function removeAsset(id)
-{
-  if (!confirm('에셋을 삭제할까요? 삭제하면 다시 복구할 수 없습니다.')) return
-  await request(`${apiPath}/asset/${id}/`, { method: 'delete' })
-  toast.add('에셋을 삭제했습니다.', 'success').then()
-  await router.replace('/')
+  await navigator.clipboard.writeText(url.value)
+  toast.add('공유 주소를 클립보드에 복사했습니다.', 'success').then()
 }
 
 function initEventsFromContent()
@@ -306,6 +227,25 @@ function initEventsFromContent()
     el.addEventListener('click', e => {
       lightboxImage.value = e.currentTarget.src
     })
+  })
+}
+
+function setupHead()
+{
+  const title = data.value.title || APP_NAME
+  const description = markdownToText(data.value.description, false)?.substring(0, 50)
+  const image = data.value.files?.coverCreate ? `${apiPath}/file/${data.value.files?.coverCreate}/` : null
+  document.title = title
+  let meta = [
+    { name: 'description', content: description },
+    { property: 'property', content: url.value },
+    { property: 'og:title', content: title },
+    { property: 'og:description', content: description },
+    { property: 'og:image', content: image },
+  ]
+  meta.forEach((o) => {
+    const element = createMeta(o)
+    document.head.appendChild(element)
   })
 }
 </script>

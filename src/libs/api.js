@@ -16,6 +16,12 @@ function setup()
     responseType: 'json',
     // onResponse({ response })
     // {},
+    // onResponseError(context)
+    // {
+    //   const err = new Error(context.response?._data?.message || 'Invalid error.')
+    //   err.code = context.response.status
+    //   context.error = err
+    // }
   })
   headers = {
     'Authorization': `Bearer ${auth.token}`,
