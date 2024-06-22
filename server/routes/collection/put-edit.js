@@ -9,11 +9,11 @@ import { existsSync, rmSync } from 'node:fs'
 import { uploader } from '../../libs/uploader.js'
 import { uploadFields, fileTypes } from '../../libs/consts.js'
 import { success, error } from '../output.js'
-import { connect, disconnect, tables, getItem, getItems, editItem, addItem } from '../../libs/db.js'
+import { connect, disconnect, tables, getItem, getItems, editItem, addItem, removeItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { checkExistValueInObject, findObjectByValue } from '../../libs/objects.js'
 import { filteringTitle } from '../../libs/strings.js'
-import { addFileData, editFileData, removeJunkFiles } from '../../libs/service.js'
+import { addFileData, editFileData, removeJunkFiles, removeFile } from '../../libs/service.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -27,7 +27,8 @@ export default async (req, res) => {
     {
       const id = req.params.id
       if (!id) throw new ServiceError('id 값이 없습니다.')
-      let { title, description } = req.body
+
+      let { title, description, remove_files } = req.body
       let readyUpdate = {
         title: undefined,
         description: undefined,
@@ -68,21 +69,45 @@ export default async (req, res) => {
         readyUpdate.description = description
       }
 
-      // update files
-      const fileCoverOriginal = req.files?.[uploadFields.coverOriginal]?.[0]
-      const fileCreate = req.files?.[uploadFields.coverCreate]?.[0]
-      updateFile({
-        file: fileCoverOriginal,
-        map: srcMapFiles,
-        fileType: fileTypes.coverOriginal,
-        collectionId: id,
-      })
-      updateFile({
-        file: fileCreate,
-        map: srcMapFiles,
-        fileType: fileTypes.coverCreate,
-        collectionId: id,
-      })
+      // ready update files
+      let removeFiles
+      if (remove_files) removeFiles = remove_files.split(',')
+      // update cover original file
+      if (removeFiles?.includes(fileTypes.coverOriginal))
+      {
+        removeFileData({
+          map: srcMapFiles,
+          fileType: fileTypes.coverOriginal,
+        })
+      }
+      else
+      {
+        const fileCoverOriginal = req.files?.[uploadFields.coverOriginal]?.[0]
+        updateFile({
+          file: fileCoverOriginal,
+          map: srcMapFiles,
+          fileType: fileTypes.coverOriginal,
+          collectionId: id,
+        })
+      }
+      // update cover create file
+      if (removeFiles?.includes(fileTypes.coverCreate))
+      {
+        removeFileData({
+          map: srcMapFiles,
+          fileType: fileTypes.coverCreate,
+        })
+      }
+      else
+      {
+        const fileCreate = req.files?.[uploadFields.coverCreate]?.[0]
+        updateFile({
+          file: fileCreate,
+          map: srcMapFiles,
+          fileType: fileTypes.coverCreate,
+          collectionId: id,
+        })
+      }
 
       // update data
       updateData(readyUpdate, id)
@@ -133,6 +158,23 @@ function updateFile(options)
       ],
     })
   }
+}
+function removeFileData(options)
+{
+  const { map, fileType } = options
+  const data = findObjectByValue(map, 'type', fileType)
+  if (!data) return
+  removeItem({
+    table: tables.file,
+    where: 'id = $id',
+    values: { '$id': data.file },
+  })
+  removeItem({
+    table: tables.mapCollectionFile,
+    where: 'id = $id',
+    values: { '$id': data.id },
+  })
+  removeFile(data.path)
 }
 
 function updateData(data, collectionId)

@@ -11,11 +11,11 @@ import { tagRegex } from '../../../global/strings.js'
 import { uploader } from '../../libs/uploader.js'
 import { uploadFields, fileTypes } from '../../libs/consts.js'
 import { success, error } from '../output.js'
-import { connect, disconnect, tables, getItem, getItems, editItem, addItem, getCount } from '../../libs/db.js'
+import { connect, disconnect, tables, getItem, getItems, editItem, addItem, getCount, removeItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { parseJSON, compareArrays, checkExistValueInObject, findObjectByValue } from '../../libs/objects.js'
 import { filteringTitle } from '../../libs/strings.js'
-import { addTag, removeTag, addFileData, editFileData, removeJunkFiles } from '../../libs/service.js'
+import { addTag, removeTag, addFileData, editFileData, removeJunkFiles, removeFile } from '../../libs/service.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -26,15 +26,12 @@ export default async (req, res) => {
     { name: uploadFields.coverCreate, maxCount: 1 },
   ])
   upload(req, res, async () => {
-    // TODO: 첨부파일 삭제에 대한 대책이 없는데 방법을 찾아야 할것이다.
-    // TODO: 첨부파일의 종류가 메인파일, 커버 원본, 커버 제작 세가지가 있다.
-    // TODO: remove_files 값이 있으면 어떤 부분의 파일을 삭제해야 한다는 의미로 간주하고 작동한다. (main,cover-original,cover-create)
     try
     {
       const id = req.params.id
       if (!id) throw new ServiceError('id 값이 없습니다.')
 
-      let { title, description, json, tags } = req.body
+      let { title, description, json, tags, remove_files } = req.body
       let readyUpdate = {
         title: undefined,
         description: undefined,
@@ -84,28 +81,63 @@ export default async (req, res) => {
         readyUpdate.description = description
       }
 
-      // update files
-      const newFileMain = req.files?.[uploadFields.file]?.[0]
-      updateFile({
-        file: newFileMain,
-        map: srcMapFiles,
-        fileType: fileTypes.main,
-        assetId: id,
-      })
-      const fileCoverOriginal = req.files?.[uploadFields.coverOriginal]?.[0]
-      updateFile({
-        file: fileCoverOriginal,
-        map: srcMapFiles,
-        fileType: fileTypes.coverOriginal,
-        assetId: id,
-      })
-      const fileCreate = req.files?.[uploadFields.coverCreate]?.[0]
-      updateFile({
-        file: fileCreate,
-        map: srcMapFiles,
-        fileType: fileTypes.coverCreate,
-        assetId: id,
-      })
+      // ready update files
+      let removeFiles
+      if (remove_files) removeFiles = remove_files.split(',')
+      // update main file
+      if (removeFiles?.includes(fileTypes.main))
+      {
+        removeFileData({
+          map: srcMapFiles,
+          fileType: fileTypes.main,
+        })
+      }
+      else
+      {
+        const newFileMain = req.files?.[uploadFields.file]?.[0]
+        updateFile({
+          file: newFileMain,
+          map: srcMapFiles,
+          fileType: fileTypes.main,
+          assetId: id,
+        })
+      }
+      // update cover original file
+      if (removeFiles?.includes(fileTypes.coverOriginal))
+      {
+        removeFileData({
+          map: srcMapFiles,
+          fileType: fileTypes.coverOriginal,
+        })
+      }
+      else
+      {
+        const fileCoverOriginal = req.files?.[uploadFields.coverOriginal]?.[0]
+        updateFile({
+          file: fileCoverOriginal,
+          map: srcMapFiles,
+          fileType: fileTypes.coverOriginal,
+          assetId: id,
+        })
+      }
+      // update cover create file
+      if (removeFiles?.includes(fileTypes.coverCreate))
+      {
+        removeFileData({
+          map: srcMapFiles,
+          fileType: fileTypes.coverCreate,
+        })
+      }
+      else
+      {
+        const fileCreate = req.files?.[uploadFields.coverCreate]?.[0]
+        updateFile({
+          file: fileCreate,
+          map: srcMapFiles,
+          fileType: fileTypes.coverCreate,
+          assetId: id,
+        })
+      }
 
       // update json
       if (json)
@@ -204,6 +236,23 @@ function updateFile(options)
       })
     }
   }
+}
+function removeFileData(options)
+{
+  const { map, fileType } = options
+  const data = findObjectByValue(map, 'type', fileType)
+  if (!data) return
+  removeItem({
+    table: tables.file,
+    where: 'id = $id',
+    values: { '$id': data.file },
+  })
+  removeItem({
+    table: tables.mapAssetFile,
+    where: 'id = $id',
+    values: { '$id': data.id },
+  })
+  removeFile(data.path)
 }
 
 function updateTags(tags, assetId)
