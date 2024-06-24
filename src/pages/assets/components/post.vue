@@ -34,12 +34,15 @@
       <legend class="hidden">설명 입력 폼</legend>
       <label for="description">설명</label>
       <div class="body">
+        <Toolbar
+          @action="onSelectActionFromToolbar"/>
         <Textarea
           v-model="forms.description"
           name="description"
           id="description"
           placeholder="설명을 입력해주세요."
-          :rows="16"/>
+          :rows="16"
+          @position="onPositionDescription"/>
       </div>
     </fieldset>
     <ManageTags v-model="forms.tags"/>
@@ -73,6 +76,7 @@ import ManageTags from './manage-tags.vue'
 import InputText from '../../../components/form/input-text.vue'
 import Textarea from '../../../components/form/textarea.vue'
 import Lightbox from '../../../components/content/lightbox/index.vue'
+import Toolbar from './toolbar.vue'
 
 const $uploadFile = ref()
 const props = defineProps({
@@ -83,6 +87,7 @@ const emits = defineEmits([ 'submit' ])
 const forms = reactive({
   title: props.data?.title || '',
   description: props.data?.description || '',
+  descriptionPosition: {},
   tags: pureObject(props.data?.tags) || [],
   file: props.data?.file ? {
     name: props.data.file.name,
@@ -153,6 +158,19 @@ function onOpenImage(file)
 {
   if (!file) return
   lightboxImage.value = file
+}
+
+function onSelectActionFromToolbar()
+{
+  // switch ()
+  // {
+  //
+  // }
+}
+
+function onPositionDescription(e)
+{
+  forms.descriptionPosition = e
 }
 
 async function onSubmit()

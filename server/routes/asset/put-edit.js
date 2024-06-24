@@ -152,9 +152,9 @@ export default async (req, res) => {
         const beforeTagsArray = srcTags.map(o => (o.name))
         const afterTagsArray = tags.split(',').map(x => {
           x = x.trim()
-          if (!tagRegex().test(x)) throw new ServiceError('유효한 태그가 아닙니다.')
+          if (!tagRegex().test(x)) return false
           return x
-        })
+        }).filter(Boolean)
         const compare = compareArrays(beforeTagsArray, afterTagsArray)
         readyUpdate.tags = (compare.added?.length > 0 || compare.removed?.length > 0) ? compare : undefined
       }

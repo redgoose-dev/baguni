@@ -19,5 +19,4 @@ export const defaultUserPreference = {
     index_size: 8,
     file_coverCreateSize: { width: 640, height: 480 },
   },
-  account: {},
 }

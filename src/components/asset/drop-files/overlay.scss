@@ -1,0 +1,87 @@
+@use '../../../assets/scss/mixins';
+
+.overlay {
+  display: grid;
+  place-content: center;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: #{mixins.mix-alpha(var(--color-key-3), 88%)};
+  @include mixins.background-blur(16px);
+}
+
+.ready {
+  display: grid;
+  place-content: center;
+  text-align: center;
+  border-radius: 16px;
+  box-shadow: 0 0 0 .5px #{mixins.mix-alpha(var(--color-light), 50%)};
+  aspect-ratio: 3 / 2;
+  width: 540px;
+  h1 {
+    margin: 20px 0 0;
+    font-size: 48px;
+    line-height: 1.05;
+    font-weight: 700;
+    color: var(--color-light);
+    letter-spacing: -1px;
+  }
+  i {
+    display: block;
+    margin: 0 auto;
+    --icon-size: 98px;
+    --icon-stroke: .5;
+    --icon-color: var(--color-light);
+  }
+  p {
+    margin: 16px 0 0;
+    font-size: 14px;
+    line-height: 1.25;
+    color: var(--color-light);
+  }
+}
+
+.uploading {
+  display: grid;
+  place-content: center;
+  text-align: center;
+  aspect-ratio: 3 / 2;
+  width: 540px;
+  border-radius: 16px;
+  box-shadow: 0 0 0 .5px #{mixins.mix-alpha(var(--color-light), 50%)};
+  .animation {
+    display: block;
+    .loader {
+      margin: 0 auto;
+      --loader-fill: var(--color-light);
+      --loader-size: 62px;
+      --loader-shadow-height: 8px;
+      --loader-shadow-top: 12px;
+      &:before {
+        width: calc(var(--loader-size) + 12px);
+      }
+      &:after {
+        left: 8px;
+      }
+    }
+  }
+  .title {
+    margin: 42px 0 0;
+    font-size: 48px;
+    line-height: 1.05;
+    font-weight: 700;
+    color: var(--color-light);
+    letter-spacing: -1px;
+  }
+  .description {
+    margin: 16px 0 0;
+    font-size: 18px;
+    line-height: 1.15;
+    font-weight: 200;
+    color: var(--color-light);
+  }
+}

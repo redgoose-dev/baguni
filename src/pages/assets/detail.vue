@@ -45,19 +45,25 @@
       size="big"
       :disabled="processingCopyClipboard"
       @click="onClickCopyClipboard"/>
-    <Dropdown v-model="controlOption.open">
-      <template #trigger>
-        <ButtonBasic
-          title="옵션"
-          icon="more-horizontal"
-          theme="circle"
-          size="big"
-          :color="controlOption.open ? 'blur' : ''"/>
-      </template>
-      <Context
-        :items="controlOption.context"
-        @select="onSelectAssetManage"/>
-    </Dropdown>
+    <ButtonBasic
+      title="공유하기"
+      icon="share-2"
+      size="big"
+      theme="circle"
+      @click="share.open = true"/>
+    <ButtonBasic
+      title="수정"
+      icon="edit"
+      size="big"
+      theme="circle"
+      @click="editAsset(route.params.id)"/>
+    <ButtonBasic
+      title="삭제"
+      icon="trash-2"
+      size="big"
+      theme="circle"
+      color="danger"
+      @click="removeAsset(route.params.id)"/>
   </nav>
   <div class="asset-body">
     <aside class="asset-body__side">
@@ -152,8 +158,6 @@ import AppError from '../../modules/AppError.js'
 import Tag from '../../components/form/tag.vue'
 import ButtonBasic from '../../components/buttons/button-basic.vue'
 import Icon from '../../components/icons/index.vue'
-import Dropdown from '../../components/navigation/dropdown.vue'
-import Context from '../../components/navigation/context.vue'
 import ShadowBox from '../../components/content/shadow-box.vue'
 import Modal from '../../components/modal/index.vue'
 import ManageShare from './components/manage-share.vue'
@@ -166,14 +170,6 @@ const router = useRouter()
 const route = useRoute()
 const loading = ref(true)
 const data = ref({})
-const controlOption = reactive({
-  open: false,
-  context: [
-    { key: 'share', label: '공유하기', icon: 'share-2' },
-    { key: 'edit', label: '수정', icon: 'edit' },
-    { key: 'delete', label: '삭제', icon: 'trash-2', color: 'danger' },
-  ],
-})
 const share = reactive({ open: false })
 const collection = reactive({
   id: undefined,
@@ -230,24 +226,6 @@ onMounted(async () => {
   await nextTick()
   initEventsFromContent()
 })
-
-function onSelectAssetManage(item)
-{
-  const { id } = route.params
-  switch (item.key)
-  {
-    case 'share':
-      share.open = true
-      break
-    case 'edit':
-      editAsset(id)
-      break
-    case 'delete':
-      removeAsset(id).then()
-      break
-  }
-  controlOption.open = false
-}
 
 function onSubmitSelectCollection(ids)
 {

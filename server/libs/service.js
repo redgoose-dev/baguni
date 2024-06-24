@@ -10,10 +10,7 @@ import ServiceError from '../libs/ServiceError.js'
 export function addTag(tag, assetId)
 {
   tag = tag.trim()
-  if (!tagRegex().test(tag))
-  {
-    throw new ServiceError('유효한 태그가 아닙니다.', 500, `"${tag}"값이 유효한 태그가 아닙니다.`)
-  }
+  if (!tagRegex().test(tag)) return
   let tagId = getItem({
     table: tables.tag,
     fields: [ 'id' ],

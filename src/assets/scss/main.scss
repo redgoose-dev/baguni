@@ -15,7 +15,7 @@
   --color-weak: hsl(0 0% 47%);
   --color-blur: hsl(0 0% 82%);
   --color-key-1: hsl(176 51% 61%);
-  --color-key-2: hsl(186 68% 46%);
+  --color-key-2: hsl(31, 83%, 59%);
   --color-key-3: hsl(243 68% 57%);
   --color-success: hsl(93 54% 45%);
   --color-danger: hsl(0 67% 47%);
@@ -56,7 +56,7 @@ code, kbd, pre, samp {
   font-family: var(--font-code);
 }
 ::selection {
-  background: color-mix(in hsl, var(--color-key-2), transparent 25%);
+  background: color-mix(in hsl, var(--color-key-3), transparent 25%);
   color: var(--color-light);
 }
 legend {
