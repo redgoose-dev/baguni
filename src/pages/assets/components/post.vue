@@ -35,7 +35,8 @@
       <label for="description">설명</label>
       <div class="body">
         <Toolbar
-          @action="onSelectActionFromToolbar"/>
+          @action="onSelectActionFromToolbar"
+          @open-attachment-files="attachmentFiles.open = true"/>
         <Textarea
           v-model="forms.description"
           name="description"
@@ -60,6 +61,16 @@
   </div>
 </form>
 <teleport to="#modal">
+  <Modal
+    :open="attachmentFiles.open"
+    :full="true"
+    :hide-scroll="true"
+    :use-shortcut="true"
+    animation="fade"
+    @close="attachmentFiles.open = false">
+    <AttachmentFiles
+      @close="attachmentFiles.open = false"/>
+  </Modal>
   <Lightbox
     :src="lightboxImage"
     @close="lightboxImage = ''"/>
@@ -76,6 +87,8 @@ import ManageTags from './manage-tags.vue'
 import InputText from '../../../components/form/input-text.vue'
 import Textarea from '../../../components/form/textarea.vue'
 import Lightbox from '../../../components/content/lightbox/index.vue'
+import Modal from '../../../components/modal/index.vue'
+import AttachmentFiles from '../../../components/content/attachment-files/index.vue'
 import Toolbar from './toolbar.vue'
 
 const $uploadFile = ref()
@@ -107,6 +120,9 @@ const files = reactive({
   removedCover: !Boolean(props.data?.cover_original),
 })
 const lightboxImage = ref('')
+const attachmentFiles = reactive({
+  open: false,
+})
 
 const $isEdit = computed(() => (!!props.data))
 const $submitLabel = computed(() => {

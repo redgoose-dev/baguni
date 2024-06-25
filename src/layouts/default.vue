@@ -86,7 +86,6 @@ async function onDrop(e)
     allowDrag.value = true
     return
   }
-  console.log('onDrop()')
   allowDrag.value = true
   const files = e.dataTransfer.files
   if (files.length > 0)

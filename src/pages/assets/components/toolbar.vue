@@ -12,9 +12,9 @@
         </template>
         <Context
           :items="[
-          { key: 'link', label: '링크' },
-          { key: 'image', label: '이미지' },
-        ]"
+            { key: 'link', label: '링크' },
+            { key: 'image', label: '이미지' },
+          ]"
           @select=""/>
       </Dropdown>
     </ButtonGroup>
@@ -23,22 +23,11 @@
     <ButtonBasic
       size="small"
       color="key-1"
-      @click="attachmentFiles.open = true">
+      @click="emits('open-attachment-files')">
       첨부파일
     </ButtonBasic>
   </div>
 </nav>
-<teleport to="#modal">
-<Modal
-  :open="attachmentFiles.open"
-  :full="true"
-  :hide-scroll="true"
-  :use-shortcut="true"
-  animation="fade"
-  @close="attachmentFiles.open = false">
-  <AttachmentFiles/>
-</Modal>
-</teleport>
 </template>
 
 <script setup>
@@ -47,14 +36,8 @@ import ButtonGroup from '../../../components/buttons/group.vue'
 import ButtonBasic from '../../../components/buttons/button-basic.vue'
 import Dropdown from '../../../components/navigation/dropdown.vue'
 import Context from '../../../components/navigation/context.vue'
-import Modal from '../../../components/modal/index.vue'
-import AttachmentFiles from '../../../components/content/attachment-files/index.vue'
 
-const attachmentFiles = reactive({
-  open: false,
-})
-
-const emits = defineEmits([ 'action' ])
+const emits = defineEmits([ 'open-attachment-files', 'action' ])
 </script>
 
 <style src="./toolbar.scss" lang="scss" scoped></style>

@@ -1,11 +1,13 @@
 <template>
 <article class="create-asset">
-  <PageHeader title="에셋 만들기">
-    새로운 에셋을 만듭니다.
-  </PageHeader>
-  <Post
-    :processing="processing"
-    @submit="onSubmit"/>
+  <div class="create-asset__wrap">
+    <PageHeader title="에셋 만들기">
+      새로운 에셋을 만듭니다.
+    </PageHeader>
+    <Post
+      :processing="processing"
+      @submit="onSubmit"/>
+  </div>
 </article>
 </template>
 
@@ -51,7 +53,10 @@ async function onSubmit(body)
 
 <style lang="scss" scoped>
 .create-asset {
-  margin: 0 auto;
-  max-width: var(--size-content-width);
+  padding: 0 60px;
+  &__wrap {
+    margin: 0 auto;
+    max-width: var(--size-content-width);
+  }
 }
 </style>
