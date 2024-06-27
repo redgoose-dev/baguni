@@ -20,7 +20,9 @@ export default async (req, res) => {
     connect({ readonly: true })
     // check auth
     // checkAuthorization(req.headers.authorization, false)
+
     // TODO: 여기는 쿠키로 검사해야할거 같은데.. 이미지 태그에서 쓰는데 헤더를 어떻게 붙인다고..
+    // TODO: 리사이즈 값이 있으면 작은 사이즈로 내보내준다. (캐시에 리사이즈용 파일이 없으면 리사이즈하고 캐시에 저장하고, 있으면 캐시에 있는 파일로 내보내준다.)
 
     // get data
     const file = getItem({

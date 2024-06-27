@@ -8,7 +8,7 @@ import { success, error } from '../output.js'
 import { connect, disconnect, tables, getCount, getItems } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { defaultPageSize, fileTypes } from '../../libs/consts.js'
-import ServiceError from "../../libs/ServiceError.js";
+import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
   try

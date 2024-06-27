@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import * as map from './map.js'
 import RunningTimer from '../libs/RunningTimer.js'
-import { shareDetail } from "./map.js";
 
 /** @var {Express} app */
 let app
@@ -13,6 +12,7 @@ function appRoutes()
 {
   const router = Router()
   router.all('/', map.home)
+
   // asset
   router.get('/assets/', map.assets)
   router.get('/asset/:id/', map.assetDetail)
@@ -20,8 +20,12 @@ function appRoutes()
   router.put('/asset/:id/', map.assetEdit)
   router.delete('/asset/:id/', map.assetRemove)
   router.put('/asset/:id/collections/', map.assetUpdateCollections)
-  router.get('/asset/:id/share', map.assetGetShareCode)
-  router.put('/asset/:id/share', map.assetUpdateShare)
+  router.get('/asset/:id/share/', map.assetGetShareCode)
+  router.put('/asset/:id/share/', map.assetUpdateShare)
+  // asset - file body
+  router.get('/asset/:id/file-body/', map.assetFileBodyIndex)
+  router.post('/asset/:id/file-body/', map.assetFileBodyAddItem)
+  router.delete('/asset/:id/file-body/:file/', map.assetFileBodyDeleteItem)
   // collection
   router.get('/collections/', map.collections)
   router.get('/collection/:id/', map.collectionDetail)

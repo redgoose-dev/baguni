@@ -15,6 +15,7 @@ export default async (req, res) => {
   {
     const id = Number(req.params.id)
     if (!id) throw new ServiceError('id 값이 없습니다.', 500)
+
     // connect db
     connect({ readwrite: true })
     // check auth

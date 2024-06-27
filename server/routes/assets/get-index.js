@@ -27,8 +27,6 @@ export default async (req, res) => {
     let where = ''
     let values = {}
     let limit = ''
-    let after = ''
-    let whereIn = ''
 
     // 키워드 검색
     if (q)

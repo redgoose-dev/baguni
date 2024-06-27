@@ -21,8 +21,10 @@
   </div>
   <div>
     <ButtonBasic
+      v-if="props.isEdit"
       size="small"
       color="key-1"
+      left-icon="file-search"
       @click="emits('open-attachment-files')">
       첨부파일
     </ButtonBasic>
@@ -31,12 +33,14 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
 import ButtonGroup from '../../../components/buttons/group.vue'
 import ButtonBasic from '../../../components/buttons/button-basic.vue'
 import Dropdown from '../../../components/navigation/dropdown.vue'
 import Context from '../../../components/navigation/context.vue'
 
+const props = defineProps({
+  isEdit: Boolean,
+})
 const emits = defineEmits([ 'open-attachment-files', 'action' ])
 </script>
 

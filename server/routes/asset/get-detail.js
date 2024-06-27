@@ -70,7 +70,13 @@ export default async (req, res) => {
           break
         case fileTypes.body:
           if (!files.body) files.body = []
-          files.body.push(o.id)
+          files.body.push({
+            id: o.id,
+            name: o.name,
+            type: o.type,
+            size: o.size,
+            meta: parseJSON(o.meta),
+          })
           break
       }
     })

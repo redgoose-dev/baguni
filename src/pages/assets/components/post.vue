@@ -35,6 +35,7 @@
       <label for="description">설명</label>
       <div class="body">
         <Toolbar
+          :is-edit="$isEdit"
           @action="onSelectActionFromToolbar"
           @open-attachment-files="attachmentFiles.open = true"/>
         <Textarea
@@ -62,6 +63,7 @@
 </form>
 <teleport to="#modal">
   <Modal
+    v-if="$isEdit"
     :open="attachmentFiles.open"
     :full="true"
     :hide-scroll="true"
@@ -69,6 +71,7 @@
     animation="fade"
     @close="attachmentFiles.open = false">
     <AttachmentFiles
+      :asset-id="props.data?.id"
       @close="attachmentFiles.open = false"/>
   </Modal>
   <Lightbox
