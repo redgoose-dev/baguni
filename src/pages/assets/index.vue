@@ -95,12 +95,12 @@ const runFetch = ref(true)
 const $index = computed(() => {
   if (!(data.index?.length > 0)) return []
   return data.index.map(item => {
-    const { id, title, description, cover_file_id, regdate } = item
+    const { id, title, description, file_id, regdate } = item
     return {
       id,
       title,
       description,
-      thumbnail: cover_file_id ? `${apiPath}/file/${cover_file_id}/` : null,
+      thumbnail: file_id ? `${apiPath}/file/${file_id}/?width=480&height=320&quality=75&type=cover` : null,
       regdate: dateFormat(new Date(regdate), '{yyyy}-{MM}-{dd}'),
     }
   })
