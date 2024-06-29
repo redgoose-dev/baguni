@@ -12,13 +12,17 @@
     </template>
   </PageHeader>
   <div class="collections__body">
-    <ul class="index">
+    <ul v-if="$index?.length > 0" class="index">
       <li v-for="item in $index">
         <CollectionItem
           v-bind="item"
           @context="onSelectContextFromItem($event, item.id)"/>
       </li>
     </ul>
+    <EmptyContent
+      v-else
+      message="컬렉션이 없습니다."
+      class="collections__empty"/>
   </div>
 </article>
 <teleport to="#modal">
@@ -58,6 +62,7 @@ import CollectionItem from '../../components/content/collection/index.vue'
 import Modal from '../../components/modal/index.vue'
 import CreateCollection from './components/create.vue'
 import EditCollection from './components/edit.vue'
+import EmptyContent from '../../components/content/empty-content.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -101,15 +106,21 @@ async function fetch()
   const res = await request(`/collections/`, {
     method: 'get',
     query: {
-      // page: data.page,
-      // size: display.size,
       order: display.order,
       sort: display.sort,
     },
   })
-  const { total, index } = res.data
-  data.total = total
-  data.index = index
+  if (res?.data)
+  {
+    const { total, index } = res.data
+    data.total = total
+    data.index = index
+  }
+  else
+  {
+    data.total = 0
+    data.index = []
+  }
   data.loading = false
 }
 

@@ -4,6 +4,9 @@
   &__body {
     margin: 30px 0 0;
   }
+  &__empty {
+    --empty-height: 480px;
+  }
 }
 
 .index {

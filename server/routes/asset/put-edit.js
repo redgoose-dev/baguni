@@ -35,6 +35,7 @@ export default async (req, res) => {
       let readyUpdate = {
         title: undefined,
         description: undefined,
+        type: undefined,
         json: undefined,
         tags: undefined,
       }
@@ -95,12 +96,16 @@ export default async (req, res) => {
       else
       {
         const newFileMain = req.files?.[uploadFields.file]?.[0]
-        updateFile({
-          file: newFileMain,
-          map: srcMapFiles,
-          fileType: fileTypes.main,
-          assetId: id,
-        })
+        if (newFileMain)
+        {
+          updateFile({
+            file: newFileMain,
+            map: srcMapFiles,
+            fileType: fileTypes.main,
+            assetId: id,
+          })
+          readyUpdate.type = newFileMain.mimetype
+        }
       }
       // update cover original file
       if (removeFiles?.includes(fileTypes.coverOriginal))
@@ -271,13 +276,14 @@ function updateTags(tags, assetId)
 function updateData(data, assetId)
 {
   if (!data) return
-  if (!checkExistValueInObject(data, ['title', 'description', 'json'])) return
+  if (!checkExistValueInObject(data, ['title', 'description', 'type', 'json'])) return
   editItem({
     table: tables.asset,
     where: 'id = $id',
     set: [
       data.title && 'title = $title',
       data.description && 'description = $description',
+      data.type && 'type = $type',
       data.json && 'json = $json',
       'updated_at = CURRENT_TIMESTAMP',
     ].filter(Boolean),
@@ -285,6 +291,7 @@ function updateData(data, assetId)
       '$id': assetId,
       '$title': data.title,
       '$description': data.description,
+      '$type': data.type,
       '$json': data.json,
     },
   })

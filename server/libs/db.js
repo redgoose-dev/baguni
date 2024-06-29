@@ -147,8 +147,11 @@ export function addItem(options)
   let valueNames = []
   let objects = []
   values.forEach(item => {
-    fields.push(item.key)
-    valueNames.push(item.valueName || '?')
+    if (item.value || item.valueName)
+    {
+      fields.push(item.key)
+      valueNames.push(item.valueName || '?')
+    }
     if (item.value) objects.push(item.value)
   })
   const sql = optimiseSql(`insert into ${table} (${fields.join(', ')}) values (${valueNames.join(', ')})`)

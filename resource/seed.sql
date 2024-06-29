@@ -3,6 +3,7 @@ CREATE TABLE `asset` (
   `id` INTEGER NOT NULL UNIQUE,
   `title` TEXT NULL,
   `description` TEXT NULL,
+  `type` TEXT NULL,
   `json` TEXT NULL,
   `regdate` TEXT NOT NULL,
   `updated_at` TEXT NOT NULL,

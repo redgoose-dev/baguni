@@ -38,6 +38,7 @@ export default async (req, res) => {
     // 기본적인 쿼리 만들기
     fields.push(`${tables.asset}.*`)
     fields.push(`(select file from ${tables.mapAssetFile} where ${tables.mapAssetFile}.asset = ${tables.asset}.id and type like '${fileTypes.main}') as file_id`)
+    fields.push(`(select file from ${tables.mapAssetFile} where ${tables.mapAssetFile}.asset = ${tables.asset}.id and type like '${fileTypes.coverCreate}') as cover_file_id`)
 
     // 파일의 타입 (image/jpeg 에서 image 부분을 필터링하자)
     if (file_type)

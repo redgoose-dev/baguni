@@ -14,6 +14,7 @@ import { checkAuthorization } from '../../libs/token.js'
 import { parseJSON } from '../../libs/objects.js'
 import { filteringTitle } from '../../libs/strings.js'
 import { addTag, addFileData, removeJunkFiles } from '../../libs/service.js'
+import ServiceError from "../../libs/ServiceError.js";
 
 export default async (req, res) => {
   const _uploader = uploader()
@@ -39,12 +40,18 @@ export default async (req, res) => {
       json = parseJSON(json) || {}
       json = JSON.stringify(json)
 
+      // set files
+      const fileMain = req.files?.[uploadFields.file]?.[0]
+      const fileOriginal = req.files?.[uploadFields.coverOriginal]?.[0]
+      const fileCreate = req.files?.[uploadFields.coverCreate]?.[0]
+
       // add data in database
       const assetId = addItem({
         table: tables.asset,
         values: [
           title && { key: 'title', value: title },
           description && { key: 'description', value: description },
+          { key: 'type', value: fileMain?.mimetype || null },
           { key: 'json', value: json },
           { key: 'regdate', valueName: 'CURRENT_TIMESTAMP' },
           { key: 'updated_at', valueName: 'CURRENT_TIMESTAMP' },
@@ -52,9 +59,6 @@ export default async (req, res) => {
       }).data
 
       // add files
-      const fileMain = req.files?.[uploadFields.file]?.[0]
-      const fileOriginal = req.files?.[uploadFields.coverOriginal]?.[0]
-      const fileCreate = req.files?.[uploadFields.coverCreate]?.[0]
       if (fileMain)
       {
         addFile({
@@ -98,6 +102,7 @@ export default async (req, res) => {
     }
     catch (e)
     {
+      // console.error(e)
       // 이미 업로드한 파일들은 전부 삭제한다.
       removeJunkFiles(req.files)
       // close db
