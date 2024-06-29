@@ -58,7 +58,7 @@ export default async (req, res) => {
         values: [
           { key: 'code', value: code },
           { key: 'asset', value: id },
-          { key: 'permission', value: permissions.PUBLIC },
+          { key: 'permission', value: permissions.PRIVATE },
           { key: 'regdate', valueName: 'CURRENT_TIMESTAMP', },
         ],
       })

@@ -1,16 +1,23 @@
 <template>
-<div :class="[
-  'item',
-  props.selected && 'selected',
-]">
+<div
+  :class="[
+    'item',
+    $selected && 'selected',
+  ]"
+  @click.stop>
   <button
     type="button"
-    class="item__image"
+    class="item__button"
     @click.prevent="onClickItem">
     <img
-      :src="$imgSrc"
+      v-if="$isImage"
+      :src="$fileSrc"
       alt="image item"
       draggable="false"/>
+    <i v-else>
+      <Icon :name="$fileIcon"/>
+      <span>{{props.name}}</span>
+    </i>
   </button>
   <nav class="item__nav">
     <ButtonBasic
@@ -39,22 +46,44 @@ import Icon from '../../icons/index.vue'
 
 const props = defineProps({
   id: Number,
-  selected: Boolean,
+  name: String,
+  type: String,
+  size: Number,
+  meta: Object,
+  selected: Array,
 })
+const emits = defineEmits([ 'select', 'action' ])
 
-const $imgSrc = computed(() => {
-  // return 'https://goose.redgoose.me/data/upload/original/202107/rg-20210521-000014.jpg'
+const $isImage = computed(() => {
+  return /^image/.test(props.type)
+})
+const $fileSrc = computed(() => {
   return `${apiPath}/file/${props.id}/`
+})
+const $fileIcon = computed(() => {
+  const arr = props.type.split('/')
+  switch (arr[0])
+  {
+    case 'image':
+      return null
+    case 'text':
+      return 'file-text'
+    default:
+      return 'file'
+  }
+})
+const $selected = computed(() => {
+  return props.selected.includes(props.id)
 })
 
 function onClickItem()
 {
-  console.log('onClickItem()', props.id)
+  emits('select', props.id)
 }
 
 function onSelectContext(e)
 {
-  console.log('onSelectContext()', e)
+  emits('action', e.key, props.id)
 }
 </script>
 

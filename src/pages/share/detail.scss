@@ -80,7 +80,7 @@
     --button-width: 48px;
     --button-height: 48px;
     --icon-size: 24px;
-    --icon-stroke: 2;
+    --icon-stroke: 1.75;
   }
 }
 
@@ -137,6 +137,9 @@
         user-select: none;
       }
     }
+  }
+  @include mixins.responsive(max) {
+    max-width: 1200px;
   }
 }
 

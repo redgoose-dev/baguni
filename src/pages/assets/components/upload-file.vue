@@ -66,10 +66,7 @@
   <div
     v-else
     ref="$uploadFile"
-    :class="[
-      'upload-file',
-      false && 'dropzone',
-    ]">
+    class="upload-file">
     <ShadowBox class="upload-file__box">
       <figure class="upload-file__body">
         <img src="../../../assets/images/img-upload-file.svg" alt="upload file"/>
@@ -83,6 +80,7 @@
           ref="$uploadButton"
           type="button"
           color="key-1"
+          left-icon="upload"
           @click="onClickUploadFile">
           찾아보기..
         </Button>

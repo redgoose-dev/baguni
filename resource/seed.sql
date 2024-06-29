@@ -56,7 +56,7 @@ CREATE TABLE `share` (
   `id` INTEGER NOT NULL UNIQUE,
   `code` TEXT NOT NULL UNIQUE,
   `asset` INTEGER NOT NULL UNIQUE,
-  `permission` TEXT NOT NULL DEFAULT 'PUBLIC',
+  `permission` TEXT NOT NULL DEFAULT 'PRIVATE',
   `regdate` TEXT NOT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT),
   FOREIGN KEY (`asset`) REFERENCES `asset` (`id`)

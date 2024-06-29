@@ -65,3 +65,51 @@ export function serialize(obj, usePrefix = false, useEncode = true)
   res = str.join('&')
   return (res && usePrefix ? '?' : '') + res
 }
+
+/**
+ * 마크다운 코드로 만든다.
+ * @param {array} src
+ * @return {array}
+ */
+export function createMarkdownItems(src)
+{
+  return src.map(item => {
+    if (/^image/.test(item.type))
+    {
+      return `![${item.name}](${item.path})`
+    }
+    else
+    {
+      return `<p><a href="${item.path}" target="_blank">${item.name}</a></p>`
+    }
+  })
+}
+
+/**
+ * html 엘리먼트 코드로 만든다.
+ * @param {array} src
+ * @return {array}
+ */
+export function createHtmlItems(src)
+{
+  return src.map(item => {
+    if (/^image/.test(item.type))
+    {
+      return `<p><img src="${item.path}" loading="lazy" alt="${item.name}"/></p>`
+    }
+    else
+    {
+      return `<p><a href="${item.path}" target="_blank">${item.name}</a></p>`
+    }
+  })
+}
+
+/**
+ * 배열문자를 줄내림으로 처리해준다.
+ * @param {array} src
+ * @return {string}
+ */
+export function arrayToTextForReturn(src)
+{
+  return src.join('\n') + `\n`
+}

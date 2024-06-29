@@ -19,8 +19,8 @@
             v-model="data.permission"
             placeholder=""
             :options="[
-              { value: SHARE_PERMISSION.PUBLIC, label: '공개' },
               { value: SHARE_PERMISSION.PRIVATE, label: '비공개' },
+              { value: SHARE_PERMISSION.PUBLIC, label: '공개' },
             ]"
             class="permission"
             @update:modelValue="onChangePermission"/>

@@ -134,9 +134,9 @@
   }
   &--blur {
     --button-color-bg: var(--color-blur);
-    --body-color: var(--color-light);
-    --button-brightness-active: 90%;
-    --icon-color: var(--color-light);
+    --body-color: var(--color-dark);
+    --button-brightness-active: 105%;
+    --icon-color: var(--color-dark);
     --button-focus-color: var(--color-key-1);
   }
 }

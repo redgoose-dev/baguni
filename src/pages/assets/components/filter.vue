@@ -1,6 +1,6 @@
 <template>
 <aside class="side-panel">
-  <form @submit.prevent="onSubmit">
+  <form @submit.prevent>
     <div class="field total">
       <h3>모두</h3>
       <strong>{{props.total}}</strong>
@@ -128,11 +128,11 @@
           <template #left>
             <InputText
               type="search"
-              :model-value="props.q"
+              v-model="fields.q"
               id="search-keyword"
               placeholder="검색 키워드"
               size="small"
-              @update:modelValue="$emit('update:q', $event)"/>
+              @submit="onClickSearchKeyword"/>
           </template>
           <template #right>
             <ButtonBasic
@@ -140,7 +140,8 @@
               icon="search"
               size="small"
               color="key-1"
-              class="search-keyword__submit"/>
+              class="search-keyword__submit"
+              @click="onClickSearchKeyword"/>
           </template>
         </FormGroup>
       </div>
@@ -191,29 +192,28 @@ const props = defineProps({
   total: Number,
   q: String,
 })
-const emits = defineEmits([
-  'update:q',
-  'submit',
-  'reset',
-])
+const emits = defineEmits([ 'update', 'update-keyword', 'reset' ])
+const fields = reactive({
+  q: props.q,
+})
 const openSelectTags = ref(false)
 const fileTypes = ref(auth.user?.json?.asset?.file_types || { image: '이미지' })
 
+defineExpose({
+  updateSearchKeyword: (q) => { fields.q = q },
+})
+
 function onReset()
 {
+  fields.q = ''
   assets.resetFilter()
-  emits('submit')
+  emits('reset')
 }
 
 function onUpdateTrigger(obj)
 {
   if (obj) assets.saveFilter()
-  emits('submit')
-}
-
-function onSubmit()
-{
-  emits('submit')
+  emits('update')
 }
 
 function onClickSelectTag()
@@ -225,14 +225,19 @@ function onSubmitSelectTags(tags)
   assets.filter.tags = tags
   assets.saveFilter()
   openSelectTags.value = false
-  onSubmit()
+  emits('update')
 }
 function onRemoveTag(id)
 {
   const idx = findObjectByKey(assets.filter.tags, 'id', id)
   assets.filter.tags.splice(idx, 1)
   assets.saveFilter()
-  onSubmit()
+  emits('update')
+}
+
+function onClickSearchKeyword()
+{
+  emits('update-keyword', fields.q)
 }
 </script>
 

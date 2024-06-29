@@ -30,15 +30,14 @@ export default async (req, res) => {
       where: `id = $id`,
       values: { '$id': fileId },
     })
-    if (!file?.data) throw new ServiceError('파일 데이터가 없습니다.')
 
     // remove data
+    if (file?.data?.path) removeFile(file.data.path)
     removeItem({
       table: tables.file,
       where: 'id = $id',
       values: { '$id': fileId },
     })
-    if (file.data.path) removeFile(file.data.path)
     removeItem({
       table: tables.mapAssetFile,
       where: 'file = $file',

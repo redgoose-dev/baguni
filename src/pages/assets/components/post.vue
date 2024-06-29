@@ -2,7 +2,7 @@
 <form class="post" @submit.prevent="onSubmit">
   <aside class="post__side">
     <UploadFile
-      ref="$uploadFile"
+      ref="_uploadFile"
       :file="files.main"
       :meta="forms.file"
       class="upload"
@@ -36,9 +36,10 @@
       <div class="body">
         <Toolbar
           :is-edit="$isEdit"
-          @action="onSelectActionFromToolbar"
+          @action="onActionToolbar"
           @open-attachment-files="attachmentFiles.open = true"/>
         <Textarea
+          ref="_description"
           v-model="forms.description"
           name="description"
           id="description"
@@ -72,6 +73,8 @@
     @close="attachmentFiles.open = false">
     <AttachmentFiles
       :asset-id="props.data?.id"
+      :limit="auth?.user?.json?.asset?.file_bodyLimitCount"
+      @action="onActionAttachmentFiles"
       @close="attachmentFiles.open = false"/>
   </Modal>
   <Lightbox
@@ -81,8 +84,9 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, nextTick } from 'vue'
 import { pureObject } from '../../../libs/objects.js'
+import { authStore } from '../../../store/auth.js'
 import Button from '../../../components/buttons/button-basic.vue'
 import UploadFile from './upload-file.vue'
 import ManageCoverImage from './manage-cover-image.vue'
@@ -94,16 +98,21 @@ import Modal from '../../../components/modal/index.vue'
 import AttachmentFiles from '../../../components/content/attachment-files/index.vue'
 import Toolbar from './toolbar.vue'
 
-const $uploadFile = ref()
+const _uploadFile = ref()
+const _description = ref()
 const props = defineProps({
   data: Object,
   processing: Boolean,
 })
 const emits = defineEmits([ 'submit' ])
+const auth = authStore()
 const forms = reactive({
   title: props.data?.title || '',
   description: props.data?.description || '',
-  descriptionPosition: {},
+  descriptionPosition: {
+    start: (props.data?.description || '').length,
+    end: (props.data?.description || '').length,
+  },
   tags: pureObject(props.data?.tags) || [],
   file: props.data?.file ? {
     name: props.data.file.name,
@@ -179,17 +188,51 @@ function onOpenImage(file)
   lightboxImage.value = file
 }
 
-function onSelectActionFromToolbar()
-{
-  // switch ()
-  // {
-  //
-  // }
-}
-
 function onPositionDescription(e)
 {
   forms.descriptionPosition = e
+}
+
+function onActionToolbar(mode, value)
+{
+  switch (mode)
+  {
+    case 'insert-description':
+      console.log(value)
+      insertTextToEditor(value.code, value.cursor)
+      break
+  }
+}
+
+function onActionAttachmentFiles(mode, value)
+{
+  switch (mode)
+  {
+    case 'insert':
+      insertTextToEditor(value)
+      break
+  }
+}
+
+/**
+ * insert text to editor
+ * 에디터 입력창에 문자를 넣는다.
+ */
+function insertTextToEditor(keyword, cursor)
+{
+  if (!keyword) return
+  let content = forms.description + ''
+  let start = forms.descriptionPosition.start
+  if (start === 0) keyword = keyword.replace(/^\n/g, '')
+  forms.description = content.substring(0, start) + keyword + content.substring(start)
+  // change cursor
+  let endPosition = start + (cursor || keyword.length)
+  forms.descriptionPosition.start = endPosition
+  forms.descriptionPosition.end = endPosition
+  nextTick().then(() => {
+    _description.value.changeCursor(endPosition, endPosition)
+    _description.value.focus()
+  })
 }
 
 async function onSubmit()

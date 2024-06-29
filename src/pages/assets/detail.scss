@@ -73,7 +73,7 @@
     --button-width: 48px;
     --button-height: 48px;
     --icon-size: 24px;
-    --icon-stroke: 2;
+    --icon-stroke: 1.75;
   }
 }
 
@@ -131,10 +131,13 @@
       }
     }
   }
+  @include mixins.responsive(max) {
+    max-width: 1200px;
+  }
 }
 
 .content-body {
-  margin: 12px 0 0;
+  margin: 24px 0 0;
   &:deep(img) {
     cursor: pointer;
   }

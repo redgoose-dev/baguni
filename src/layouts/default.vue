@@ -22,16 +22,22 @@
     :processing="dropFiles.processing"
     processing-title="에셋 만드는 중.."
     :total="dropFiles.total"
-    :current="dropFiles.current"/>
+    :current="dropFiles.current">
+    <template #title>여기에 파일 드롭</template>
+    <template #description>
+      파일을 여기로 드래그 앤 드롭하여 업로드하세요.<br/>
+      용량은 {{$limitFileSize}}까지 업로드할 수 있습니다.
+    </template>
+  </DropFilesOverlay>
 </transition>
 </template>
 
 <script setup>
-import { ref, reactive, nextTick } from 'vue'
+import { ref, reactive, nextTick, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { authStore } from '../store/auth.js'
-import { request, formData, apiPath } from '../libs/api.js'
-import { sleep } from '../libs/util.js'
+import { request, formData } from '../libs/api.js'
+import { getByte } from '../libs/strings.js'
 import { toast } from '../modules/toast/index.js'
 import LayoutHeader from '../components/layout/header.vue'
 import LayoutFooter from '../components/layout/footer.vue'
@@ -50,6 +56,10 @@ const dropFiles = reactive({
 })
 const hideContent = ref(false)
 const allowDrag = ref(true)
+
+const $limitFileSize = computed(() => {
+  return getByte(auth.user?.json?.asset?.file_mainLimitSize || 10485760)
+})
 
 function onDragStart()
 {

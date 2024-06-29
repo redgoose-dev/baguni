@@ -15,7 +15,7 @@ export let toast
  */
 class Toast {
 
-  constructor (options)
+  constructor(options)
   {
     // set member values
     this.options = mergeOptions(defaultOptions, options)
@@ -33,7 +33,7 @@ class Toast {
     document.body.appendChild(this.$container)
   }
 
-  async add (src, color)
+  async add(src, color)
   {
     // set values
     if (typeof src === 'string') src = { message: src }
@@ -93,7 +93,7 @@ class Toast {
     this.remove(Number(e.target.parentNode.dataset.key)).then()
   }
 
-  async remove (key)
+  async remove(key)
   {
     // check
     if (!this.index[key]) return

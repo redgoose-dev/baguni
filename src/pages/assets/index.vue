@@ -50,9 +50,12 @@
       </div>
       <div class="explorer__filter">
         <Filter
+          ref="_filter"
           :total="data.total"
-          v-model:q="queryParams.q"
-          @submit="onSubmitFilter"/>
+          :q="queryParams.q"
+          @update-keyword="onFilterUpdateKeyword"
+          @update="fetch"
+          @reset="onFilterReset"/>
       </div>
     </div>
   </div>
@@ -60,7 +63,7 @@
 </template>
 
 <script setup>
-import { reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { assetStore } from '../../store/assets.js'
 import { request, apiPath } from '../../libs/api.js'
@@ -77,7 +80,7 @@ import EmptyContent from '../../components/content/empty-content.vue'
 const router = useRouter()
 const route = useRoute()
 const assets = assetStore()
-
+const _filter = ref()
 const data = reactive({
   loading: true,
   total: 0,
@@ -85,8 +88,9 @@ const data = reactive({
 })
 const queryParams = reactive({
   page: route.query?.page ? Number(route.query.page) : 1,
-  q: route.query?.q || undefined,
+  q: route.query?.q || '',
 })
+const runFetch = ref(true)
 
 const $index = computed(() => {
   if (!(data.index?.length > 0)) return []
@@ -102,12 +106,20 @@ const $index = computed(() => {
   })
 })
 
-onMounted(() => {
+onMounted(() => fetch())
+watch(() => route.query, async (value, _oldValue) => {
+  if ((Number(value.page) || 1) !== queryParams.page) queryParams.page = Number(value.page)
+  if (value.q !== queryParams.q)
+  {
+    queryParams.q = value.q || ''
+    _filter.value.updateSearchKeyword(queryParams.q)
+  }
   fetch().then()
 })
 
 async function fetch()
 {
+  if (!runFetch.value) return
   data.loading = true
   let query = {
     page: queryParams.page,
@@ -168,6 +180,31 @@ async function onChangePage(page)
   if (newQuery.page === 1) delete newQuery.page
   queryParams.page = page
   await router.push(`./${serialize(newQuery, true)}`)
+}
+
+async function onFilterUpdateKeyword(q)
+{
+  let { query } = route
+  let newQuery = {
+    ...query,
+    page: undefined,
+    q,
+  }
+  await router.push(`./${serialize(newQuery, true)}`)
+}
+async function onFilterReset()
+{
+  let { query } = route
+  let newQuery = {
+    ...query,
+    page: 1,
+    q: '',
+  }
+  if (newQuery.page === 1) delete newQuery.page
+  queryParams.page = 1
+  runFetch.value = false
+  await router.push(`./${serialize(newQuery, true)}`)
+  runFetch.value = true
   await fetch()
 }
 
@@ -176,17 +213,6 @@ async function onClickRemove(id)
   if (!confirm('정말로 에셋을 삭제할까요? 삭제하면 다시 복구할 수 없습니다.')) return
   await request(`${apiPath}/asset/${id}/`, { method: 'delete' })
   toast.add('에셋을 삭제했습니다.', 'success').then()
-  await fetch()
-}
-
-async function onSubmitFilter()
-{
-  let { query } = route
-  // reset query
-  let newQuery = { ...query, page: undefined }
-  queryParams.page = 1
-  await router.replace(`./${serialize(newQuery, true)}`)
-  // call fetch
   await fetch()
 }
 </script>

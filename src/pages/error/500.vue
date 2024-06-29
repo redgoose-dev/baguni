@@ -5,7 +5,7 @@
       <img src="../../assets/images/img-error@2x.webp" width="640" height="640" alt="" draggable="false"/>
     </figure>
     <h1>{{props.title}}</h1>
-    <code>Code: {{$code}}</code>
+    <code>CODE/{{$code}}</code>
     <p>{{$message}}</p>
     <nav v-if="$useHomeButton">
       <div>
