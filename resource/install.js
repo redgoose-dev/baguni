@@ -2,10 +2,12 @@ import { exit } from 'node:process'
 import { rm, mkdir, exists } from 'node:fs/promises'
 import { Database } from 'bun:sqlite'
 import { randomBytes } from 'node:crypto'
+import minimist from 'minimist'
 import { message, prompt } from './libs.js'
 import { dataPath } from '../server/libs/consts.js'
 import { hashPassword, verifyEmail } from '../server/libs/strings.js'
 
+const argv = minimist(process.argv.slice(2))
 const paths = {
   seedDb: `resource/seed.sql`,
   db: `${dataPath}/db.sqlite`,
@@ -40,28 +42,27 @@ async function confirm()
  */
 async function checkData()
 {
-  let installed = true
   const res = await Promise.all([
     ...(pathList.map(path => exists(path))),
     exists(paths.db),
   ])
-  installed = res.includes(true) // 경로가 하나라도 만들어져 있으면 인스톨이 되어있다고 간주한다.
-  if (installed)
+  return res.includes(true) // 경로가 하나라도 만들어져 있으면 인스톨이 되어있다고 간주한다.
+}
+
+async function confirmUninstall()
+{
+  const confirmDeleteData = await prompt('설치되어있는 데이터를 삭제할까요? [y/N]')
+  if (confirmDeleteData.toLowerCase() === 'y')
   {
-    const confirmDeleteData = await prompt('설치되어있는 데이터를 삭제할까요? [y/N]')
-    if (confirmDeleteData.toLowerCase() === 'y')
-    {
-      // 설치된 데이터를 삭제한다.
-      await rm(dataPath, { recursive: true })
-    }
-    else
-    {
-      // 데이터가 존재하는데 삭제한다고 선택하지 않았으니 진행을 종료한다.
-      message('error', `Can't proceed because the data already exists.`)
-      exit()
-    }
+    // 설치된 데이터를 삭제한다.
+    await removeData()
   }
-  message('run', 'Checking data.')
+  else
+  {
+    // 데이터가 존재하는데 삭제한다고 선택하지 않았으니 진행을 종료한다.
+    message('error', `Can't proceed because the data already exists.`)
+    exit()
+  }
 }
 
 /**
@@ -162,7 +163,7 @@ async function addUser(user)
   try
   {
     const sql = `insert into user (email, name, password, json, regdate) values (?, ?, ?, ?, CURRENT_TIMESTAMP)`
-    db.run(sql, [ email, name, hashPassword(password), '{}' ])
+    db.run(sql, [ email, name, hashPassword(String(password)), '{}' ])
   }
   catch (e)
   {
@@ -205,14 +206,46 @@ async function updateEnv()
   }
 }
 
+async function removeData()
+{
+  const exist = await exists(dataPath)
+  if (exist) await rm(dataPath, { recursive: true })
+}
+
 // actions
-await confirm()
-await checkData()
-const user = await inputUserAccount()
-await createDirectories()
-await createDatabase()
-await addUser(user)
-await updateEnv()
-db.close()
+if (argv.email && argv.name && argv.password)
+{
+  const installed = await checkData()
+  if (installed)
+  {
+    message('exit', 'Skip install')
+    exit()
+  }
+  // 파라메터 정보로 곧장 설치하는 모드
+  const user = {
+    email: argv.email,
+    name: argv.name,
+    password: argv.password,
+  }
+  await createDirectories()
+  await createDatabase()
+  await addUser(user)
+  await updateEnv()
+}
+else
+{
+  // 직접 정보를 입력하고 설치하는 모드
+  await confirm()
+  const installed = await checkData()
+  if (installed) await confirmUninstall()
+  message('run', 'Checking data.')
+  const user = await inputUserAccount()
+  await createDirectories()
+  await createDatabase()
+  await addUser(user)
+  await updateEnv()
+}
+
 message('exit', 'Complete install')
+if (db) db.close()
 exit()

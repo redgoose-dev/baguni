@@ -1,10 +1,13 @@
 # directories
-/dist
-/node_modules
 /.idea
 /.git
+/node_modules
+/data
 
 # files
-.editorconfig
+.DS_Store
+.dockerignore
 .gitignore
-bun.lockb
+.env.local
+action.sh
+docker-compose.yml

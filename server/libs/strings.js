@@ -7,7 +7,7 @@ import { hashSync, compareSync, compare, genSaltSync } from 'bcrypt'
 export function hashPassword(password)
 {
   const salt = genSaltSync(9)
-  return hashSync(password, salt)
+  return hashSync(String(password), salt)
 }
 
 /**

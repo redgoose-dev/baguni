@@ -10,4 +10,4 @@ data/
 .env.local
 bun.lockb
 docker-compose.yml
-cmd.sh
+action.sh
