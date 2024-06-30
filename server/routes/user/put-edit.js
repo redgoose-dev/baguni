@@ -8,6 +8,7 @@ import { success, error } from '../output.js'
 import { connect, disconnect, tables, editItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { parseJSON } from '../../libs/objects.js'
+import { hashPassword, verifyEmail } from '../../libs/strings.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -16,9 +17,11 @@ export default async (req, res) => {
     const id = Number(req.params.id)
     if (!id) throw new ServiceError('id 값이 없습니다.')
 
-    let { name, json } = req.body
+    let { email, name, json, newPassword, newPasswordConfirm } = req.body
     let readyUpdate = {
+      email: undefined,
       name: undefined,
+      password: undefined,
     }
 
     // connect db
@@ -32,10 +35,30 @@ export default async (req, res) => {
       throw new ServiceError('토큰 아이디가 서로 다릅니다.', 401)
     }
 
+    // update email
+    if (email)
+    {
+      if (!verifyEmail(email))
+      {
+        throw new ServiceError('올바른 이메일 주소가 아닙니다.')
+      }
+      readyUpdate.email = email
+    }
+
     // update name
     if (name)
     {
       readyUpdate.name = name.trim()
+    }
+
+    // update password
+    if (newPassword && newPasswordConfirm)
+    {
+      if (newPassword !== newPasswordConfirm)
+      {
+        throw new ServiceError('새로운 비밀번호와 확인용 비밀번호가 다릅니다.')
+      }
+      readyUpdate.password = hashPassword(String(newPassword))
     }
 
     // update json
@@ -56,12 +79,16 @@ export default async (req, res) => {
       table: tables.user,
       where: 'id = $id',
       set: [
+        readyUpdate.email && 'email = $email',
         readyUpdate.name && 'name = $name',
+        readyUpdate.password && 'password = $password',
         readyUpdate.json && 'json = $json',
       ].filter(Boolean),
       values: {
         '$id': id,
+        '$email': readyUpdate.email,
         '$name': readyUpdate.name,
+        '$password': readyUpdate.password,
         '$json': readyUpdate.json,
       },
     })

@@ -40,7 +40,7 @@
   display: flex;
   align-items: center;
   .image {
-    width: var(--image-item-size);
+    width: var(--image-item-size, 94px);
     aspect-ratio: 1 / 1;
     a {
       border-radius: var(--card-radius) 0 0 var(--card-radius);

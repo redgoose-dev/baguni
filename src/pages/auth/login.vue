@@ -51,10 +51,10 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
-import { ofetch } from 'ofetch'
+import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { authStore } from '../../store/auth.js'
+import { toast } from '../../modules/toast/index.js'
 import InputText from '../../components/form/input-text.vue'
 import Button from '../../components/buttons/button-basic.vue'
 import Checkbox from '../../components/form/checkbox.vue'
@@ -62,8 +62,8 @@ import Checkbox from '../../components/form/checkbox.vue'
 const router = useRouter()
 const auth = authStore()
 const fields = reactive({
-  email: 'x@x.x',
-  password: '1234',
+  email: '',
+  password: '',
   save: true,
 })
 
@@ -76,9 +76,7 @@ async function onSubmit()
   }
   catch (e)
   {
-    // TODO: 오류처리
-    console.error(e.message)
-    alert('인증실패')
+    toast.add('인증하지 못했습니다.', 'error').then()
   }
 }
 </script>

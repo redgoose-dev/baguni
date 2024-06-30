@@ -1,6 +1,5 @@
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
-// import createServiceWorkerPlugin from './plugins/create-service-worker.js'
 
 const config = defineConfig(async ({ mode }) => {
   const { VITE_HOST, VITE_PORT, VITE_OPEN_BROWSER, VITE_DIR_OUT } = loadEnv(mode, process.cwd())
@@ -47,7 +46,6 @@ const config = defineConfig(async ({ mode }) => {
           compilerOptions: {},
         },
       }),
-      // createServiceWorkerPlugin(),
     ],
   }
 })

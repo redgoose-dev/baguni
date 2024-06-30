@@ -4,7 +4,7 @@
     <h1 class="symbol">
       <RouterLink
         to="/"
-        :class="[ activeMenuItem === 'asset' && 'on' ]">
+        :class="[ $activeMenuItem === 'asset' && 'on' ]">
         <img src="../../assets/images/symbol.svg" alt="바구니">
       </RouterLink>
     </h1>
@@ -13,35 +13,35 @@
         <li>
           <RouterLink
             to="/"
-            :class="[ activeMenuItem === 'asset' && 'on' ]">
+            :class="[ $activeMenuItem === 'asset' && 'on' ]">
             탐색
           </RouterLink>
         </li>
         <li>
           <RouterLink
             to="/collections"
-            :class="[ activeMenuItem === 'collection' && 'on' ]">
+            :class="[ $activeMenuItem === 'collection' && 'on' ]">
             컬렉션
           </RouterLink>
         </li>
         <li>
           <RouterLink
             to="/about"
-            :class="[ activeMenuItem === 'about' && 'on' ]">
+            :class="[ $activeMenuItem === 'about' && 'on' ]">
             소개
           </RouterLink>
         </li>
-        <li>
+        <li v-if="$useGuide">
           <RouterLink
             to="/guide"
-            :class="[ activeMenuItem === 'guide' && 'on' ]">
+            :class="[ $activeMenuItem === 'guide' && 'on' ]">
             개발 가이드
           </RouterLink>
         </li>
       </ul>
     </nav>
     <nav class="side-nav">
-      <template v-if="isLogin">
+      <template v-if="$isLogin">
         <div>
           <ButtonBasic
             href="/asset/create/"
@@ -94,15 +94,19 @@ import ButtonBasic from '../buttons/button-basic.vue'
 import Dropdown from '../navigation/dropdown.vue'
 import Context from '../navigation/context.vue'
 
+const { DEV } = import.meta.env
 const route = useRoute()
 const router = useRouter()
 const auth = authStore()
 const $profileDropdown = ref()
 const openDropdownProfile = ref(false)
 
-const isLogin = computed(() => (!!auth.user))
-const activeMenuItem = computed(() => {
+const $isLogin = computed(() => (!!auth.user))
+const $activeMenuItem = computed(() => {
   return route.meta?.active
+})
+const $useGuide = computed(() => {
+  return DEV
 })
 
 function onSelectProfileDropdown({ key })

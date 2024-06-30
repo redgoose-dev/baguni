@@ -17,7 +17,10 @@
           <div class="field">
             <h3>이메일 주소</h3>
             <p>
-              <span>{{forms.email}}</span>
+              <InputText
+                v-model="forms.email"
+                placeholder="이름"
+                size="small"/>
             </p>
           </div>
           <div class="field">
@@ -33,6 +36,21 @@
             <h3>등록일</h3>
             <p>
               <span>{{forms.regdate}}</span>
+            </p>
+          </div>
+          <div class="field">
+            <h3>비밀번호</h3>
+            <p class="new-password">
+              <InputText
+                v-model="forms.newPassword"
+                type="password"
+                placeholder="새로운 비밀번호"
+                size="small"/>
+              <InputText
+                v-model="forms.newPasswordConfirm"
+                type="password"
+                placeholder="비밀번호 확인"
+                size="small"/>
             </p>
           </div>
         </ShadowBox>
@@ -89,6 +107,8 @@ const forms = reactive({
   id: auth.user.id,
   email: auth.user.email,
   name: auth.user.name,
+  newPassword: '',
+  newPasswordConfirm: '',
   regdate: auth.user.regdate,
   json: deepMerge(defaultUserPreference, auth.user.json),
 })
@@ -136,10 +156,15 @@ async function onSubmit()
   {
     processing.value = true
     await auth.update({
+      email: forms.email,
       name: forms.name,
+      newPassword: forms.newPassword,
+      newPasswordConfirm: forms.newPasswordConfirm,
       json: pureObject(forms.json),
     })
     success('계정을 업데이트했습니다.')
+    forms.newPassword = ''
+    forms.newPasswordConfirm = ''
     processing.value = false
   }
   catch (e)

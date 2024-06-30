@@ -11,3 +11,4 @@
 .env.local
 action.sh
 docker-compose.yml
+Dockerfile

@@ -101,14 +101,18 @@ export const authStore = defineStore('auth', () => {
    */
   async function update(value)
   {
-    const { name, json } = value
+    const { email, name, json, newPassword, newPasswordConfirm } = value
     await request(`/user/${user.value.id}/`, {
       method: 'put',
       body: {
+        email,
         name,
+        newPassword,
+        newPasswordConfirm,
         json: JSON.stringify(json),
       },
     })
+    user.value.email = email
     user.value.name = name
     user.value.json = json
     const assets = assetStore()

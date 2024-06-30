@@ -1,6 +1,9 @@
 @use '../../assets/scss/mixins';
 
-.asset {}
+.asset {
+  padding: 0 30px;
+  box-sizing: border-box;
+}
 
 .asset-image {
   margin: 0;

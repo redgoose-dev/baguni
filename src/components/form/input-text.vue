@@ -23,8 +23,8 @@
   @input="onChangeText"
   @click="onChangePosition"
   @keyup="onChangePosition"
-  @keyup.enter.prevent="emits('submit')"
-  @keydown.enter.prevent="emits('submit')"/>
+  @keyup.enter="onSubmit"
+  @keydown.enter="onSubmit"/>
 </template>
 
 <script setup>
@@ -51,6 +51,7 @@ const props = defineProps({
   color: String, // error
   pattern: String,
   list: String,
+  useSubmit: Boolean,
 })
 const emits = defineEmits([ 'update:modelValue', 'position', 'submit', 'click'  ])
 
@@ -79,6 +80,13 @@ function onChangeText(e)
       break
   }
   emits('update:modelValue', value)
+}
+
+function onSubmit(e)
+{
+  if (!props.useSubmit) return
+  e.preventDefault()
+  emits('submit')
 }
 
 defineExpose({ focus })

@@ -12,7 +12,8 @@
         placeholder="태그이름"
         size="small"
         :maxlength="20"
-        @keydown.enter.prevent="addTag"/>
+        :use-submit="true"
+        @submit="addTag"/>
       <template #right>
         <Button
           size="small"

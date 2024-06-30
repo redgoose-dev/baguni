@@ -99,11 +99,9 @@ onMounted(async () => {
     const res = await request('/tags/', {
       method: 'get',
     })
-    if (res.data?.index?.length > 0)
+    if (res?.data?.index?.length > 0)
     {
-      data.index = res.data?.index.map(o => {
-        return { id: o.id, name: o.name }
-      })
+      data.index = res.data.index.map(o => ({ id: o.id, name: o.name }))
     }
     else
     {

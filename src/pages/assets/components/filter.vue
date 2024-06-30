@@ -132,6 +132,7 @@
               id="search-keyword"
               placeholder="검색 키워드"
               size="small"
+              :use-submit="true"
               @submit="onClickSearchKeyword"/>
           </template>
           <template #right>
