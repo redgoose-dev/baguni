@@ -33,6 +33,8 @@ export default async (req, res) => {
 
     // 기본적인 쿼리 만들기
     fields.push(`${tables.asset}.*`)
+    fields.push(`(select file from ${tables.mapAssetFile} where ${tables.mapAssetFile}.asset = ${tables.asset}.id and type like '${fileTypes.main}') as file_id`)
+    fields.push(`(select file from ${tables.mapAssetFile} where ${tables.mapAssetFile}.asset = ${tables.asset}.id and type like '${fileTypes.coverCreate}') as cover_file_id`)
     join.push(`join ${tables.mapCollectionAsset} on ${tables.asset}.id = ${tables.mapCollectionAsset}.asset and ${tables.mapCollectionAsset}.collection = $collection`)
     values['$collection'] = id
 

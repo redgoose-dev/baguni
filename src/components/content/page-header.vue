@@ -23,6 +23,7 @@ const props = defineProps({
   display: flex;
   gap: 0 32px;
   align-items: center;
+  user-select: none;
   h1 {
     margin: 0;
     font-size: 32px;

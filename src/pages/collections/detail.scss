@@ -123,14 +123,10 @@
     text-decoration: none;
     font-weight: 700;
     color: var(--color-base);
-    outline: 2px solid #{mixins.mix-alpha(var(--color-key-1), 0%)};
-    outline-offset: 1px;
     border-radius: 2px;
+    @include mixins.focus-content();
     &:hover {
       text-decoration: underline;
-    }
-    &:focus-visible {
-      outline-color: var(--color-key-1);
     }
   }
   button {
@@ -140,16 +136,12 @@
     line-height: 1.05;
     font-weight: 700;
     color: var(--color-base);
-    outline: 2px solid #{mixins.mix-alpha(var(--color-key-1), 0%)};
-    outline-offset: 1px;
     border: none;
     background: none;
     border-radius: 2px;
+    @include mixins.focus-content();
     &:not(:disabled) {
       cursor: pointer;
-    }
-    &:active:not(:disabled) {
-      opacity: .5;
     }
     &:hover:not(:disabled) {
       text-decoration: underline;

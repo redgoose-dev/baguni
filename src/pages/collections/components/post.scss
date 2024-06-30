@@ -31,7 +31,7 @@
   > p {
     margin: 0;
     line-height: 1.15;
-    > label {
+    .label {
       font-size: 14px;
       font-weight: 600;
       user-select: none;
@@ -88,6 +88,7 @@
       font-size: 11px;
       font-weight: 500;
       color: var(--color-weak);
+      user-select: none;
     }
   }
   .control {

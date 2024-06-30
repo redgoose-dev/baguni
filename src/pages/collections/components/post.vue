@@ -3,7 +3,7 @@
   <fieldset>
     <legend>컬렉션의 정보 입력</legend>
     <div class="field">
-      <p><label for="title">제목</label></p>
+      <p><label for="title" class="label">제목</label></p>
       <div>
         <InputText
           id="title"
@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="field">
-      <p><label for="description">컬렉션의 설명</label></p>
+      <p><label for="description" class="label">컬렉션의 설명</label></p>
       <div>
         <Textarea
           id="description"
@@ -29,7 +29,7 @@
   <fieldset>
     <legend>컬렉션의 커버 이미지 만들기</legend>
     <div class="field">
-      <p><label for="">커버 이미지</label></p>
+      <p><span class="label">커버 이미지</span></p>
       <div class="cover">
         <div class="cover__image">
           <button

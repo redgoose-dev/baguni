@@ -25,11 +25,16 @@
               <template #body>
                 <nav class="item-nav">
                   <router-link :to="`/asset/${item.id}/edit/`">수정</router-link>
-                  <a
-                    :href="`/asset/${item.id}/remove/`"
+                  <button
+                    type="button"
+                    @click.prevent="onClickManageCollection(item.id)">
+                    컬렉션
+                  </button>
+                  <button
+                    type="button"
                     @click.prevent="onClickRemove(item.id)">
                     삭제하기
-                  </a>
+                  </button>
                 </nav>
               </template>
             </ImageItem>
@@ -60,6 +65,19 @@
     </div>
   </div>
 </div>
+<teleport to="#modal">
+  <Modal
+    :open="collection.open"
+    :hide-scroll="true"
+    :use-shortcut="true"
+    animation="bottom-up"
+    @close="collection.open = false">
+    <SelectCollection
+      :asset-id="collection.assetId"
+      @submit="collection.open = false"
+      @close="collection.open = false"/>
+  </Modal>
+</teleport>
 </template>
 
 <script setup>
@@ -76,6 +94,8 @@ import Paginate from '../../components/navigation/paginate.vue'
 import ImageItem from '../../components/content/image/index.vue'
 import LoadingScreen from '../../components/asset/loading/screen.vue'
 import EmptyContent from '../../components/content/empty-content.vue'
+import Modal from '../../components/modal/index.vue'
+import SelectCollection from '../collections/select-collection/index.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -91,6 +111,10 @@ const queryParams = reactive({
   q: route.query?.q || '',
 })
 const runFetch = ref(true)
+const collection = reactive({
+  assetId: undefined,
+  open: false,
+})
 
 const $index = computed(() => {
   if (!(data.index?.length > 0)) return []
@@ -219,6 +243,12 @@ async function onClickRemove(id)
   await request(`${apiPath}/asset/${id}/`, { method: 'delete' })
   toast.add('에셋을 삭제했습니다.', 'success').then()
   await fetch()
+}
+
+function onClickManageCollection(assetId)
+{
+  collection.assetId = assetId
+  collection.open = true
 }
 </script>
 

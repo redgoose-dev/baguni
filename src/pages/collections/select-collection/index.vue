@@ -96,11 +96,21 @@ async function fetch()
   try
   {
     data.loading = true
-    ids.value = pureObject(props.selectedCollections)
+    ids.value = pureObject(props.selectedCollections) || []
     let res = await request('/collections/', {
       method: 'get',
     })
     data.index = res.data?.index?.length > 0 ? res.data.index : []
+    if (props.selectedCollections === undefined)
+    {
+      let asset = await request(`/asset/${props.assetId}/`, {
+        method: 'get',
+      })
+      if (asset?.data?.collections?.length > 0)
+      {
+        ids.value = asset.data.collections
+      }
+    }
     data.loading = false
   }
   catch (e)
@@ -112,7 +122,7 @@ async function fetch()
 
 function onCheckItem(id)
 {
-  if (ids.value.includes(id))
+  if (ids.value?.includes(id))
   {
     let idx = ids.value.indexOf(id)
     if (idx !== -1) ids.value.splice(idx, 1)
