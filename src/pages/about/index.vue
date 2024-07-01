@@ -7,7 +7,7 @@
     </h1>
   </header>
   <figure class="symbol-image">
-    <img src="../../assets/images/img-about-symbol@2x.webp" width="2880" height="1066" alt="symbol image" draggable="false"/>
+    <img src="../../assets/images/img-about-banner@2x.webp" width="2880" height="1040" alt="symbol image" draggable="false"/>
   </figure>
   <div class="content">
     <p class="description">
