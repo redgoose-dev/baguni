@@ -11,7 +11,7 @@ const { DEV } = import.meta.env
 export function error(message, error, useToast = true)
 {
   if (!message) return
-  if (useToast) toast.add(message, 'error')
+  if (useToast) toast.add(message, 'error').then()
   if (DEV) console.error(error)
 }
 

@@ -16,6 +16,7 @@
     filter var(--button-transition-speed, (160ms)) ease-out;
   background-color: var(--button-color-bg, var(--color-light));
   color: var(--button-text-color, var(--color-base));
+  -webkit-tap-highlight-color: transparent;
   --body-font-size: 14px;
   box-shadow:
     inset 0 0 0 .5px var(--button-shadow-line, hsla(0 0% 0% / 0%)),

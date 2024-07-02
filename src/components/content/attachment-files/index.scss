@@ -36,12 +36,13 @@
       display: block;
       margin: 0;
       padding: 0;
-      height: 100%;
-      aspect-ratio: 1/1;
+      width: var(--size-attach-files-header);
+      height: var(--size-attach-files-header);
       background: none;
       border: none;
       border-radius: 0;
       cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
       @include mixins.focus-content();
       --icon-margin: 0 auto;
       --icon-size: 24px;

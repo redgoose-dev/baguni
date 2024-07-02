@@ -53,6 +53,7 @@
     0 4px 12px 0 hsla(0 0% 0% / 15%),
     0 1px 4px 0 hsla(0 0% 0% / 20%),
     0 0 0 0.5px hsla(0 0% 0% / 10%);
+  -webkit-tap-highlight-color: transparent;
   --icon-size: 20px;
   --icon-stroke: 2;
   &:focus-visible {

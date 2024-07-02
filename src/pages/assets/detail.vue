@@ -66,52 +66,54 @@
       @click="removeAsset(route.params.id)"/>
   </nav>
   <div class="asset-body">
-    <aside class="asset-body__side">
-      <ShadowBox class="wrap">
-        <template v-if="$fileMeta">
-          <section>
-            <h1>파일이름</h1>
-            <p>{{$fileMeta.name}}</p>
-          </section>
-          <section>
-            <h1>타입</h1>
-            <p>{{$fileMeta.type}}</p>
-          </section>
-          <section>
-            <h1>사이즈</h1>
-            <p>{{$fileMeta.size}}</p>
-          </section>
-          <section v-if="$fileMeta.width && $fileMeta.height">
-            <h1>이미지 크기</h1>
-            <p>{{$fileMeta.width}}px * {{$fileMeta.height}}px</p>
-          </section>
-          <section>
-            <h1>등록일</h1>
-            <p>{{$fileMeta.date}}</p>
-          </section>
-        </template>
-        <p v-else class="no-file">파일이 없습니다.</p>
-      </ShadowBox>
-    </aside>
-    <div class="asset-body__content">
-      <h1 class="title">
-        <template v-if="data.title">{{data.title}}</template>
-        <em v-else>Unknown title</em>
-      </h1>
-      <div
-        ref="$content"
-        v-if="$contentBody"
-        v-html="$contentBody"
-        class="content-body"/>
-      <em v-else class="empty-content-body">
-        Unknown description
-      </em>
-      <article v-if="data.tags?.length > 0" class="tags">
-        <h1>태그</h1>
-        <p>
-          <Tag v-for="o in data.tags" :label="o"/>
-        </p>
-      </article>
+    <div class="asset-body__wrap">
+      <aside class="asset-body__side">
+        <ShadowBox class="wrap">
+          <template v-if="$fileMeta">
+            <section>
+              <h1>파일이름</h1>
+              <p>{{$fileMeta.name}}</p>
+            </section>
+            <section>
+              <h1>타입</h1>
+              <p>{{$fileMeta.type}}</p>
+            </section>
+            <section>
+              <h1>사이즈</h1>
+              <p>{{$fileMeta.size}}</p>
+            </section>
+            <section v-if="$fileMeta.width && $fileMeta.height">
+              <h1>이미지 크기</h1>
+              <p>{{$fileMeta.width}}px * {{$fileMeta.height}}px</p>
+            </section>
+            <section>
+              <h1>등록일</h1>
+              <p>{{$fileMeta.date}}</p>
+            </section>
+          </template>
+          <p v-else class="no-file">파일이 없습니다.</p>
+        </ShadowBox>
+      </aside>
+      <div class="asset-body__content">
+        <h1 class="title">
+          <template v-if="data.title">{{data.title}}</template>
+          <em v-else>Unknown title</em>
+        </h1>
+        <div
+          ref="$content"
+          v-if="$contentBody"
+          v-html="$contentBody"
+          class="content-body"/>
+        <em v-else class="empty-content-body">
+          Unknown description
+        </em>
+        <article v-if="data.tags?.length > 0" class="tags">
+          <h1>태그</h1>
+          <p>
+            <Tag v-for="o in data.tags" :label="o"/>
+          </p>
+        </article>
+      </div>
     </div>
   </div>
 </article>

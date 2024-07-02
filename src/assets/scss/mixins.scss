@@ -93,6 +93,14 @@
   }
 }
 
+// mouse hover
+@mixin hover()
+{
+  @media (hover: hover) {
+    @content;
+  }
+}
+
 
 // FUNCTIONS
 

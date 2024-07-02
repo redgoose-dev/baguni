@@ -1,7 +1,7 @@
 @use '../../assets/scss/mixins';
 
 .layout-header {
-  position: sticky;
+  position: relative;
   top: 0;
   z-index: 2;
   box-sizing: border-box;
@@ -27,7 +27,11 @@
   a {
     display: block;
     border-radius: 1px;
+    -webkit-tap-highlight-color: transparent;
     @include mixins.focus-content(var(--color-key-1), 6px);
+    &:active {
+      opacity: .75;
+    }
   }
   img {
     display: block;
@@ -55,6 +59,7 @@
     line-height: 1.15;
     letter-spacing: -.5px;
     border-radius: 4px;
+    -webkit-tap-highlight-color: transparent;
     @include mixins.focus-content();
     &:focus-visible:is(.on) {
       outline: none;

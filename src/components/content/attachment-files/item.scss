@@ -2,10 +2,17 @@
 
 .item {
   position: relative;
-  &:hover {
+  -webkit-tap-highlight-color: transparent;
+  @include mixins.hover() {
     .item__nav {
-      opacity: 1;
-      pointer-events: auto;
+      opacity: 0;
+      pointer-events: none;
+    }
+    &:hover {
+      .item__nav {
+        opacity: 1;
+        pointer-events: auto;
+      }
     }
   }
   &__button {
@@ -24,6 +31,7 @@
     @include mixins.focus-content();
     background: hsl(0 0% 94%);
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
     &:after {
       content: '';
       display: block;
@@ -67,12 +75,11 @@
     position: absolute;
     right: 12px;
     top: 12px;
-    opacity: 0;
-    pointer-events: none;
     display: grid;
     justify-items: end;
     gap: 4px;
     transition: opacity 200ms ease-out;
+    -webkit-tap-highlight-color: transparent;
     .button {
       cursor: default;
     }
@@ -81,10 +88,11 @@
       right: -20px;
       top: 100%;
       --context-width: 160px;
-      opacity: 0;
-      pointer-events: none;
       padding: 6px 0 0;
       transition: opacity 200ms ease-out;
+      opacity: 0;
+      pointer-events: none;
+      -webkit-tap-highlight-color: transparent;
     }
     &:hover {
       .context-body {

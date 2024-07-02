@@ -73,6 +73,7 @@ export async function copyClipboardFile(src, meta = {})
   }
   if (blob)
   {
+    if (!ClipboardItem) throw new Error('클립보드 기능을 지원하지 않는 환경입니다.')
     const data = [
       new ClipboardItem({ [type]: blob })
     ]

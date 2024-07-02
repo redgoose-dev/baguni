@@ -53,7 +53,8 @@ async function onSubmit(body)
 
 <style lang="scss" scoped>
 .create-asset {
-  padding: 0 60px;
+  margin: var(--size-content-margin-top) 0 0;
+  padding: 0 var(--size-side-padding);
   &__wrap {
     margin: 0 auto;
     max-width: var(--size-content-width);

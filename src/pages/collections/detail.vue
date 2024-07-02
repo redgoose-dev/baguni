@@ -1,87 +1,89 @@
 <template>
 <article class="collection">
-  <PageHeader title="컬렉션 에셋">
-    컬렉션에 담겨있는 에셋의 목록입니다.
-  </PageHeader>
-  <LoadingScreen v-if="data.loading"/>
-  <div v-else-if="$collection" class="collection__body">
-    <ShadowBox tag="article" class="info">
-      <figure class="info__image">
-        <img
-          v-if="$collection.thumbnail"
-          :src="$collection.thumbnail"
-          draggable="false"
-          :alt="$collection.title"/>
-        <i v-else>
-          <Icon name="image"/>
-        </i>
-      </figure>
-      <div class="info__body">
-        <h2 class="info__title">{{$collection.title}}</h2>
-        <p class="info__description">{{$collection.description}}</p>
-        <p class="info__meta">
-          <span>{{$collection.regdate}}</span>
-        </p>
+  <div class="collection__wrap">
+    <PageHeader title="컬렉션 에셋">
+      컬렉션에 담겨있는 에셋의 목록입니다.
+    </PageHeader>
+    <LoadingScreen v-if="data.loading"/>
+    <div v-else-if="$collection" class="collection__body">
+      <ShadowBox tag="article" class="info">
+        <figure class="info__image">
+          <img
+            v-if="$collection.thumbnail"
+            :src="$collection.thumbnail"
+            draggable="false"
+            :alt="$collection.title"/>
+          <i v-else>
+            <Icon name="image"/>
+          </i>
+        </figure>
+        <div class="info__body">
+          <h2 class="info__title">{{$collection.title}}</h2>
+          <p class="info__description">{{$collection.description}}</p>
+          <p class="info__meta">
+            <span>{{$collection.regdate}}</span>
+          </p>
+        </div>
+        <nav class="info__nav">
+          <Dropdown
+            :use-value="true"
+            position="right"
+            class="dropdown">
+            <Context
+              :items="[
+                { key: 'edit', label: '수정', icon: 'edit' },
+                { key: 'remove', label: '삭제', icon: 'trash-2', color: 'danger' },
+              ]"
+              @select="onSelectCollectionContext"/>
+          </Dropdown>
+        </nav>
+      </ShadowBox>
+      <div class="index-head">
+        <p class="index-head__total">총 <strong>{{$assets.total}}</strong>개의 에셋이 있습니다.</p>
       </div>
-      <nav class="info__nav">
-        <Dropdown
-          :use-value="true"
-          position="right"
-          class="dropdown">
-          <Context
-            :items="[
-              { key: 'edit', label: '수정', icon: 'edit' },
-              { key: 'remove', label: '삭제', icon: 'trash-2', color: 'danger' },
-            ]"
-            @select="onSelectCollectionContext"/>
-        </Dropdown>
-      </nav>
-    </ShadowBox>
-    <div class="index-head">
-      <p class="index-head__total">총 <strong>{{$assets.total}}</strong>개의 에셋이 있습니다.</p>
+      <LoadingScreen v-if="data.assets.loading"/>
+      <ul v-else-if="$assets.index?.length > 0" class="index">
+        <li v-for="o in $assets.index">
+          <ImageItem
+            :to="`/asset/${o.id}/`"
+            :image="o.thumbnail"
+            :title="o.title"
+            :meta="[ o.regdate ]"
+            theme="thumbnail"
+            class="item">
+            <template #body>
+              <nav class="item-nav">
+                <router-link :to="`/asset/${o.id}/edit/`">수정</router-link>
+                <button
+                  type="button"
+                  @click.prevent="removeAssetInCollection(o.id)">
+                  컬렉션에서 제거
+                </button>
+              </nav>
+            </template>
+          </ImageItem>
+        </li>
+      </ul>
+      <EmptyContent
+        v-else
+        message="에셋이 없습니다."
+        class="empty"/>
+      <div v-if="$assets.total > 0" class="collection__paginate">
+        <Paginate
+          v-model="data.page"
+          :total="data.assets.total"
+          :size="display.size"
+          :range="8"
+          @update:model-value="onChangePage"/>
+      </div>
+      <NavigationBottom class="bottom">
+        <template #center>
+          <ButtonBasic href="/collections/" left-icon="list" size="big">
+            컬렉션 목록
+          </ButtonBasic>
+        </template>
+      </NavigationBottom>
     </div>
-    <LoadingScreen v-if="data.assets.loading"/>
-    <ul v-else-if="$assets.index?.length > 0" class="index">
-      <li v-for="o in $assets.index">
-        <ImageItem
-          :to="`/asset/${o.id}/`"
-          :image="o.thumbnail"
-          :title="o.title"
-          :meta="[ o.regdate ]"
-          theme="thumbnail"
-          class="item">
-          <template #body>
-            <nav class="item-nav">
-              <router-link :to="`/asset/${o.id}/edit/`">수정</router-link>
-              <button
-                type="button"
-                @click.prevent="removeAssetInCollection(o.id)">
-                컬렉션에서 제거
-              </button>
-            </nav>
-          </template>
-        </ImageItem>
-      </li>
-    </ul>
-    <EmptyContent
-      v-else
-      message="에셋이 없습니다."
-      class="empty"/>
-    <div v-if="$assets.total > 0" class="collection__paginate">
-      <Paginate
-        v-model="data.page"
-        :total="data.assets.total"
-        :size="display.size"
-        :range="8"
-        @update:model-value="onChangePage"/>
-    </div>
-    <NavigationBottom class="bottom">
-      <template #center>
-        <ButtonBasic href="/collections/" left-icon="list" size="big">
-          컬렉션 목록
-        </ButtonBasic>
-      </template>
-    </NavigationBottom>
   </div>
 </article>
 <teleport to="#modal">

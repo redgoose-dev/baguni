@@ -37,6 +37,7 @@ label {
   box-sizing: border-box;
   cursor: pointer;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
   --icon-size: var(--radio-button-icon-size, 16px);
   --icon-stroke: var(--radio-button-icon-stroke, 2.5);
   --icon-color: var(--color-item-fill);
@@ -65,6 +66,7 @@ input {
   position: absolute;
   opacity: 0;
   pointer-events: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 span {

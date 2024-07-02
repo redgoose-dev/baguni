@@ -1,14 +1,16 @@
 <template>
 <article class="edit-asset">
-  <PageHeader title="에셋 수정하기">
-    에셋을 데이터를 수정합니다.
-  </PageHeader>
-  <LoadingScreen v-if="ready"/>
-  <Post
-    v-else
-    :data="data"
-    :processing="processing"
-    @submit="onSubmit"/>
+  <div class="edit-asset__wrap">
+    <PageHeader title="에셋 수정하기">
+      에셋을 데이터를 수정합니다.
+    </PageHeader>
+    <LoadingScreen v-if="ready"/>
+    <Post
+      v-else
+      :data="data"
+      :processing="processing"
+      @submit="onSubmit"/>
+  </div>
 </article>
 </template>
 
@@ -85,7 +87,11 @@ async function onSubmit(body)
 
 <style lang="scss" scoped>
 .edit-asset {
-  margin: 0 auto;
-  max-width: var(--size-content-width);
+  margin: var(--size-content-margin-top) 0 0;
+  padding: 0 var(--size-side-padding);
+  &__wrap {
+    margin: 0 auto;
+    max-width: var(--size-content-width);
+  }
 }
 </style>

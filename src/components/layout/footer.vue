@@ -11,7 +11,7 @@
 
 <style lang="scss" scoped>
 .layout-footer {
-  padding: 0 0 24px;
+  padding: 0 var(--size-side-padding) 24px;
   &__wrap {
     display: grid;
     max-width: var(--size-content-width);

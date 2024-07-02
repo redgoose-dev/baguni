@@ -29,12 +29,9 @@ export function getDateRangeForQuery(start, end)
     const timeEnd = new Date(end).getTime()
     if (timeStart > timeEnd)
     {
-      return { date_start: start, date_end: end }
+      throw new Error('등록일 범위가 잘못되었습니다.')
     }
-    else
-    {
-      return undefined
-    }
+    return { date_start: start, date_end: end }
   }
   else if (start)
   {

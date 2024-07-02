@@ -49,6 +49,7 @@ figure {
     background: none;
     border: none;
     border-radius: 4px;
+    -webkit-tap-highlight-color: transparent;
     --icon-size: 52px;
     --icon-stroke: .75;
     --icon-color: #{mixins.mix-alpha(var(--color-base), 75%)};

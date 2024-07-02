@@ -25,14 +25,6 @@
               @click="fileUpload">
               업로드
             </ButtonBasic>
-            <ButtonBasic
-              v-if="$useGetMainFile"
-              size="small"
-              color="key-2"
-              left-icon="file-input"
-              @click="getMainFile">
-              가져오기
-            </ButtonBasic>
             <Dropdown v-if="props.image" :use-value="true" class="cover-setting">
               <template #trigger>
                 <ButtonBasic size="small" right-icon="chevron-down">
@@ -41,6 +33,7 @@
               </template>
               <Context
                 :items="[
+                  $useGetMainFile && { key: 'get-main', label: '파일 가져오기', icon: 'file-input' },
                   { key: 'edit', label: '편집', icon: 'crop' },
                   { key: 'delete', label: '삭제하기', color: 'danger', icon: 'trash-2' },
                 ].filter(Boolean)"
@@ -138,6 +131,9 @@ function selectControlMenuItem({ key })
 {
   switch (key)
   {
+    case 'get-main':
+      getMainFile()
+      break
     case 'edit':
       currentCropper.coordinates = props.coordinates
       currentCropper.open = true

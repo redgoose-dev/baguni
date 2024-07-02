@@ -26,6 +26,7 @@ const emits = defineEmits([ 'click' ])
   outline: 2px solid transparent;
   outline-offset: -2px;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   --icon-margin: -5px;
   --icon-size: 20px;
   --icon-stroke: 2.5;

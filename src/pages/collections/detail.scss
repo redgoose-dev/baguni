@@ -1,8 +1,12 @@
 @use '../../assets/scss/mixins';
 
 .collection {
-  margin: 0 auto;
-  max-width: var(--size-content-width);
+  margin: var(--size-content-margin-top) 0 0;
+  padding: 0 var(--size-side-padding);
+  &__wrap {
+    margin: 0 auto;
+    max-width: var(--size-content-width);
+  }
   &__body {
     margin: 30px 0 0;
   }
@@ -109,6 +113,9 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 32px 24px;
+  > li {
+    min-width: 0;
+  }
 }
 .item-nav {
   display: flex;
@@ -124,6 +131,7 @@
     font-weight: 700;
     color: var(--color-base);
     border-radius: 2px;
+    -webkit-tap-highlight-color: transparent;
     @include mixins.focus-content();
     &:hover {
       text-decoration: underline;
@@ -139,6 +147,7 @@
     border: none;
     background: none;
     border-radius: 2px;
+    -webkit-tap-highlight-color: transparent;
     @include mixins.focus-content();
     &:not(:disabled) {
       cursor: pointer;

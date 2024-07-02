@@ -1,13 +1,22 @@
+@use '../../assets/scss/mixins';
+
 .user {
-  margin: 0 auto;
-  max-width: var(--size-content-width);
+  margin: var(--size-content-margin-top) 0 0;
+  padding: 0 var(--size-side-padding);
+  &__wrap {
+    margin: 0 auto;
+    max-width: var(--size-content-width);
+  }
 }
 
 .form {
   margin: 30px 0 0;
   display: grid;
-  grid-template-columns: 360px 1fr;
-  gap: 0 48px;
+  grid-template-columns: 280px 1fr;
+  gap: 0 32px;
+  @include mixins.responsive(desktop) {
+    grid-template-columns: 320px 1fr;
+  }
 }
 
 .information {
@@ -22,12 +31,12 @@
   }
   .field {
     display: grid;
-    grid-template-columns: 100px 1fr;
+    grid-template-columns: 80px 1fr;
     align-items: center;
     min-height: 34px;
     > h3 {
       margin: 0;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       line-height: 1.15;
       user-select: none;

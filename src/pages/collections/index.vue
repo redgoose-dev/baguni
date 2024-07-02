@@ -1,28 +1,30 @@
 <template>
 <article class="collections">
-  <PageHeader title="컬렉션">
-    에셋을 담아두는 컬렉션의 목록입니다.
-    <template #side>
-      <ButtonBasic
-        color="key-1"
-        left-icon="plus"
-        @click="createCollection = true">
-        만들기
-      </ButtonBasic>
-    </template>
-  </PageHeader>
-  <div class="collections__body">
-    <ul v-if="$index?.length > 0" class="index">
-      <li v-for="item in $index">
-        <CollectionItem
-          v-bind="item"
-          @context="onSelectContextFromItem($event, item.id)"/>
-      </li>
-    </ul>
-    <EmptyContent
-      v-else
-      message="컬렉션이 없습니다."
-      class="collections__empty"/>
+  <div class="collections__wrap">
+    <PageHeader title="컬렉션">
+      에셋을 담아두는 컬렉션의 목록입니다.
+      <template #side>
+        <ButtonBasic
+          color="key-1"
+          left-icon="plus"
+          @click="createCollection = true">
+          만들기
+        </ButtonBasic>
+      </template>
+    </PageHeader>
+    <div class="collections__body">
+      <ul v-if="$index?.length > 0" class="index">
+        <li v-for="item in $index">
+          <CollectionItem
+            v-bind="item"
+            @context="onSelectContextFromItem($event, item.id)"/>
+        </li>
+      </ul>
+      <EmptyContent
+        v-else
+        message="컬렉션이 없습니다."
+        class="collections__empty"/>
+    </div>
   </div>
 </article>
 <teleport to="#modal">

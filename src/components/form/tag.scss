@@ -4,6 +4,7 @@
   --tag-color-bg: var(--color-bg);
   position: relative;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .tag-body {
@@ -53,6 +54,7 @@
   cursor: pointer;
   border-radius: 4px;
   outline: none;
+  -webkit-tap-highlight-color: transparent;
   --icon-size: 12px;
   --icon-stroke: 3;
   --icon-color: var(--color-fill);

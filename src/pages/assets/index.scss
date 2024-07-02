@@ -1,7 +1,8 @@
 @use '../../assets/scss/mixins';
 
 .explorer {
-  padding: 0 60px;
+  margin: var(--size-content-margin-top) 0 0;
+  padding: 0 var(--size-side-padding);
   &__wrap {
     max-width: 1440px;
     margin: 0 auto;

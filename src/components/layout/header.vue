@@ -13,6 +13,7 @@
         <li>
           <RouterLink
             to="/"
+            role="button"
             :class="[ $activeMenuItem === 'asset' && 'on' ]">
             탐색
           </RouterLink>

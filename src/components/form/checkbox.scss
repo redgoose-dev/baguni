@@ -45,6 +45,7 @@
     height: 100%;
     opacity: 0;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
     &:focus-visible:not([disabled]) + i {
       outline-color: var(--color-key-1);
     }

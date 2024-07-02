@@ -18,6 +18,16 @@
   box-shadow: var(--input-text-outline, (inset 0 0 0 1px #{mixins.mix-alpha(var(--color-forms-outline), 100%)}));
   outline: 2px solid transparent;
   outline-offset: -2px;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  line-height: var(--input-text-line-height, 2.5em); // for safari
+  &::-webkit-date-and-time-value {
+    text-align: left;
+    width: 100%;
+    height: 100%;
+    line-height: var(--input-text-height);
+    box-sizing: border-box;
+  }
   &::-webkit-input-placeholder {
     color: var(--input-text-placeholder, mixins.mix-alpha(var(--color-base), 45%));
   }
@@ -47,6 +57,7 @@
     --input-text-height: 28px;
     --input-text-size: 12px;
     --input-padding: 0 10px;
+    --input-text-line-height: 2em;
   }
 }
 

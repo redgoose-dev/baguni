@@ -148,55 +148,63 @@ watch(() => route.query, async (value, _oldValue) => {
 
 async function fetch()
 {
-  if (!runFetch.value) return
-  data.loading = true
-  let query = {
-    page: queryParams.page,
-    size: assets.indexSize,
-    order: assets.filter.order || undefined,
-    sort: assets.filter.sort || undefined,
-    date_start: assets.filter.dateStart,
-    date_end: assets.filter.dateEnd,
-    file_type: assets.filter.fileType,
-    tags: assets.filter.tags?.length > 0 ? assets.filter.tags.map(o => (o.id)).join(',') : undefined,
-    q: queryParams.q,
-  }
-  // filtering query
-  if (!(query.page > 1)) delete query.page
-  if (!query.q) delete query.q
-  if (!query.file_type || query.file_type === 'all') delete query.file_type
-  if (!query.order || query.order === 'id') delete query.order
-  if (!query.sort || query.sort === 'desc') delete query.sort
-  if (!query.size || query.size === 24) delete query.size
-  const dateRange = getDateRangeForQuery(query.date_start, query.date_end)
-  if (dateRange)
+  try
   {
-    query.date_start = dateRange.date_start
-    query.date_end = dateRange.date_end
+    if (!runFetch.value) return
+    data.loading = true
+    let query = {
+      page: queryParams.page,
+      size: assets.indexSize,
+      order: assets.filter.order || undefined,
+      sort: assets.filter.sort || undefined,
+      date_start: assets.filter.dateStart,
+      date_end: assets.filter.dateEnd,
+      file_type: assets.filter.fileType,
+      tags: assets.filter.tags?.length > 0 ? assets.filter.tags.map(o => (o.id)).join(',') : undefined,
+      q: queryParams.q,
+    }
+    // filtering query
+    if (!(query.page > 1)) delete query.page
+    if (!query.q) delete query.q
+    if (!query.file_type || query.file_type === 'all') delete query.file_type
+    if (!query.order || query.order === 'id') delete query.order
+    if (!query.sort || query.sort === 'desc') delete query.sort
+    if (!query.size || query.size === 24) delete query.size
+    const dateRange = getDateRangeForQuery(query.date_start, query.date_end)
+    if (dateRange)
+    {
+      query.date_start = dateRange.date_start
+      query.date_end = dateRange.date_end
+    }
+    else
+    {
+      delete query.date_start
+      delete query.date_end
+    }
+    // request api
+    const res = await request(`/assets/`, {
+      method: 'get',
+      query,
+    })
+    // response data
+    if (res?.data)
+    {
+      const { total, index } = res?.data
+      data.total = total
+      data.index = index
+    }
+    else
+    {
+      data.total = 0
+      data.index = []
+    }
+    data.loading = false
   }
-  else
+  catch (e)
   {
-    delete query.date_start
-    delete query.date_end
+    toast.add(e.message, 'error').then()
+    data.loading = false
   }
-  // request api
-  const res = await request(`/assets/`, {
-    method: 'get',
-    query,
-  })
-  // response data
-  if (res?.data)
-  {
-    const { total, index } = res?.data
-    data.total = total
-    data.index = index
-  }
-  else
-  {
-    data.total = 0
-    data.index = []
-  }
-  data.loading = false
 }
 
 async function onChangePage(page)

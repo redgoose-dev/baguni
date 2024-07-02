@@ -45,6 +45,7 @@ const noTitleName = 'Unknown title'
     color: var(--color-base);
     text-decoration: none;
     outline: none;
+    -webkit-tap-highlight-color: transparent;
     &:hover {
       text-decoration: underline;
     }

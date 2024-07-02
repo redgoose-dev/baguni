@@ -5,26 +5,28 @@
     글의 주제, 성격 및 관련된 키워드를 쉼표로 구분하여 입력하세요. 구체적이고 관련성 높은 태그를 입력할수록 검색 결과에서 더 잘 노출됩니다.
   </p>
   <div class="add-tag">
-    <FormGroup size="small">
-      <InputText
-        ref="$inputTagName"
-        v-model="inputTag"
-        placeholder="태그이름"
-        size="small"
-        :maxlength="20"
-        :use-submit="true"
-        @submit="addTag"/>
-      <template #right>
-        <Button
+    <div class="input-tag">
+      <FormGroup size="small">
+        <InputText
+          ref="$inputTagName"
+          v-model="inputTag"
+          placeholder="태그이름"
           size="small"
-          color="key-1"
-          left-icon="plus"
-          :disabled="!$existInputTag"
-          @click="onClickAddTag">
-          추가
-        </Button>
-      </template>
-    </FormGroup>
+          :maxlength="20"
+          :use-submit="true"
+          @submit="addTag"/>
+        <template #right>
+          <Button
+            size="small"
+            color="key-1"
+            left-icon="plus"
+            :disabled="!$existInputTag"
+            @click="onClickAddTag">
+            추가
+          </Button>
+        </template>
+      </FormGroup>
+    </div>
     <div>
       <Button
         size="small"

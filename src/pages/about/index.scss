@@ -12,12 +12,18 @@
     color: var(--color-weak);
   }
   h1 {
-    margin: 8px 0 0;
+    margin: 6px 0 0;
     img {
       display: block;
       width: 142px;
       margin: 0 auto;
     }
+  }
+  em {
+    display: block;
+    margin: 8px 0 0;
+    font-size: 11px;
+    color: var(--color-weak);
   }
 }
 
@@ -34,8 +40,11 @@
 }
 
 .content {
-  margin: 60px auto 0;
-  max-width: var(--size-content-width);
+  margin: 60px var(--size-side-padding) 0;
+  &__wrap {
+    margin: 0 auto;
+    max-width: var(--size-content-width);
+  }
 }
 
 .description {

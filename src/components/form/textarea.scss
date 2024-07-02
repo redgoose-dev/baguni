@@ -15,6 +15,7 @@
   font-size: var(--textarea-text-size, 14px);
   line-height: 1.42;
   resize: vertical;
+  -webkit-tap-highlight-color: transparent;
   &::-webkit-input-placeholder {
     color: var(--textarea-placeholder, mixins.mix-alpha(var(--color-base), 45%));
   }

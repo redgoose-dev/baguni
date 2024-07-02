@@ -1,87 +1,89 @@
 <template>
 <article class="user">
-  <PageHeader title="계정 관리하기">
-    유저 계정을 관리합니다.
-  </PageHeader>
-  <form class="form" @submit.prevent="onSubmit">
-    <article class="information">
-      <div class="information__wrap">
-        <h1 class="section-title">기본정보</h1>
-        <ShadowBox class="information__body">
-          <div class="field">
-            <h3>아이디</h3>
-            <p>
-              <span>{{forms.id}}</span>
-            </p>
-          </div>
-          <div class="field">
-            <h3>이메일 주소</h3>
-            <p>
-              <InputText
-                v-model="forms.email"
-                placeholder="이름"
-                size="small"/>
-            </p>
-          </div>
-          <div class="field">
-            <h3>이름</h3>
-            <p>
-              <InputText
-                v-model="forms.name"
-                placeholder="이름"
-                size="small"/>
-            </p>
-          </div>
-          <div class="field">
-            <h3>등록일</h3>
-            <p>
-              <span>{{forms.regdate}}</span>
-            </p>
-          </div>
-          <div class="field">
-            <h3>비밀번호</h3>
-            <p class="new-password">
-              <InputText
-                v-model="forms.newPassword"
-                type="password"
-                placeholder="새로운 비밀번호"
-                size="small"/>
-              <InputText
-                v-model="forms.newPasswordConfirm"
-                type="password"
-                placeholder="비밀번호 확인"
-                size="small"/>
-            </p>
-          </div>
+  <div class="user__wrap">
+    <PageHeader title="계정 관리하기">
+      유저 계정을 관리합니다.
+    </PageHeader>
+    <form class="form" @submit.prevent="onSubmit">
+      <article class="information">
+        <div class="information__wrap">
+          <h1 class="section-title">기본정보</h1>
+          <ShadowBox class="information__body">
+            <div class="field">
+              <h3>아이디</h3>
+              <p>
+                <span>{{forms.id}}</span>
+              </p>
+            </div>
+            <div class="field">
+              <h3>이메일 주소</h3>
+              <p>
+                <InputText
+                  v-model="forms.email"
+                  placeholder="이름"
+                  size="small"/>
+              </p>
+            </div>
+            <div class="field">
+              <h3>이름</h3>
+              <p>
+                <InputText
+                  v-model="forms.name"
+                  placeholder="이름"
+                  size="small"/>
+              </p>
+            </div>
+            <div class="field">
+              <h3>등록일</h3>
+              <p>
+                <span>{{forms.regdate}}</span>
+              </p>
+            </div>
+            <div class="field">
+              <h3>비밀번호</h3>
+              <p class="new-password">
+                <InputText
+                  v-model="forms.newPassword"
+                  type="password"
+                  placeholder="새로운 비밀번호"
+                  size="small"/>
+                <InputText
+                  v-model="forms.newPasswordConfirm"
+                  type="password"
+                  placeholder="비밀번호 확인"
+                  size="small"/>
+              </p>
+            </div>
+          </ShadowBox>
+        </div>
+      </article>
+      <article class="preference">
+        <header class="preference__header">
+          <h1 class="section-title">설정</h1>
+          <label>
+            <span>모두 편집하기</span>
+            <Switch v-model="jsonEditMode" size="small"/>
+          </label>
+        </header>
+        <ShadowBox class="preference__body">
+          <div ref="$preference"></div>
         </ShadowBox>
-      </div>
-    </article>
-    <article class="preference">
-      <header class="preference__header">
-        <h1 class="section-title">설정</h1>
-        <label>
-          <span>모두 편집하기</span>
-          <Switch v-model="jsonEditMode" size="small"/>
-        </label>
-      </header>
-      <ShadowBox class="preference__body">
-        <div ref="$preference"></div>
-      </ShadowBox>
-    </article>
-    <NavigationBottom class="submit">
-      <template #center>
-        <ButtonBasic
-          type="submit"
-          :left-icon="processing ? 'loader' : 'check'"
-          :rotate-icon="processing"
-          size="big"
-          color="key-1"
-          :disabled="processing">
-          {{processing ? '처리중..' : '업데이트'}}
-        </ButtonBasic>
-      </template>
-    </NavigationBottom>
-  </form>
+      </article>
+      <NavigationBottom class="submit">
+        <template #center>
+          <ButtonBasic
+            type="submit"
+            :left-icon="processing ? 'loader' : 'check'"
+            :rotate-icon="processing"
+            size="big"
+            color="key-1"
+            :disabled="processing">
+            {{processing ? '처리중..' : '업데이트'}}
+          </ButtonBasic>
+        </template>
+      </NavigationBottom>
+    </form>
+  </div>
 </article>
 </template>
 

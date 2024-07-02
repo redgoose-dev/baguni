@@ -10,6 +10,7 @@
   </figure>
   <nav class="close">
     <button
+      ref="_close"
       type="button"
       title="Close"
       @click.stop="onClose">
@@ -23,6 +24,7 @@
 import { ref, watch, nextTick, onUnmounted } from 'vue'
 import Icon from '../../icons/index.vue'
 
+const _close = ref()
 const props = defineProps({
   src: String,
   title: String,
@@ -43,6 +45,8 @@ async function control(sw)
     await nextTick()
     $root.value.showModal()
     controlRoot(true)
+    await nextTick()
+    _close.value.blur()
   }
   else
   {

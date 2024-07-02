@@ -46,6 +46,7 @@ const computedOpen = computed(() => {
 
 onUnmounted(() => {
   window.removeEventListener('click', onClickWindow)
+  window.removeEventListener('touchend', onClickWindow)
 })
 
 defineExpose({
@@ -62,10 +63,12 @@ function controlContext(sw)
   if (sw)
   {
     window.addEventListener('click', onClickWindow)
+    window.addEventListener('touchend', onClickWindow)
   }
   else
   {
     window.removeEventListener('click', onClickWindow)
+    window.removeEventListener('touchend', onClickWindow)
   }
   if (props.useValue)
   {
