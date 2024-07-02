@@ -10,8 +10,9 @@
 
 .asset-image {
   margin: 0;
-  padding: 36px 0;
+  padding: 0;
   user-select: none;
+  background-color: hsl(0 0% 98%);
   .trigger {
     display: block;
     margin: 0;
@@ -75,7 +76,7 @@
   display: flex;
   justify-content: center;
   gap: 16px;
-  margin: 0;
+  margin: 30px 0 0;
   .button {
     --button-width: 48px;
     --button-height: 48px;
@@ -85,11 +86,14 @@
 }
 
 .asset-body {
-  display: grid;
-  max-width: var(--size-content-width);
-  grid-template-columns: 280px 1fr;
-  margin: 54px auto 0;
-  gap: 0 60px;
+  margin: 42px var(--size-side-padding) 0;
+  &__wrap {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 0 30px;
+    margin: 0 auto;
+    max-width: var(--size-content-width);
+  }
   &__side {
     .wrap {
       position: sticky;
@@ -132,14 +136,24 @@
       font-weight: 800;
       line-height: 1.05;
       letter-spacing: -.5px;
+      word-break: break-all;
       em {
         color: var(--color-weak);
         user-select: none;
       }
     }
   }
+  @include mixins.responsive(desktop) {
+    margin-top: 58px;
+    &__wrap {
+      grid-template-columns: 300px 1fr;
+      gap: 0 60px;
+    }
+  }
   @include mixins.responsive(max) {
-    max-width: 1200px;
+    &__wrap {
+      max-width: 1200px;
+    }
   }
 }
 

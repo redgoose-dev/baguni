@@ -46,46 +46,48 @@
       @click="onClickCopyAddress"/>
   </nav>
   <div class="asset-body">
-    <aside class="asset-body__side">
-      <ShadowBox class="wrap">
-        <template v-if="$fileMeta">
-          <section>
-            <h1>파일이름</h1>
-            <p>{{$fileMeta.name}}</p>
-          </section>
-          <section>
-            <h1>타입</h1>
-            <p>{{$fileMeta.type}}</p>
-          </section>
-          <section>
-            <h1>사이즈</h1>
-            <p>{{$fileMeta.size}}</p>
-          </section>
-          <section v-if="$fileMeta.width && $fileMeta.height">
-            <h1>이미지 크기</h1>
-            <p>{{$fileMeta.width}}px * {{$fileMeta.height}}px</p>
-          </section>
-          <section>
-            <h1>등록일</h1>
-            <p>{{$fileMeta.date}}</p>
-          </section>
-        </template>
-        <p v-else class="no-file">파일이 없습니다.</p>
-      </ShadowBox>
-    </aside>
-    <div class="asset-body__content">
-      <h1 class="title">
-        <template v-if="data.title">{{data.title}}</template>
-        <em v-else>Unknown title</em>
-      </h1>
-      <div
-        ref="$content"
-        v-if="$contentBody"
-        v-html="$contentBody"
-        class="content-body"/>
-      <em v-else class="empty-content-body">
-        Unknown description
-      </em>
+    <div class="asset-body__wrap">
+      <aside class="asset-body__side">
+        <ShadowBox class="wrap">
+          <template v-if="$fileMeta">
+            <section>
+              <h1>파일이름</h1>
+              <p>{{$fileMeta.name}}</p>
+            </section>
+            <section>
+              <h1>타입</h1>
+              <p>{{$fileMeta.type}}</p>
+            </section>
+            <section>
+              <h1>사이즈</h1>
+              <p>{{$fileMeta.size}}</p>
+            </section>
+            <section v-if="$fileMeta.width && $fileMeta.height">
+              <h1>이미지 크기</h1>
+              <p>{{$fileMeta.width}}px * {{$fileMeta.height}}px</p>
+            </section>
+            <section>
+              <h1>등록일</h1>
+              <p>{{$fileMeta.date}}</p>
+            </section>
+          </template>
+          <p v-else class="no-file">파일이 없습니다.</p>
+        </ShadowBox>
+      </aside>
+      <div class="asset-body__content">
+        <h1 class="title">
+          <template v-if="data.title">{{data.title}}</template>
+          <em v-else>Unknown title</em>
+        </h1>
+        <div
+          ref="$content"
+          v-if="$contentBody"
+          v-html="$contentBody"
+          class="content-body"/>
+        <em v-else class="empty-content-body">
+          Unknown description
+        </em>
+      </div>
     </div>
   </div>
 </article>
@@ -113,7 +115,7 @@ import ShadowBox from '../../components/content/shadow-box.vue'
 import LoadingScreen from '../../components/asset/loading/screen.vue'
 import Lightbox from '../../components/content/lightbox/index.vue'
 
-const { VITE_URL_PATH, APP_NAME } = import.meta.env
+const { VITE_URL_PATH, VITE_APP_NAME } = import.meta.env
 const $content = ref()
 const router = useRouter()
 const route = useRoute()
@@ -232,18 +234,28 @@ function initEventsFromContent()
 
 function setupHead()
 {
-  const title = data.value.title || APP_NAME
-  const description = markdownToText(data.value.description, false)?.substring(0, 50)
-  const image = data.value.files?.coverCreate ? `${apiPath}/file/${data.value.files?.coverCreate}/` : null
+  const title = data.value.title ? `${VITE_APP_NAME} / ${data.value.title}` : VITE_APP_NAME
+  const description = data.value?.description ? markdownToText(data.value.description, false)?.substring(0, 50) : ''
+  let image = null
+  if (data.value.files?.coverCreate)
+  {
+    image = `${apiPath}/file/${data.value.files.coverCreate}/`
+  }
+  else if (data.value?.files?.main?.type && /^image/.test(data.value.files.main.type))
+  {
+    image = `${apiPath}/file/${data.value?.files?.main.id}/?width=480&height=320&quality=75&type=cover`
+  }
   document.title = title
   let meta = [
-    { name: 'description', content: description },
-    { property: 'property', content: url.value },
+    description && { name: 'description', content: description },
     { property: 'og:title', content: title },
-    { property: 'og:description', content: description },
-    { property: 'og:image', content: image },
-  ]
+    description && { property: 'og:description', content: description },
+    { property: 'og:url', content: url.value },
+    image && { property: 'og:image', content: image },
+  ].filter(Boolean)
   meta.forEach((o) => {
+    const prevElement = document.querySelector(`head > meta[${o.property ? 'property' : 'name' }="${o.property || o.name}"]`)
+    if (prevElement) document.head.removeChild(prevElement)
     const element = createMeta(o)
     document.head.appendChild(element)
   })
