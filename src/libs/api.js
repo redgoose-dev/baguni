@@ -3,7 +3,6 @@ import { authStore } from '../store/auth.js'
 
 const { VITE_LOCAL_PATH, VITE_LOCAL_PATH_NAME } = import.meta.env
 let instance
-let headers
 
 export const apiPath = `${VITE_LOCAL_PATH || '/'}${VITE_LOCAL_PATH_NAME}`
 
@@ -14,18 +13,32 @@ function setup()
     baseURL: apiPath,
     retry: 0,
     responseType: 'json',
-    // onResponse({ response })
-    // {},
-    // onResponseError(context)
-    // {
-    //   const err = new Error(context.response?._data?.message || 'Invalid error.')
-    //   err.code = context.response.status
-    //   context.error = err
-    // }
+    onRequest({ options })
+    {
+      if (auth.token)
+      {
+        options.headers = {
+          ...options.headers,
+          'Authorization': `Bearer ${auth.token}`,
+        }
+      }
+    },
+    async onResponse(ctx)
+    {
+      if (ctx.response.status === 401)
+      {
+        auth.clear()
+        const isAuth = await auth.check()
+        if (!isAuth) location.reload()
+      }
+    },
+    onResponseError(ctx)
+    {
+      const err = new Error(ctx.response?._data?.message || 'Invalid error.')
+      err.code = ctx.response.status
+      ctx.error = err
+    },
   })
-  headers = {
-    'Authorization': `Bearer ${auth.token}`,
-  }
 }
 
 /**
@@ -51,7 +64,6 @@ function filteringQuery(query)
 export function destroyApi()
 {
   instance = undefined
-  headers = undefined
 }
 
 /**
@@ -73,11 +85,19 @@ export async function request(url, options = {})
     query: filteringQuery(query),
     body,
   }
-  _options.headers = {
-    ...headers,
-    ...(options.headers || {}),
+  _options.headers = options.headers || {}
+  try
+  {
+    return await instance(url, _options)
   }
-  return await instance(url, _options)
+  catch (e)
+  {
+    const auth = authStore()
+    if (e.response?.status === 401 && auth.token)
+    {
+      return await instance(url, _options)
+    }
+  }
 }
 
 /**

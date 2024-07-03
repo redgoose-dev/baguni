@@ -17,18 +17,13 @@ const router = createRouter({
 // route hook - before
 router.beforeEach(async (to, from) => {
   const auth = authStore()
+  // is login page
+  if (to.name === 'login') return undefined
   // check API 호출
   const isAuth = await auth.check()
   // 상황을 판단하여 이후의 행동을 실행한다.
   if (to.name === 'share-detail') return true
-  if (to.name === 'login')
-  {
-    return isAuth ? '/' : undefined
-  }
-  else
-  {
-    return isAuth ? undefined : 'login'
-  }
+  return isAuth ? undefined : 'login'
 })
 
 // route hook - after

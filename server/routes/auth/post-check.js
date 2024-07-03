@@ -116,7 +116,7 @@ export default async (req, res) => {
   catch (e)
   {
     error(req, res, {
-      code: 401,
+      code: 500,
       message: '인증하지 못했습니다.',
       _file: __filename,
       _err: e,

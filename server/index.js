@@ -85,7 +85,6 @@ async function runServer()
   let app = express()
   const dev = isDev()
   const { VITE_HOST, VITE_PORT } = import.meta.env
-  // set timezone
   // setup
   app.set('trust proxy', true)
   app.use(express.json())

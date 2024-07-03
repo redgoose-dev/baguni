@@ -52,6 +52,15 @@ export const authStore = defineStore('auth', () => {
   }
 
   /**
+   * 스토어에 들어있는 엑세스 토큰과 유저정보를 삭제한다.
+   */
+  function clear()
+  {
+    token.value = ''
+    user.value = null
+  }
+
+  /**
    * 로그인 처리
    * @param {string} email
    * @param {string} password
@@ -123,6 +132,7 @@ export const authStore = defineStore('auth', () => {
     token,
     user,
     setup,
+    clear,
     check,
     login,
     logout,

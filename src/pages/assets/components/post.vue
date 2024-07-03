@@ -198,7 +198,6 @@ function onActionToolbar(mode, value)
   switch (mode)
   {
     case 'insert-description':
-      console.log(value)
       insertTextToEditor(value.code, value.cursor)
       break
   }
