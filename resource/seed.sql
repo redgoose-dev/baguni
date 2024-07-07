@@ -106,7 +106,7 @@ CREATE TABLE `map_collection_asset` (
 );
 
 -- user, content 권한 데이터
-CREATE TABLE `permission_user` (
+CREATE TABLE `permission` (
   `id` INTEGER NOT NULL UNIQUE,
   `permission` TEXT NOT NULL DEFAULT 'READ', -- 권한(READ,WRITE)
   `user` INTEGER NOT NULL, -- user 테이블 id

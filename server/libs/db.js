@@ -17,7 +17,7 @@ export const tables = {
   mapAssetTag: 'map_asset_tag',
   mapCollectionFile: 'map_collection_file',
   mapCollectionAsset: 'map_collection_asset',
-  permissionUser: 'permission_user',
+  permission: 'permission',
 }
 
 /**
@@ -29,6 +29,7 @@ export const tables = {
  */
 export function connect(options = {})
 {
+  if (!!db) return
   db = new Database(`${dataPath}/db.sqlite`, {
     ...options,
   })
@@ -41,6 +42,7 @@ export function disconnect()
 {
   if (!db) return
   db.close()
+  db = undefined
 }
 
 /**
