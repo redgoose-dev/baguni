@@ -15,7 +15,7 @@
         </i>
       </button>
       <div class="body">
-        <p>- 사이즈: {{createSize.width}}px * {{createSize.height}}px</p>
+        <p>사이즈: {{createSize.width}}px * {{createSize.height}}px</p>
         <div class="nav">
           <ButtonGroup size="small">
             <ButtonBasic
@@ -25,17 +25,17 @@
               @click="fileUpload">
               업로드
             </ButtonBasic>
-            <Dropdown v-if="props.image" :use-value="true" class="cover-setting">
+            <Dropdown v-if="$useSetting" :use-value="true" class="cover-setting">
               <template #trigger>
-                <ButtonBasic size="small" right-icon="chevron-down">
+                <ButtonBasic size="small" icon="ellipsis">
                   설정
                 </ButtonBasic>
               </template>
               <Context
                 :items="[
                   $useGetMainFile && { key: 'get-main', label: '파일 가져오기', icon: 'file-input' },
-                  { key: 'edit', label: '편집', icon: 'crop' },
-                  { key: 'delete', label: '삭제하기', color: 'danger', icon: 'trash-2' },
+                  props.image && { key: 'edit', label: '편집', icon: 'crop' },
+                  props.image && { key: 'delete', label: '삭제하기', color: 'danger', icon: 'trash-2' },
                 ].filter(Boolean)"
                 @select="selectControlMenuItem"/>
             </Dropdown>
@@ -125,6 +125,9 @@ const $previewSrc = computed(() => {
 })
 const $useGetMainFile = computed(() => {
   return /^image/.test(props.mainFile?.type || props.mainFileMeta.type)
+})
+const $useSetting = computed(() => {
+  return $useGetMainFile.value || props.image
 })
 
 function selectControlMenuItem({ key })

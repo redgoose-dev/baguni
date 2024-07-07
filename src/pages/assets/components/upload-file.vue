@@ -33,7 +33,7 @@
             :items="[
               { key: 'upload', label: '다시 업로드', icon: 'upload' },
               { key: 'remove', label: '삭제', icon: 'trash-2', color: 'danger' },
-            ]"
+            ].filter(Boolean)"
             @select="onSelectAssetFileMenu"/>
         </Dropdown>
       </figure>

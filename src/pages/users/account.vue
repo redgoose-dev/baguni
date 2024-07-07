@@ -46,12 +46,14 @@
                   v-model="forms.newPassword"
                   type="password"
                   placeholder="새로운 비밀번호"
-                  size="small"/>
+                  size="small"
+                  autocomplete="off"/>
                 <InputText
                   v-model="forms.newPasswordConfirm"
                   type="password"
                   placeholder="비밀번호 확인"
-                  size="small"/>
+                  size="small"
+                  autocomplete="off"/>
               </p>
             </div>
           </ShadowBox>
