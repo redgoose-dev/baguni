@@ -8,8 +8,12 @@ import { existsSync } from 'node:fs'
 import sharp from 'sharp'
 import { outFile, end } from '../output.js'
 import { connect, disconnect, tables, getItem } from '../../libs/db.js'
-import { checkAuthorization } from '../../libs/token.js'
 import ServiceError from '../../libs/ServiceError.js'
+
+const paths = {
+  cache: 'data/cache',
+  json: 'data/cache/json',
+}
 
 export default async (req, res) => {
   try
@@ -21,8 +25,6 @@ export default async (req, res) => {
 
     // connect db
     connect({ readonly: true })
-    // check auth
-    // checkAuthorization(req.headers.authorization, false)
 
     // get data
     const file = getItem({
@@ -35,42 +37,14 @@ export default async (req, res) => {
 
     if (/^image/.test(file.data.type) && (width || height))
     {
-      const paths = file.data.path.split('/')
-      const options = {
-        width: width ? Number(width) : undefined,
-        height: height ? Number(height) : undefined,
-        type: type || 'cover',
-        quality: quality ? Number(quality) : 85,
-      }
-      const query = optionsToQuery(options)
-      const cache = Bun.file(`data/cache/${paths[2]}/${paths[3]}${query}`)
-      const existCache = await cache.exists()
-      if (existCache)
-      {
-        buffer = await cache.arrayBuffer()
-        buffer = Buffer.from(buffer)
-      }
-      else
-      {
-        const data = Bun.file(file.data.path)
-        const dataBuffer = await data.arrayBuffer()
-        buffer = await sharp(dataBuffer)
-          .resize({
-            width: options.width,
-            height: options.height,
-            fit: options.type,
-          })
-          .keepMetadata()
-          .webp({
-            quality: options.quality,
-          })
-          .toBuffer()
-        await Bun.write(`data/cache/${paths[2]}/${paths[3]}${query}`, buffer)
-      }
+      // 이미지 리사이즈용
+      buffer = await resizeImageFile(file.data.path, {
+        ...req.query,
+      })
     }
     else
     {
-      // convert path to buffer
+      // 일반 파일
       const data = Bun.file(file.data.path)
       buffer = await data.arrayBuffer()
       buffer = Buffer.from(buffer)
@@ -87,6 +61,7 @@ export default async (req, res) => {
   }
   catch (e)
   {
+    console.error(e)
     // close db
     disconnect()
     // result
@@ -107,4 +82,43 @@ function optionsToQuery(op = {})
   if (op.type) query.push(`t=${op.type}`)
   if (op.quality) query.push(`q=${op.quality}`)
   return query.length > 0 ? `__${query.join('&')}` : ''
+}
+
+async function resizeImageFile(path, options)
+{
+  const { width, height, type, quality } = options
+  const filePaths = path.split('/')
+  let buffer
+  const op = {
+    width: width ? Number(width) : undefined,
+    height: height ? Number(height) : undefined,
+    type: type || 'cover',
+    quality: quality ? Number(quality) : 85,
+  }
+  const query = optionsToQuery(op)
+  const cache = Bun.file(`${paths.cache}/${filePaths[2]}/${filePaths[3]}${query}`)
+  const existCache = await cache.exists()
+  if (existCache)
+  {
+    buffer = await cache.arrayBuffer()
+    buffer = Buffer.from(buffer)
+  }
+  else
+  {
+    const data = Bun.file(path)
+    const dataBuffer = await data.arrayBuffer()
+    buffer = await sharp(dataBuffer)
+      .resize({
+        width: op.width,
+        height: op.height,
+        fit: op.type,
+      })
+      .keepMetadata()
+      .webp({
+        quality: op.quality,
+      })
+      .toBuffer()
+    await Bun.write(`${paths.cache}/${filePaths[2]}/${filePaths[3]}${query}`, buffer)
+  }
+  return buffer
 }

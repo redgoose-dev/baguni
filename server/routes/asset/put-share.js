@@ -78,6 +78,8 @@ export default async (req, res) => {
           '$permission': readyUpdate.permission,
         },
       })
+      // TODO: 파일 아이디 목록 가져오기
+      // TODO: 권한 테이블 업데이트 하거나 데이터 추가하기
     }
     else
     {
