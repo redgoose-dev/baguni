@@ -14,15 +14,16 @@ import { checkAuthorization } from '../../libs/token.js'
 import { parseJSON } from '../../libs/objects.js'
 import { filteringTitle } from '../../libs/strings.js'
 import { addTag, addFileData, removeJunkFiles } from '../../libs/service.js'
-import ServiceError from "../../libs/ServiceError.js";
 
 export default async (req, res) => {
+
   const _uploader = uploader()
   const upload = multer(_uploader).fields([
     { name: uploadFields.file, maxCount: 1 },
     { name: uploadFields.coverOriginal, maxCount: 1 },
     { name: uploadFields.coverCreate, maxCount: 1 },
   ])
+
   upload(req, res, async () => {
     try
     {
@@ -31,7 +32,7 @@ export default async (req, res) => {
       // connect db
       connect({ readwrite: true })
       // check auth
-      checkAuthorization(req.headers.authorization)
+      const user = checkAuthorization(req.headers.authorization)
 
       // filtering values
       if (title) title = filteringTitle(title)
@@ -57,6 +58,15 @@ export default async (req, res) => {
           { key: 'updated_at', valueName: 'CURRENT_TIMESTAMP' },
         ].filter(Boolean),
       }).data
+
+      // add owner
+      addItem({
+        table: tables.owner,
+        values: [
+          { key: 'user', value: user.id },
+          { key: 'asset', value: assetId },
+        ],
+      })
 
       // add files
       if (fileMain)
@@ -116,6 +126,7 @@ export default async (req, res) => {
       })
     }
   })
+
 }
 
 function addFile(options)

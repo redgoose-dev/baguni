@@ -96,6 +96,13 @@ export default async (req, res) => {
       values: { '$asset': id },
     })
 
+    // remove owner
+    removeItem({
+      table: tables.owner,
+      where: 'asset = $asset',
+      values: { '$asset': id },
+    })
+
     // remove data
     removeItem({
       table: tables.asset,

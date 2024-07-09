@@ -17,7 +17,7 @@ export const tables = {
   mapAssetTag: 'map_asset_tag',
   mapCollectionFile: 'map_collection_file',
   mapCollectionAsset: 'map_collection_asset',
-  permission: 'permission',
+  owner: 'owner',
 }
 
 /**

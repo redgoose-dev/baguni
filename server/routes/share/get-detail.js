@@ -11,10 +11,8 @@ import { checkAuthorization } from '../../libs/token.js'
 import { fileTypes, permissions } from '../../libs/consts.js'
 import { parseJSON } from '../../libs/objects.js'
 import ServiceError from '../../libs/ServiceError.js'
-import RunningTimer from '../../libs/RunningTimer.js'
 
 export default async (req, res) => {
-  const timer = new RunningTimer()
   try
   {
     const code = req.params.code
@@ -29,6 +27,7 @@ export default async (req, res) => {
       values: { '$code': code },
     })
     if (!share?.data) throw new ServiceError('공유 데이터가 없습니다.', 204)
+    // TODO: 소유자 데이터를 가져와서 공개되어 있는지 검사한다.
     if (share.data.permission === permissions.PRIVATE)
     {
       // check auth

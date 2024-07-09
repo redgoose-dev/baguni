@@ -37,6 +37,7 @@ function appRoutes()
   router.get('/collection/:id/assets/', map.collectionAssets)
   // user
   router.get('/user/:id/', map.userDetail)
+  router.post('/user/', map.userCreate)
   router.put('/user/:id/', map.userEdit)
   // share
   router.get('/share/:code/', map.shareDetail)

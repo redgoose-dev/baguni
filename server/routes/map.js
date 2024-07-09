@@ -27,6 +27,7 @@ export { default as collectionAssetRemove } from './collection/delete-asset-remo
 
 // user
 export { default as userDetail } from './user/get-detail.js'
+export { default as userCreate } from './user/post-create.js'
 export { default as userEdit } from './user/put-edit.js'
 
 // share

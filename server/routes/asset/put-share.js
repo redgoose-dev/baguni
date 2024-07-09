@@ -6,14 +6,15 @@
  */
 
 import { success, error } from '../output.js'
-import { connect, disconnect, tables, getItem, getCount, editItem } from '../../libs/db.js'
+import { connect, disconnect, tables, getItem, getItems, getCount, editItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { permissions } from '../../libs/consts.js'
-import { checkExistValue, checkExistValueInObject } from '../../libs/objects.js'
+import { checkExistValue, checkExistValueInObject, parseJSON } from '../../libs/objects.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
-  try {
+  try
+  {
     const id = Number(req.params.id)
     if (!id) throw new ServiceError('에셋 ID 값이 없습니다.')
 
@@ -31,9 +32,7 @@ export default async (req, res) => {
     const assetCount = getCount({
       table: tables.asset,
       where: 'id = $id',
-      values: {
-        '$id': id,
-      },
+      values: { '$id': id },
     })
     if (!assetCount?.data) throw new ServiceError('에셋이 없습니다.')
 
@@ -67,19 +66,18 @@ export default async (req, res) => {
     // update data
     if (checkExistValueInObject(readyUpdate, ['permission']))
     {
+      // update owner data
       editItem({
-        table: tables.share,
-        where: 'asset = $asset',
+        table: tables.owner,
+        where: `asset = $asset`,
         set: [
-          readyUpdate.permission && 'permission = $permission',
-        ].filter(Boolean),
+          `public = $public`,
+        ],
         values: {
           '$asset': id,
-          '$permission': readyUpdate.permission,
+          '$public': readyUpdate.permission === permissions.PUBLIC ? 1 : 0,
         },
       })
-      // TODO: 파일 아이디 목록 가져오기
-      // TODO: 권한 테이블 업데이트 하거나 데이터 추가하기
     }
     else
     {

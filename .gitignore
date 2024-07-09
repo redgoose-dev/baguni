@@ -4,6 +4,7 @@ node_modules/
 .AppleDouble/
 dist/
 data/
+tmp/
 
 # files
 .DS_Store
