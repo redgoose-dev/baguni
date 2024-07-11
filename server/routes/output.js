@@ -73,7 +73,7 @@ export function end(req, res, type = 'error', options = {})
   {
     writeLog(req, res, type, {
       status: code || 500,
-      message: _err?._message || message,
+      message: _err?.message || message,
       ...(_file ? { file: _file } : {}),
     })
   }

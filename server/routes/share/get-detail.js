@@ -35,8 +35,6 @@ export default async (req, res) => {
     })
     if (!share?.data) throw new ServiceError('공유 데이터가 없습니다.', 204)
 
-    console.log(share.data.public)
-
     // 비공개라서 인증 검사한다.
     if (share.data.public !== 1)
     {

@@ -110,7 +110,6 @@ export default async (req, res) => {
     }
     catch (e)
     {
-      // console.error(e)
       // 이미 업로드한 파일들은 전부 삭제한다.
       removeJunkFiles(req.files)
       // close db

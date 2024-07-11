@@ -265,6 +265,7 @@ function removeFileData(options)
     values: { '$id': data.id },
   })
   removeFile(data.path)
+  removeFile(`data/cache/json/${data.file}.json`)
 }
 
 function updateTags(tags, assetId)

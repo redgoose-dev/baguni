@@ -52,8 +52,9 @@ export default async (req, res) => {
           where: 'id = $id',
           values: { '$id': item.file },
         })
+        removeFile(`data/cache/json/${item.file}.json`)
       }
-      if (item.path) removeFile(item.path)
+      removeFile(item.path)
     })
     removeItem({
       table: tables.mapAssetFile,

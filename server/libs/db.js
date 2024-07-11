@@ -113,9 +113,9 @@ export function getCount(options)
  * @param {string} [options.table]
  * @param {string[]} [options.fields]
  * @param {string} [options.where]
- * @param {string} [options.join]
+ * @param {string|array} [options.join]
  * @param {any} [options.values]
- * @param {boolean} [options.run]
+ * @param {boolean?} [options.run]
  * @return {object}
  */
 export function getItem(options)
