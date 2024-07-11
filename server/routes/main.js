@@ -21,7 +21,7 @@ function appRoutes()
   router.delete('/asset/:id/', map.assetRemove)
   router.put('/asset/:id/collections/', map.assetUpdateCollections)
   router.get('/asset/:id/share/', map.assetGetShareCode)
-  router.put('/asset/:id/share/', map.assetUpdateShare)
+  router.put('/asset/:id/owner/', map.assetUpdateOwner)
   // asset - file body
   router.get('/asset/:id/file-body/', map.assetFileBodyIndex)
   router.post('/asset/:id/file-body/', map.assetFileBodyAddItem)
@@ -37,6 +37,7 @@ function appRoutes()
   router.get('/collection/:id/assets/', map.collectionAssets)
   // user
   router.get('/user/:id/', map.userDetail)
+  router.post('/user/', map.userCreate)
   router.put('/user/:id/', map.userEdit)
   // share
   router.get('/share/:code/', map.shareDetail)

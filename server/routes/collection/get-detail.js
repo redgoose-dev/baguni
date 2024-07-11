@@ -9,17 +9,22 @@ import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem, getItems } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { fileTypes } from '../../libs/consts.js'
+import { checkAssetOwner } from '../../libs/service.js'
+import { ownerModes } from '../../../global/consts.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
   try
   {
     const id = req.params.id
-    if (!id) throw new ServiceError('id 값이 없습니다.', 204)
+    if (!id) throw new ServiceError('컬렉션 ID 값이 없습니다.', 204)
     // connect db
     connect({ readwrite: true })
     // check auth
-    checkAuthorization(req.headers.authorization)
+    const auth = checkAuthorization(req.headers.authorization)
+
+    // check owner
+    checkAssetOwner(ownerModes.COLLECTION, auth.id, id)
 
     // get data
     const collection = getItem({
@@ -42,7 +47,9 @@ export default async (req, res) => {
       ],
       join: `join ${tables.mapCollectionFile} on ${tables.file}.id = ${tables.mapCollectionFile}.file`,
       where: `${tables.mapCollectionFile}.collection = $collection`,
-      values: { '$collection': collection.data.id },
+      values: {
+        '$collection': collection.data.id,
+      },
     })
     let files = {}
     filesData.data.forEach(o => {

@@ -8,19 +8,26 @@
 import { randomBytes } from 'node:crypto'
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem, getCount, addItem, } from '../../libs/db.js'
-import { checkAuthorization } from '../../libs/token.js'
 import { permissions } from '../../libs/consts.js'
+import { checkAuthorization } from '../../libs/token.js'
+import { checkAssetOwner } from '../../libs/service.js'
+import { ownerModes } from '../../../global/consts.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
-  try {
+
+  try
+  {
     const id = Number(req.params.id)
     if (!id) throw new ServiceError('id 값이 없습니다.')
 
     // connect db
     connect({ readwrite: true })
     // check auth
-    checkAuthorization(req.headers.authorization)
+    const auth = checkAuthorization(req.headers.authorization)
+
+    // check owner
+    checkAssetOwner(ownerModes.ASSET, auth.id, id)
 
     // check asset data
     const assetCount = getCount({
@@ -36,9 +43,15 @@ export default async (req, res) => {
     const share = getItem({
       table: tables.share,
       where: 'asset = $asset',
-      values: {
-        '$asset': id,
-      },
+      values: { '$asset': id },
+    })
+
+    // get owner data
+    const owner = getItem({
+      table: tables.owner,
+      fields: [ 'id', 'public' ],
+      where: 'asset = $asset',
+      values: { '$asset': id },
     })
 
     // make code
@@ -47,7 +60,7 @@ export default async (req, res) => {
     {
       // 데이터가 있으면 그걸로 코드를 가져온다.
       code = share.data.code
-      permission = share.data.permission
+      permission = owner.data.public === 1 ? permissions.PUBLIC : permissions.PRIVATE
     }
     else
     {
@@ -58,7 +71,6 @@ export default async (req, res) => {
         values: [
           { key: 'code', value: code },
           { key: 'asset', value: id },
-          { key: 'permission', value: permissions.PRIVATE },
           { key: 'regdate', valueName: 'CURRENT_TIMESTAMP', },
         ],
       })
@@ -69,7 +81,7 @@ export default async (req, res) => {
       })
       if (!newData?.data) throw new ServiceError('새로운 공유 데이터를 만드는데 실패했습니다.')
       code = newData.data.code
-      permission = newData.data.permission
+      permission = permissions.PRIVATE
     }
 
     // close db
@@ -106,4 +118,5 @@ export default async (req, res) => {
         break
     }
   }
+
 }

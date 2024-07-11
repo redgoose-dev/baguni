@@ -25,11 +25,10 @@ function setup()
     },
     async onResponse(ctx)
     {
-      if (ctx.response.status === 401)
+      if (ctx.response.status === 401 && auth.token)
       {
         auth.clear()
-        const isAuth = await auth.check()
-        if (!isAuth) location.reload()
+        await auth.check()
       }
     },
     onResponseError(ctx)
@@ -86,18 +85,7 @@ export async function request(url, options = {})
     body,
   }
   _options.headers = options.headers || {}
-  try
-  {
-    return await instance(url, _options)
-  }
-  catch (e)
-  {
-    const auth = authStore()
-    if (e.response?.status === 401 && auth.token)
-    {
-      return await instance(url, _options)
-    }
-  }
+  return await instance(url, _options)
 }
 
 /**

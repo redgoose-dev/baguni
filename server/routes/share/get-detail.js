@@ -8,13 +8,11 @@
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem, getItems } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
-import { fileTypes, permissions } from '../../libs/consts.js'
+import { fileTypes } from '../../libs/consts.js'
 import { parseJSON } from '../../libs/objects.js'
 import ServiceError from '../../libs/ServiceError.js'
-import RunningTimer from '../../libs/RunningTimer.js'
 
 export default async (req, res) => {
-  const timer = new RunningTimer()
   try
   {
     const code = req.params.code
@@ -23,15 +21,23 @@ export default async (req, res) => {
     // connect db
     connect({ readwrite: true })
 
+    // get share data
     const share = getItem({
       table: tables.share,
-      where: 'code = $code',
+      fields: [
+        `${tables.share}.*`,
+        `${tables.owner}.user`,
+        `${tables.owner}.public`,
+      ],
+      join: `join ${tables.owner} on ${tables.owner}.asset = ${tables.share}.asset`,
+      where: `${tables.share}.code = $code`,
       values: { '$code': code },
     })
     if (!share?.data) throw new ServiceError('공유 데이터가 없습니다.', 204)
-    if (share.data.permission === permissions.PRIVATE)
+
+    // 비공개라서 인증 검사한다.
+    if (share.data.public !== 1)
     {
-      // check auth
       checkAuthorization(req.headers.authorization)
     }
 
@@ -111,6 +117,15 @@ export default async (req, res) => {
           code: 204,
         })
         break
+      // case 401:
+      // case 403:
+      //   error(req, res, {
+      //     code: 403,
+      //     message: '공유용 에셋을 가져오지 못했습니다.',
+      //     _file: __filename,
+      //     _err: e,
+      //   })
+      //   break
       default:
         error(req, res, {
           code: e.code,

@@ -111,7 +111,7 @@ async function onChangePermission(e)
 {
   try
   {
-    await request(`/asset/${props.assetId}/share/`, {
+    await request(`/asset/${props.assetId}/owner/`, {
       method: 'put',
       body: {
         permission: data.permission,

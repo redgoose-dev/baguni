@@ -14,6 +14,8 @@ import { checkAuthorization } from '../../libs/token.js'
 import { checkExistValueInObject, findObjectByValue } from '../../libs/objects.js'
 import { filteringTitle } from '../../libs/strings.js'
 import { addFileData, editFileData, removeJunkFiles, removeFile } from '../../libs/service.js'
+import { checkAssetOwner } from '../../libs/service.js'
+import { ownerModes } from '../../../global/consts.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -26,7 +28,7 @@ export default async (req, res) => {
     try
     {
       const id = req.params.id
-      if (!id) throw new ServiceError('id 값이 없습니다.')
+      if (!id) throw new ServiceError('컬렉션 ID 값이 없습니다.')
 
       let { title, description, remove_files } = req.body
       let readyUpdate = {
@@ -37,7 +39,10 @@ export default async (req, res) => {
       // connect db
       connect({ readwrite: true })
       // check auth
-      checkAuthorization(req.headers.authorization)
+      const auth = checkAuthorization(req.headers.authorization)
+
+      // check owner
+      checkAssetOwner(ownerModes.COLLECTION, auth.id, id)
 
       // get item
       const collection = getItem({

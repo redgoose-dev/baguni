@@ -172,9 +172,13 @@ onMounted(async () => {
   }
   catch (e)
   {
-    if (e.message.includes('401 Unauthorized'))
+    switch (e.status)
     {
-      throw new AppError('권한이 없습니다.', 401)
+      case 401:
+      case 403:
+        throw new AppError('권한이 없습니다.', 401)
+      default:
+        throw new AppError('알 수 없는 오류가 발생했습니다.', 500)
     }
   }
   if (!res?.data) throw new AppError('공유 데이터가 없습니다.', 204)

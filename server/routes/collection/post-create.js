@@ -27,7 +27,7 @@ export default async (req, res) => {
       // connect db
       connect({ readwrite: true })
       // check auth
-      checkAuthorization(req.headers.authorization)
+      const auth = checkAuthorization(req.headers.authorization)
 
       // filtering values
       if (title) title = filteringTitle(title)
@@ -41,6 +41,15 @@ export default async (req, res) => {
           { key: 'regdate', valueName: 'CURRENT_TIMESTAMP' },
           { key: 'updated_at', valueName: 'CURRENT_TIMESTAMP' },
         ].filter(Boolean),
+      })
+
+      // add owner
+      addItem({
+        table: tables.owner,
+        values: [
+          { key: 'user', value: auth.id },
+          { key: 'collection', value: collectionId.data },
+        ],
       })
 
       // add files

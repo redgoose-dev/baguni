@@ -8,18 +8,23 @@ import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem, getItems, removeItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { removeFile } from '../../libs/service.js'
+import { checkAssetOwner } from '../../libs/service.js'
+import { ownerModes } from '../../../global/consts.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
   try
   {
     const id = Number(req.params.id)
-    if (!id) throw new ServiceError('컬렉션 id 값이 없습니다.')
+    if (!id) throw new ServiceError('컬렉션 ID 값이 없습니다.')
 
     // connect db
     connect({ readwrite: true })
     // check auth
-    checkAuthorization(req.headers.authorization)
+    const auth = checkAuthorization(req.headers.authorization)
+
+    // check owner
+    checkAssetOwner(ownerModes.COLLECTION, auth.id, id)
 
     // get asset data
     const collection = getItem({

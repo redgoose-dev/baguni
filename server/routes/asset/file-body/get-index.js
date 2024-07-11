@@ -10,6 +10,8 @@ import { connect, disconnect, tables, getCount, getItems } from '../../../libs/d
 import { checkAuthorization } from '../../../libs/token.js'
 import { fileTypes } from '../../../libs/consts.js'
 import { parseJSON } from '../../../libs/objects.js'
+import { checkAssetOwner } from '../../../libs/service.js'
+import { ownerModes } from '../../../../global/consts.js'
 import ServiceError from '../../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -21,7 +23,10 @@ export default async (req, res) => {
     // connect db
     connect({ readonly: true })
     // check auth
-    checkAuthorization(req.headers.authorization)
+    const auth = checkAuthorization(req.headers.authorization)
+
+    // check owner
+    checkAssetOwner(ownerModes.ASSET, auth.id, assetId)
 
     let index, total
     let fields = []

@@ -26,7 +26,7 @@ CREATE TABLE `file` (
   `path` TEXT NOT NULL, -- 파일이 저장되어있는 경로
   `name` TEXT NOT NULL, -- 파일이름
   `type` TEXT NOT NULL, -- 파일 타입
-  `size` INTEGER NOT NULL, -- 파일 사이즈
+  `size` INTEGER NOT NULL, -- 파일 용량
   `meta` TEXT NOT NULL DEFAULT '{}', -- 파일의 정보 (날짜,이미지사이즈)
   `regdate` TEXT NOT NULL,
   `updated_at` TEXT NOT NULL,
@@ -41,13 +41,13 @@ CREATE TABLE `tag` (
 );
 
 -- User data
-CREATE TABLE `user`
-(
+CREATE TABLE `user` (
   `id` INTEGER NOT NULL UNIQUE,
   `email` TEXT NOT NULL UNIQUE,
   `name` TEXT NOT NULL,
   `password` TEXT NOT NULL UNIQUE,
-  `json` TEXT NULL,
+  `json` TEXT NOT NULL DEFAULT '{}',
+  `mode` TEXT NULL,
   `regdate` TEXT NOT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT)
 );
@@ -57,7 +57,6 @@ CREATE TABLE `share` (
   `id` INTEGER NOT NULL UNIQUE,
   `code` TEXT NOT NULL UNIQUE,
   `asset` INTEGER NOT NULL UNIQUE,
-  `permission` TEXT NOT NULL DEFAULT 'PRIVATE',
   `regdate` TEXT NOT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT),
   FOREIGN KEY (`asset`) REFERENCES `asset` (`id`)
@@ -66,8 +65,8 @@ CREATE TABLE `share` (
 -- asset/file 매핑 테이블
 CREATE TABLE `map_asset_file` (
   `id` INTEGER NOT NULL UNIQUE,
-  `asset` INTEGER NOT NULL, -- asset 테이블 id
-  `file` INTEGER NOT NULL UNIQUE, -- file 테이블 id
+  `asset` INTEGER NOT NULL, -- asset 테이블 ID
+  `file` INTEGER NOT NULL UNIQUE, -- file 테이블 ID
   `type` TEXT NULL, -- 메인 데이터인지에 대한 플래그 (fileTypes)
   PRIMARY KEY (`id` AUTOINCREMENT),
   FOREIGN KEY (`asset`) REFERENCES `asset` (`id`),
@@ -77,8 +76,8 @@ CREATE TABLE `map_asset_file` (
 -- asset/tag 매핑 테이블
 CREATE TABLE `map_asset_tag` (
   `id` INTEGER NOT NULL UNIQUE,
-  `asset` INTEGER NOT NULL, -- asset 테이블 id
-  `tag` INTEGER NOT NULL, -- tag 테이블 id
+  `asset` INTEGER NOT NULL, -- asset 테이블 ID
+  `tag` INTEGER NOT NULL, -- tag 테이블 ID
   PRIMARY KEY (`id` AUTOINCREMENT),
   FOREIGN KEY (`asset`) REFERENCES `asset` (`id`),
   FOREIGN KEY (`tag`) REFERENCES `tag` (`id`)
@@ -87,8 +86,8 @@ CREATE TABLE `map_asset_tag` (
 -- collection/file 매핑 테이블
 CREATE TABLE `map_collection_file` (
   `id` INTEGER NOT NULL UNIQUE,
-  `collection` INTEGER NOT NULL, -- collection 테이블 id
-  `file` INTEGER NOT NULL, -- file 테이블 id
+  `collection` INTEGER NOT NULL, -- collection 테이블 ID
+  `file` INTEGER NOT NULL, -- file 테이블 ID
   `type` TEXT NULL, -- 메인 데이터인지에 대한 플래그 (fileTypes)
   PRIMARY KEY (`id` AUTOINCREMENT),
   FOREIGN KEY (`collection`) REFERENCES `collection` (`id`),
@@ -98,26 +97,24 @@ CREATE TABLE `map_collection_file` (
 -- collection/asset 매핑 테이블
 CREATE TABLE `map_collection_asset` (
   `id` INTEGER NOT NULL UNIQUE,
-  `collection` INTEGER NOT NULL, -- collection 테이블 id
-  `asset` INTEGER NOT NULL, -- asset 테이블 id
+  `collection` INTEGER NOT NULL, -- collection 테이블 ID
+  `asset` INTEGER NOT NULL, -- asset 테이블 ID
   PRIMARY KEY (`id` AUTOINCREMENT),
   FOREIGN KEY (`collection`) REFERENCES `collection` (`id`),
   FOREIGN KEY (`asset`) REFERENCES `asset` (`id`)
 );
 
--- user, content 권한 데이터
-CREATE TABLE `permission` (
+-- Asset 소유자
+CREATE TABLE `owner` (
   `id` INTEGER NOT NULL UNIQUE,
-  `permission` TEXT NOT NULL DEFAULT 'READ', -- 권한(READ,WRITE)
-  `user` INTEGER NOT NULL, -- user 테이블 id
-  `asset` INTEGER NOT NULL, -- asset 테이블 id
-  `file` INTEGER NOT NULL, -- file 테이블 id
-  `collection` INTEGER NOT NULL, -- collection 테이블 id
+  `user` INTEGER NOT NULL, -- user 테이블 ID
+  `asset` INTEGER NULL, -- asset 테이블 ID
+  `collection` INTEGER NULL, -- asset 테이블 ID
+  `public` INTEGER NOT NULL DEFAULT 0, -- 공개여부
   PRIMARY KEY (`id` AUTOINCREMENT),
+  FOREIGN KEY (`user`) REFERENCES `user` (`id`),
   FOREIGN KEY (`asset`) REFERENCES `asset` (`id`),
-  FOREIGN KEY (`file`) REFERENCES `file` (`id`),
-  FOREIGN KEY (`collection`) REFERENCES `collection` (`id`),
-  FOREIGN KEY (`user`) REFERENCES `user` (`id`)
+  FOREIGN KEY (`collection`) REFERENCES `collection` (`id`)
 );
 
 -- refresh tokens

@@ -6,6 +6,7 @@ import minimist from 'minimist'
 import { message, prompt } from './libs.js'
 import { dataPath } from '../server/libs/consts.js'
 import { hashPassword, verifyEmail } from '../server/libs/strings.js'
+import { userPreference } from '../global/defaults.js'
 
 const argv = minimist(process.argv.slice(2))
 const paths = {
@@ -160,10 +161,11 @@ async function createDatabase()
 async function addUser(user)
 {
   const { email, name, password } = user
+  const pref = JSON.stringify(userPreference) || '{}'
   try
   {
-    const sql = `insert into user (email, name, password, json, regdate) values (?, ?, ?, ?, CURRENT_TIMESTAMP)`
-    db.run(sql, [ email, name, hashPassword(String(password)), '{}' ])
+    const sql = `insert into user (email, name, password, json, mode, regdate) values (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`
+    db.run(sql, [ email, name, hashPassword(String(password)), pref, 'ADMIN' ])
   }
   catch (e)
   {

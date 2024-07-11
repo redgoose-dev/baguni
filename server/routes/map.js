@@ -8,10 +8,10 @@ export { default as assetEdit } from './asset/put-edit.js'
 export { default as assetRemove } from './asset/delete-remove.js'
 export { default as assetUpdateCollections } from './asset/put-update-collection.js'
 export { default as assetGetShareCode } from './asset/get-share.js'
-export { default as assetUpdateShare } from './asset/put-share.js'
 export { default as assetFileBodyIndex } from './asset/file-body/get-index.js'
 export { default as assetFileBodyAddItem } from './asset/file-body/post-create.js'
 export { default as assetFileBodyDeleteItem } from './asset/file-body/delete-remove.js'
+export { default as assetUpdateOwner } from './asset/put-owner.js'
 
 // collections
 export { default as collections } from './collections/get-index.js'
@@ -27,6 +27,7 @@ export { default as collectionAssetRemove } from './collection/delete-asset-remo
 
 // user
 export { default as userDetail } from './user/get-detail.js'
+export { default as userCreate } from './user/post-create.js'
 export { default as userEdit } from './user/put-edit.js'
 
 // share

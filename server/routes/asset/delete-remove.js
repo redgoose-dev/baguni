@@ -7,7 +7,8 @@
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem, getItems, removeItem, getCount } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
-import { removeFile } from '../../libs/service.js'
+import { removeFile, checkAssetOwner } from '../../libs/service.js'
+import { ownerModes } from '../../../global/consts.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -19,7 +20,10 @@ export default async (req, res) => {
     // connect db
     connect({ readwrite: true })
     // check auth
-    checkAuthorization(req.headers.authorization)
+    const auth = checkAuthorization(req.headers.authorization)
+
+    // check owner
+    checkAssetOwner(ownerModes.ASSET, auth.id, id)
 
     // get asset data
     const asset = getItem({
@@ -48,8 +52,9 @@ export default async (req, res) => {
           where: 'id = $id',
           values: { '$id': item.file },
         })
+        removeFile(`data/cache/json/${item.file}.json`)
       }
-      if (item.path) removeFile(item.path)
+      removeFile(item.path)
     })
     removeItem({
       table: tables.mapAssetFile,
@@ -73,8 +78,8 @@ export default async (req, res) => {
         table: tables.mapAssetTag,
         where: 'tag = $tag',
         values: { '$tag': item.tag },
-      }).data
-      if (count > 0) return
+      })
+      if (count?.data > 0) return
       removeItem({
         table: tables.tag,
         where: 'id = $id',
@@ -92,6 +97,13 @@ export default async (req, res) => {
     // remove share
     removeItem({
       table: tables.share,
+      where: 'asset = $asset',
+      values: { '$asset': id },
+    })
+
+    // remove owner
+    removeItem({
+      table: tables.owner,
       where: 'asset = $asset',
       values: { '$asset': id },
     })

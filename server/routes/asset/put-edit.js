@@ -8,6 +8,7 @@
 import multer from 'multer'
 import { existsSync, rmSync } from 'node:fs'
 import { tagRegex } from '../../../global/strings.js'
+import { ownerModes } from '../../../global/consts.js'
 import { uploader } from '../../libs/uploader.js'
 import { uploadFields, fileTypes } from '../../libs/consts.js'
 import { success, error } from '../output.js'
@@ -15,7 +16,7 @@ import { connect, disconnect, tables, getItem, getItems, editItem, addItem, getC
 import { checkAuthorization } from '../../libs/token.js'
 import { parseJSON, compareArrays, checkExistValueInObject, findObjectByValue } from '../../libs/objects.js'
 import { filteringTitle } from '../../libs/strings.js'
-import { addTag, removeTag, addFileData, editFileData, removeJunkFiles, removeFile } from '../../libs/service.js'
+import { addTag, removeTag, addFileData, editFileData, removeJunkFiles, removeFile, checkAssetOwner } from '../../libs/service.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -43,7 +44,10 @@ export default async (req, res) => {
       // connect db
       connect({ readwrite: true })
       // check auth
-      checkAuthorization(req.headers.authorization)
+      const auth = checkAuthorization(req.headers.authorization)
+
+      // check owner
+      checkAssetOwner(ownerModes.ASSET, auth.id, id)
 
       // get item
       const asset = getItem({
@@ -52,6 +56,8 @@ export default async (req, res) => {
         values: { '$id': id },
       })
       if (!asset?.data) throw new ServiceError('에셋 데이터가 없습니다.')
+
+      // 파일 데이터 가져오기
       const srcMapFiles = getItems({
         table: tables.file,
         fields: [
@@ -62,6 +68,8 @@ export default async (req, res) => {
         where: `${tables.mapAssetFile}.asset = $asset`,
         values: { '$asset': id },
       }).data
+
+      // 태그 데이터 가져오기
       const srcTags = getItems({
         table: tables.tag,
         fields: [ `${tables.tag}.*` ],
@@ -179,7 +187,6 @@ export default async (req, res) => {
     }
     catch (e)
     {
-      console.error(e)
       // 이미 업로드한 파일들은 전부 삭제한다.
       removeJunkFiles(req.files)
       // close db
@@ -258,6 +265,7 @@ function removeFileData(options)
     values: { '$id': data.id },
   })
   removeFile(data.path)
+  removeFile(`data/cache/json/${data.file}.json`)
 }
 
 function updateTags(tags, assetId)

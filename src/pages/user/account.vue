@@ -93,7 +93,7 @@
 import { ref, reactive, onMounted, onUnmounted, watch } from 'vue'
 import JsonEditor from '@redgoose/json-editor'
 import { authStore } from '../../store/auth.js'
-import { defaultUserPreference } from '../../libs/consts.js'
+import { userPreference } from '../../../global/defaults.js'
 import { deepMerge, pureObject } from '../../libs/objects.js'
 import { success, error } from '../../libs/reactions.js'
 import PageHeader from '../../components/content/page-header.vue'
@@ -114,7 +114,7 @@ const forms = reactive({
   newPassword: '',
   newPasswordConfirm: '',
   regdate: auth.user.regdate,
-  json: deepMerge(defaultUserPreference, auth.user.json),
+  json: deepMerge(userPreference, auth.user.json),
 })
 const processing = ref(false)
 const jsonEditMode = ref(false)
