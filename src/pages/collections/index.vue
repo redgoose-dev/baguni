@@ -90,7 +90,7 @@ const $index = computed(() => {
       description,
       assetsCount: asset_count || 0,
       regdate: dateFormat(new Date(regdate), '{yyyy}-{MM}-{dd}'),
-      thumbnail: cover_file_id ? `${apiPath}/file/${cover_file_id}/?v=${Date.now()}` : undefined,
+      thumbnail: cover_file_id ? `${apiPath}/collection/image/${cover_file_id}/?v=${Date.now()}` : undefined,
     }
   })
 })

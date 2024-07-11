@@ -156,7 +156,7 @@ const $createImageSrc = computed(() => {
   }
   else if (currentCropper.file && typeof currentCropper.file === 'number')
   {
-    return `${apiPath}/file/${currentCropper.file}/`
+    return `${apiPath}/collection/image/${currentCropper.file}/`
   }
   else
   {
@@ -170,7 +170,7 @@ const $previewSrc = computed(() => {
   }
   else if (currentCropper.file && typeof currentCropper.file === 'number')
   {
-    return `${apiPath}/file/${currentCropper.file}/`
+    return `${apiPath}/collection/image/${currentCropper.file}/`
   }
   else
   {

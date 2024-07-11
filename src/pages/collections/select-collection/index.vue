@@ -81,7 +81,7 @@ const $index = computed(() => {
       id: o.id,
       title: o.title,
       description: o.description,
-      thumbnail: o.cover_file_id ? `${apiPath}/file/${o.cover_file_id}` : null,
+      thumbnail: o.cover_file_id ? `${apiPath}/collection/image/${o.cover_file_id}` : null,
       active: ids.value.includes(o.id),
     }
   })

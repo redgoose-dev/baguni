@@ -35,19 +35,21 @@ function appRoutes()
   router.post('/collection/:id/asset/', map.collectionAssetAdd)
   router.delete('/collection/:id/asset/:asset/', map.collectionAssetRemove)
   router.get('/collection/:id/assets/', map.collectionAssets)
+  router.get('/collection/image/:file/', map.collectionImage)
   // user
   router.get('/user/:id/', map.userDetail)
   router.post('/user/', map.userCreate)
   router.put('/user/:id/', map.userEdit)
   // share
   router.get('/share/:code/', map.shareDetail)
+  // file
+  router.get('/file/:id/', map.fileDefault)
+  router.get('/download/:id/', map.fileDownload)
   // auth
   router.post('/login/', map.login)
   router.post('/logout/', map.logout)
   router.post('/check/', map.check)
   // etc
-  router.get('/file/:id/', map.file)
-  router.get('/download/:id/', map.download)
   router.get('/tags/', map.tags)
   router.all('*', map.notFound)
   return router

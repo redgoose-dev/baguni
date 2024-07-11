@@ -150,7 +150,7 @@ const $collection = computed(() => {
     title,
     description,
     regdate: dateFormat(new Date(regdate), '{yyyy}-{MM}-{dd}'),
-    thumbnail: files?.coverCreate ? `${apiPath}/file/${files.coverCreate}/?v=${Date.now()}` : null,
+    thumbnail: files?.coverCreate ? `${apiPath}/collection/image/${files.coverCreate}/?v=${Date.now()}` : null,
   }
 })
 const $assets = computed(() => {
