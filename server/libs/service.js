@@ -2,6 +2,7 @@ import { existsSync, rmSync } from 'node:fs'
 import sizeOf from 'image-size'
 import { tagRegex } from '../../global/strings.js'
 import { tables, getItem, addItem, removeItem, getCount, editItem } from './db.js'
+import { ownerModes } from '../../global/consts.js'
 import ServiceError from '../libs/ServiceError.js'
 
 /**
@@ -178,4 +179,35 @@ export function getImageSize(path, type)
   if (!(path && type && /^image/.test(type))) return undefined
   const { width, height } = sizeOf(path)
   return { width, height }
+}
+
+/**
+ * 에셋 소유자인지 검사한다.
+ * @param {string} mode
+ * @param {number} user
+ * @param {number} id
+ */
+export function checkAssetOwner(mode, user, id)
+{
+  let where
+  let values = {
+    '$user': user,
+  }
+  switch (mode)
+  {
+    case ownerModes.ASSET:
+      where = 'asset = $asset and user = $user'
+      values['$asset'] = id
+      break
+    case ownerModes.COLLECTION:
+      where = 'collection = $collection and user = $user'
+      values['$collection'] = id
+      break
+  }
+  const owner = getCount({
+    table: tables.owner,
+    where,
+    values,
+  })
+  if (!(owner?.data > 0)) throw new ServiceError('데이터의 소유자가 아닙니다.', 403)
 }

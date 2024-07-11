@@ -8,6 +8,8 @@ import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItems, removeItem, getCount, addItems } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { compareArrays } from '../../libs/objects.js'
+import { checkAssetOwner } from '../../libs/service.js'
+import { ownerModes } from '../../../global/consts.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -15,18 +17,21 @@ export default async (req, res) => {
   {
     // check id
     const id = Number(req.params.id)
-    if (!id) throw new ServiceError('id 값이 없습니다.')
+    if (!id) throw new ServiceError('에셋 ID 값이 없습니다.')
     // check collections
     let collections = req.body.collections
     if (collections === undefined) throw new ServiceError('콜렉션 아이디가 없습니다.', 500)
 
-    // set collections
-    collections = collections.split(',').filter(Boolean).map(t => Number(t))
-
     // connect db
     connect({ readwrite: true })
     // check auth
-    checkAuthorization(req.headers.authorization)
+    const auth = checkAuthorization(req.headers.authorization)
+
+    // check owner
+    checkAssetOwner(ownerModes.ASSET, auth.id, id)
+
+    // set collections
+    collections = collections.split(',').filter(Boolean).map(t => Number(t))
 
     // check exist asset
     const cnt = getCount({
@@ -78,11 +83,10 @@ export default async (req, res) => {
     // close db
     disconnect()
     // result
-    success(req, res, { message: '에셋-콜렉션 맵을 업데이트 했습니다.' })
+    success(req, res, { message: '에셋/콜렉션 맵을 업데이트 했습니다.' })
   }
   catch (e)
   {
-    console.error(e)
     // close db
     disconnect()
     // result

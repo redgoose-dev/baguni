@@ -19,7 +19,7 @@ export default async (req, res) => {
     // connect db
     connect({ readonly: true })
     // check auth
-    checkAuthorization(req.headers.authorization)
+    const auth = checkAuthorization(req.headers.authorization)
 
     let index, total
     let fields = []
@@ -39,6 +39,8 @@ export default async (req, res) => {
     fields.push(`${tables.asset}.*`)
     fields.push(`(select file from ${tables.mapAssetFile} where ${tables.mapAssetFile}.asset = ${tables.asset}.id and type like '${fileTypes.main}') as file_id`)
     fields.push(`(select file from ${tables.mapAssetFile} where ${tables.mapAssetFile}.asset = ${tables.asset}.id and type like '${fileTypes.coverCreate}') as cover_file_id`)
+    join.push(`join ${tables.owner} on ${tables.asset}.id = ${tables.owner}.asset and ${tables.owner}.user = $user`)
+    values['$user'] = auth.id
 
     // 파일의 타입 (image/jpeg 에서 image 부분을 필터링하자)
     if (file_type)

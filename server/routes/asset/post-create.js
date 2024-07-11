@@ -32,7 +32,7 @@ export default async (req, res) => {
       // connect db
       connect({ readwrite: true })
       // check auth
-      const user = checkAuthorization(req.headers.authorization)
+      const auth = checkAuthorization(req.headers.authorization)
 
       // filtering values
       if (title) title = filteringTitle(title)
@@ -63,7 +63,7 @@ export default async (req, res) => {
       addItem({
         table: tables.owner,
         values: [
-          { key: 'user', value: user.id },
+          { key: 'user', value: auth.id },
           { key: 'asset', value: assetId },
         ],
       })
@@ -105,9 +105,7 @@ export default async (req, res) => {
       // result
       success(req, res, {
         message: '에셋을 만들었습니다.',
-        data: {
-          assetId,
-        },
+        data: { assetId },
       })
     }
     catch (e)

@@ -108,11 +108,13 @@ CREATE TABLE `map_collection_asset` (
 CREATE TABLE `owner` (
   `id` INTEGER NOT NULL UNIQUE,
   `user` INTEGER NOT NULL, -- user 테이블 ID
-  `asset` INTEGER NOT NULL UNIQUE, -- asset 테이블 ID
+  `asset` INTEGER NULL, -- asset 테이블 ID
+  `collection` INTEGER NULL, -- asset 테이블 ID
   `public` INTEGER NOT NULL DEFAULT 0, -- 공개여부
   PRIMARY KEY (`id` AUTOINCREMENT),
   FOREIGN KEY (`user`) REFERENCES `user` (`id`),
-  FOREIGN KEY (`asset`) REFERENCES `asset` (`id`)
+  FOREIGN KEY (`asset`) REFERENCES `asset` (`id`),
+  FOREIGN KEY (`collection`) REFERENCES `collection` (`id`)
 );
 
 -- refresh tokens

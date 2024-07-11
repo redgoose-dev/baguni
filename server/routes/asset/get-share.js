@@ -8,8 +8,10 @@
 import { randomBytes } from 'node:crypto'
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem, getCount, addItem, } from '../../libs/db.js'
-import { checkAuthorization } from '../../libs/token.js'
 import { permissions } from '../../libs/consts.js'
+import { checkAuthorization } from '../../libs/token.js'
+import { checkAssetOwner } from '../../libs/service.js'
+import { ownerModes } from '../../../global/consts.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -22,7 +24,10 @@ export default async (req, res) => {
     // connect db
     connect({ readwrite: true })
     // check auth
-    checkAuthorization(req.headers.authorization)
+    const auth = checkAuthorization(req.headers.authorization)
+
+    // check owner
+    checkAssetOwner(ownerModes.ASSET, auth.id, id)
 
     // check asset data
     const assetCount = getCount({

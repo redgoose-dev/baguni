@@ -1,5 +1,6 @@
 import { sign, verify } from 'jsonwebtoken'
 import { tables, getCount, getItem } from './db.js'
+import { cookie } from './consts.js'
 import ServiceError from './ServiceError.js'
 
 const {
@@ -74,7 +75,7 @@ export function getTokenFromHeader(req)
  * check authorization
  * @param {string} authorization
  * @param {boolean} useUser
- * @return {object|void}
+ * @return {object}
  */
 export function checkAuthorization(authorization, useUser = true)
 {
@@ -97,16 +98,40 @@ export function checkAuthorization(authorization, useUser = true)
     {
       const user = getItem({
         table: tables.user,
-        fields: [ 'id', 'email', 'name', 'regdate' ],
+        fields: [ 'id', 'email', 'name', 'regdate', 'mode' ],
         where: `id = $id`,
         values: { '$id': decoded.id },
       })
       if (!user?.data?.id) throw new Error('유저 정보가 없습니다.')
       return user.data
     }
+    else
+    {
+      return {
+        id: decoded.id,
+        email: decoded.email,
+      }
+    }
   }
   catch (e)
   {
     throw new ServiceError(e.message, 401)
+  }
+}
+
+/**
+ * 쿠키에서 토큰을 가져와서 디코딩을 한다.
+ * @param {object} req
+ * @return {object} 유저 아이디와 토큰
+ */
+export function getAccessTokenFromCookie(req)
+{
+  const accessToken = req.cookies[`${cookie.prefix}-access`]
+  if (!accessToken) throw new ServiceError('엑세스 토큰이 없습니다.', 403)
+  const decoded = decodeToken('access', accessToken)
+  if (!decoded?.id) throw new ServiceError('잘못된 엑세스 토큰입니다.', 403)
+  return {
+    userId: decoded.id,
+    token: accessToken,
   }
 }

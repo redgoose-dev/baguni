@@ -69,8 +69,9 @@
             <Context
               :items="[
                 { key: 'account', label: '계정 관리하기', icon: 'user' },
+                $admin && { key: 'add-user', label: '계정 만들기', icon: 'user' },
                 { key: 'logout', label: '로그아웃', icon: 'log-out', color: 'danger' },
-              ]"
+              ].filter(Boolean)"
               @select="onSelectProfileDropdown"/>
           </Dropdown>
         </div>
@@ -91,6 +92,7 @@
 import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { authStore } from '../../store/auth.js'
+import { userModes } from '../../../global/consts.js'
 import ButtonBasic from '../buttons/button-basic.vue'
 import Dropdown from '../navigation/dropdown.vue'
 import Context from '../navigation/context.vue'
@@ -109,6 +111,9 @@ const $activeMenuItem = computed(() => {
 const $useGuide = computed(() => {
   return DEV
 })
+const $admin = computed(() => {
+  return auth.user.mode === userModes.ADMIN
+})
 
 function onSelectProfileDropdown({ key })
 {
@@ -116,6 +121,9 @@ function onSelectProfileDropdown({ key })
   {
     case 'account':
       router.push('/user/account/')
+      break
+    case 'add-user':
+      router.push('/user/add/')
       break
     case 'logout':
       if (!confirm('정말로 로그아웃 할까요?')) return

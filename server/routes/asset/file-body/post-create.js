@@ -11,8 +11,9 @@ import { uploadFields, fileTypes } from '../../../libs/consts.js'
 import { success, error } from '../../output.js'
 import { connect, disconnect, tables, addItem, getItem } from '../../../libs/db.js'
 import { checkAuthorization } from '../../../libs/token.js'
-import { addFileData, removeJunkFiles } from '../../../libs/service.js'
+import { addFileData, removeJunkFiles, checkAssetOwner } from '../../../libs/service.js'
 import { parseJSON } from '../../../libs/objects.js'
+import { ownerModes } from '../../../../global/consts.js'
 import ServiceError from '../../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -28,7 +29,10 @@ export default async (req, res) => {
       // connect db
       connect({ readwrite: true })
       // check auth
-      checkAuthorization(req.headers.authorization)
+      const auth = checkAuthorization(req.headers.authorization)
+
+      // check owner
+      checkAssetOwner(ownerModes.ASSET, auth.id, assetId)
 
       // set file
       const file = req.files?.[uploadFields.file]?.[0]

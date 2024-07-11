@@ -6,10 +6,12 @@
  */
 
 import { success, error } from '../output.js'
-import { connect, disconnect, tables, getItem, getItems, getCount, editItem } from '../../libs/db.js'
+import { connect, disconnect, tables, getItem, getCount, editItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { permissions } from '../../libs/consts.js'
-import { checkExistValue, checkExistValueInObject, parseJSON } from '../../libs/objects.js'
+import { checkExistValue, checkExistValueInObject } from '../../libs/objects.js'
+import { checkAssetOwner } from '../../libs/service.js'
+import { ownerModes } from '../../../global/consts.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -26,7 +28,10 @@ export default async (req, res) => {
     // connect db
     connect({ readwrite: true })
     // check auth
-    checkAuthorization(req.headers.authorization)
+    const auth = checkAuthorization(req.headers.authorization)
+
+    // check owner
+    checkAssetOwner(ownerModes.ASSET, auth.id, id)
 
     // check asset data
     const assetCount = getCount({
@@ -40,9 +45,7 @@ export default async (req, res) => {
     const share = getItem({
       table: tables.share,
       where: 'asset = $asset',
-      values: {
-        '$asset': id,
-      },
+      values: { '$asset': id },
     })
     if (!share.data) throw new ServiceError('에셋 공유 데이터가 없습니다.')
 
@@ -64,7 +67,7 @@ export default async (req, res) => {
     }
 
     // update data
-    if (checkExistValueInObject(readyUpdate, ['permission']))
+    if (checkExistValueInObject(readyUpdate, [ 'permission' ]))
     {
       // update owner data
       editItem({

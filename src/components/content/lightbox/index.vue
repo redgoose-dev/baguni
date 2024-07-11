@@ -4,7 +4,7 @@
   v-if="open"
   class="lightbox"
   @click="onClose"
-  @keydown="onKeydown">
+  @cancel.prevent="onClose">
   <figure>
     <img :src="props.src" :alt="props.title" draggable="false"/>
   </figure>
@@ -28,7 +28,6 @@ const _close = ref()
 const props = defineProps({
   src: String,
   title: String,
-  useShortcut: { type: Boolean, default: true },
 })
 const emits = defineEmits([ 'close' ])
 const $root = ref()
@@ -54,14 +53,6 @@ async function control(sw)
     open.value = false
     controlRoot(false)
   }
-}
-
-function onKeydown(e)
-{
-  if (e.key !== 'Escape') return
-  if ($root.value !== e.target) return e.preventDefault()
-  if (!props.useShortcut) return e.preventDefault()
-  onClose()
 }
 
 function controlRoot(sw)

@@ -18,7 +18,7 @@ export default async (req, res) => {
     // connect db
     connect({ readonly: true })
     // check auth
-    checkAuthorization(req.headers.authorization)
+    const auth = checkAuthorization(req.headers.authorization)
 
     let index, total
     let fields = []
@@ -31,6 +31,8 @@ export default async (req, res) => {
     fields.push(`${tables.collection}.*`)
     fields.push(`(select count(*) from ${tables.mapCollectionAsset} where ${tables.mapCollectionAsset}.collection = ${tables.collection}.id) as asset_count`)
     fields.push(`(select file from ${tables.mapCollectionFile} where ${tables.mapCollectionFile}.collection = ${tables.collection}.id and type like '${fileTypes.coverCreate}') as cover_file_id`)
+    join.push(`join ${tables.owner} on ${tables.collection}.id = ${tables.owner}.collection and ${tables.owner}.user = $user`)
+    values['$user'] = auth.id
 
     // 키워드 검색
     if (q)

@@ -22,7 +22,7 @@ export default async (req, res) => {
     // connect db
     connect({ readonly: true })
     // check auth
-    checkAuthorization(req.headers.authorization)
+    const auth = checkAuthorization(req.headers.authorization)
 
     let index, total
     let fields = []
@@ -35,8 +35,10 @@ export default async (req, res) => {
     fields.push(`${tables.asset}.*`)
     fields.push(`(select file from ${tables.mapAssetFile} where ${tables.mapAssetFile}.asset = ${tables.asset}.id and type like '${fileTypes.main}') as file_id`)
     fields.push(`(select file from ${tables.mapAssetFile} where ${tables.mapAssetFile}.asset = ${tables.asset}.id and type like '${fileTypes.coverCreate}') as cover_file_id`)
+    join.push(`join ${tables.owner} on ${tables.asset}.id = ${tables.owner}.asset and ${tables.owner}.user = $user`)
     join.push(`join ${tables.mapCollectionAsset} on ${tables.asset}.id = ${tables.mapCollectionAsset}.asset and ${tables.mapCollectionAsset}.collection = $collection`)
     values['$collection'] = id
+    values['$user'] = auth.id
 
     // get total
     total = getCount({
