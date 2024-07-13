@@ -13,6 +13,7 @@ const defaultAssetsIndexFilter = {
   q: undefined,
   tags: [],
   indexTheme: 'thumbnail', // list,thumbnail
+  open: false,
 }
 
 export const assetStore =  defineStore('filter', () => {

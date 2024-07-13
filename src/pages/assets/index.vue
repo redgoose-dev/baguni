@@ -3,8 +3,21 @@
   <div class="explorer__wrap">
     <PageHeader title="에셋 탐색하기">
       바구니에서 등록한 에셋을 찾아봅니다.
+      <template #side>
+        <ButtonBasic
+          size="small"
+          left-icon="filter"
+          :color="assets.filter.open ? 'key-3' : ''"
+          class="explorer__toggle-filter"
+          @click="toggleFilter">
+          필터
+        </ButtonBasic>
+      </template>
     </PageHeader>
-    <div class="explorer__body">
+    <div :class="[
+      'explorer__body',
+      assets.filter.open && 'open-filter',
+    ]">
       <div class="explorer__content">
         <LoadingScreen v-if="data.loading"/>
         <ul
@@ -95,6 +108,7 @@ import ImageItem from '../../components/content/image/index.vue'
 import LoadingScreen from '../../components/asset/loading/screen.vue'
 import EmptyContent from '../../components/content/empty-content.vue'
 import Modal from '../../components/modal/index.vue'
+import ButtonBasic from '../../components/buttons/button-basic.vue'
 import SelectCollection from '../collections/select-collection/index.vue'
 
 const router = useRouter()
@@ -257,6 +271,12 @@ function onClickManageCollection(assetId)
 {
   collection.assetId = assetId
   collection.open = true
+}
+
+function toggleFilter()
+{
+  assets.filter.open = !assets.filter.open
+  assets.saveFilter()
 }
 </script>
 

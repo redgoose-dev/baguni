@@ -9,9 +9,22 @@
   }
   &__body {
     display: grid;
-    grid-template-columns: 1fr 200px;
     gap: 0 40px;
     margin: 30px 0 0;
+    &:is(.open-filter) {
+      grid-template-columns: 1fr 200px;
+      & .explorer__index {
+        &.list {
+          --assets-index-column: 1;
+        }
+        &.thumbnail {
+          --assets-index-column: 2;
+        }
+      }
+      & .explorer__filter {
+        display: block;
+      }
+    }
   }
   &__content {}
   &__index {
@@ -69,12 +82,12 @@
       }
     }
     &.list {
-      --assets-index-column: 1;
+      --assets-index-column: 2;
       --assets-index-gap: 16px;
-      --image-item-size: 120px;
+      --image-item-size: 100px;
     }
     &.thumbnail {
-      --assets-index-column: 2;
+      --assets-index-column: 3;
       --assets-index-gap: 20px;
     }
   }
@@ -86,31 +99,49 @@
     place-content: center;
     margin: 48px 0 0;
   }
-  &__filter {}
-
+  &__filter {
+    display: none;
+  }
   @include mixins.responsive(desktop) {
-    &__index {
-      &.list {
-        --assets-index-column: 2;
-        --assets-index-gap: 16px;
-        --image-item-size: 100px;
+    &__toggle-filter {
+      display: none;
+    }
+    &__body {
+      grid-template-columns: 1fr 200px;
+      &:is(.open-filter),
+      &:not(.open-filter) {
+        & .explorer__index {
+          &.list {
+            --assets-index-column: 2;
+            --assets-index-gap: 16px;
+            --image-item-size: 100px;
+          }
+          &.thumbnail {
+            --assets-index-column: 3;
+            --assets-index-gap: 24px;
+          }
+        }
       }
-      &.thumbnail {
-        --assets-index-column: 3;
-        --assets-index-gap: 24px;
-      }
+    }
+    &__filter {
+      display: block;
     }
   }
   @include mixins.responsive(max) {
-    &__index {
-      &.list {
-        --assets-index-column: 3;
-        --assets-index-gap: 16px;
-        --image-item-size: 112px;
-      }
-      &.thumbnail {
-        --assets-index-column: 4;
-        --assets-index-gap: 28px;
+    &__body {
+      &:is(.open-filter),
+      &:not(.open-filter) {
+        & .explorer__index {
+          &.list {
+            --assets-index-column: 3;
+            --assets-index-gap: 16px;
+            --image-item-size: 112px;
+          }
+          &.thumbnail {
+            --assets-index-column: 4;
+            --assets-index-gap: 28px;
+          }
+        }
       }
     }
   }
