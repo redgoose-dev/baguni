@@ -5,7 +5,8 @@ import { randomBytes } from 'node:crypto'
 import minimist from 'minimist'
 import { message, prompt } from './libs.js'
 import { dataPath } from '../server/libs/consts.js'
-import { hashPassword, verifyEmail } from '../server/libs/strings.js'
+import { hashPassword } from '../server/libs/strings.js'
+import { verifyEmail } from '../global/strings.js'
 import { userPreference } from '../global/defaults.js'
 
 const argv = minimist(process.argv.slice(2))
@@ -152,7 +153,7 @@ async function createDatabase()
 }
 
 /**
- * 관리자 유저 추가
+ * 관리자 계정 추가
  * @param {string} [user.email] 이메일 주소
  * @param {string} [user.name] 이름
  * @param {string} [user.password] 패스워드

@@ -120,10 +120,10 @@ function onSelectProfileDropdown({ key })
   switch (key)
   {
     case 'account':
-      router.push('/user/account/')
+      router.push(`/user/${auth.user.id}/`)
       break
     case 'add-user':
-      router.push('/user/add/')
+      router.push('/user/create/')
       break
     case 'logout':
       if (!confirm('정말로 로그아웃 할까요?')) return

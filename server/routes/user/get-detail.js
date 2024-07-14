@@ -7,6 +7,7 @@
 import { success, error } from '../output.js'
 import { connect, disconnect, tables, getItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
+import { userModes } from '../../../global/consts.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -19,8 +20,8 @@ export default async (req, res) => {
     // check auth
     const auth = checkAuthorization(req.headers.authorization)
 
-    // check id (현재는 본인만 접근할 수 있도록 만들어두지만 나중에는 타인이 접근할 수 있을것이다.)
-    if (auth?.id !== id)
+    // 본인인지 검사 (관리자가 아니라면..)
+    if (auth.mode !== userModes.ADMIN && auth?.id !== id)
     {
       throw new ServiceError('토큰 아이디가 서로 다릅니다.', 204)
     }
@@ -28,23 +29,24 @@ export default async (req, res) => {
     // get data
     const user = getItem({
       table: tables.user,
-      fields: [ 'id', 'email', 'name', 'regdate' ],
+      fields: [ 'id', 'email', 'name', 'mode', 'regdate' ],
       where: 'id = $id',
       values: {
         '$id': id,
       },
     })
-    if (!user.data) throw new ServiceError('유저 데이터가 없습니다.', 204)
+    if (!user.data) throw new ServiceError('계정 데이터가 없습니다.', 204)
 
     // close db
     disconnect()
     // result
     success(req, res, {
-      message: '유저 상세정보',
+      message: '계정 상세정보',
       data: {
         id: user.data.id,
         name: user.data.name,
         email: user.data.email,
+        mode: user.data.mode,
         regdate: user.data.regdate,
       },
     })
@@ -56,7 +58,7 @@ export default async (req, res) => {
     // result
     error(req, res, {
       code: e.code,
-      message: '유저를 가져오지 못했습니다.',
+      message: '계정을 가져오지 못했습니다.',
       _file: e.code !== 204 ? __filename : undefined,
       _err: e,
     })

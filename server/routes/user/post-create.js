@@ -9,7 +9,8 @@ import { connect, disconnect, tables, addItem, getCount } from '../../libs/db.js
 import { userModes } from '../../../global/consts.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { checkExistValueInObject } from '../../libs/objects.js'
-import { hashPassword, verifyEmail } from '../../libs/strings.js'
+import { hashPassword } from '../../libs/strings.js'
+import { verifyEmail } from '../../../global/strings.js'
 import { userPreference } from '../../../global/defaults.js'
 import ServiceError from '../../libs/ServiceError.js'
 

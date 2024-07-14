@@ -77,6 +77,9 @@
   }
   &__body {
     margin: 12px 0 0;
+    .blur {
+      opacity: .5;
+    }
     &:deep(.json-editor) {
       --font-base: var(--font-base);
     }

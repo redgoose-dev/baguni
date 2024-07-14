@@ -102,7 +102,7 @@ export function checkAuthorization(authorization, useUser = true)
         where: `id = $id`,
         values: { '$id': decoded.id },
       })
-      if (!user?.data?.id) throw new Error('유저 정보가 없습니다.')
+      if (!user?.data?.id) throw new Error('계정 정보가 없습니다.')
       return user.data
     }
     else
@@ -122,7 +122,7 @@ export function checkAuthorization(authorization, useUser = true)
 /**
  * 쿠키에서 토큰을 가져와서 디코딩을 한다.
  * @param {object} req
- * @return {object} 유저 아이디와 토큰
+ * @return {object} 계정 아이디와 토큰
  */
 export function getAccessTokenFromCookie(req)
 {

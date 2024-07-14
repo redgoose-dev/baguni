@@ -29,7 +29,7 @@ export default async (req, res) => {
       where: 'email = $email',
       values: { '$email': req.body.email },
     }).data
-    if (!user) throw new ServiceError('유저가 없습니다.', 401)
+    if (!user) throw new ServiceError('계정이 없습니다.', 401)
     const checkPassword = verifyPassword(req.body.password, user.password)
     if (!checkPassword) throw new ServiceError('비밀번호 인증 실패', 401)
     // create tokens

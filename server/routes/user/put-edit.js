@@ -8,7 +8,9 @@ import { success, error } from '../output.js'
 import { connect, disconnect, tables, editItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { parseJSON } from '../../libs/objects.js'
-import { hashPassword, verifyEmail } from '../../libs/strings.js'
+import { hashPassword } from '../../libs/strings.js'
+import { userModes } from '../../../global/consts.js'
+import { verifyEmail } from '../../../global/strings.js'
 import ServiceError from '../../libs/ServiceError.js'
 
 export default async (req, res) => {
@@ -17,11 +19,12 @@ export default async (req, res) => {
     const id = Number(req.params.id)
     if (!id) throw new ServiceError('id 값이 없습니다.')
 
-    let { email, name, json, newPassword, newPasswordConfirm } = req.body
+    let { email, name, json, newPassword, newPasswordConfirm, mode } = req.body
     let readyUpdate = {
       email: undefined,
       name: undefined,
       password: undefined,
+      mode: undefined,
     }
 
     // connect db
@@ -30,9 +33,9 @@ export default async (req, res) => {
     const auth = checkAuthorization(req.headers.authorization)
 
     // check id (현재는 본인만 접근할 수 있도록 만들어두지만 나중에는 타인이 접근할 수 있을것이다.)
-    if (auth.id !== id)
+    if (auth.mode !== userModes.ADMIN && auth.id !== id)
     {
-      throw new ServiceError('토큰 아이디가 서로 다릅니다.', 401)
+      throw new ServiceError('토큰 아이디가 서로 다릅니다.', 403)
     }
 
     // update email
@@ -68,6 +71,20 @@ export default async (req, res) => {
       readyUpdate.json = JSON.stringify(json)
     }
 
+    // update mode
+    if (typeof mode === 'string')
+    {
+      switch (mode?.toUpperCase())
+      {
+        case userModes.ADMIN:
+          readyUpdate.mode = mode
+          break
+        default:
+          readyUpdate.mode = null
+          break
+      }
+    }
+
     // check ready update data
     if (!Object.values(readyUpdate).some(x => x !== undefined))
     {
@@ -83,6 +100,7 @@ export default async (req, res) => {
         readyUpdate.name && 'name = $name',
         readyUpdate.password && 'password = $password',
         readyUpdate.json && 'json = $json',
+        (readyUpdate.mode !== undefined) && 'mode = $mode',
       ].filter(Boolean),
       values: {
         '$id': id,
@@ -90,6 +108,7 @@ export default async (req, res) => {
         '$name': readyUpdate.name,
         '$password': readyUpdate.password,
         '$json': readyUpdate.json,
+        '$mode': readyUpdate.mode,
       },
     })
 
@@ -97,7 +116,7 @@ export default async (req, res) => {
     disconnect()
     // result
     success(req, res, {
-      message: '유저를 수정했습니다.',
+      message: '계정을 수정했습니다.',
     })
   }
   catch (e)
@@ -107,7 +126,7 @@ export default async (req, res) => {
     // result
     error(req, res, {
       code: e.code,
-      message: '유저를 수정하지 못했습니다.',
+      message: '계정을 수정하지 못했습니다.',
       _file: __filename,
       _err: e,
     })

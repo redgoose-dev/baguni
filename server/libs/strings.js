@@ -23,17 +23,6 @@ export function verifyPassword(password, hashedPassword)
 }
 
 /**
- * 이메일 주소 검증하기
- * @return {boolean}
- */
-export function verifyEmail(address)
-{
-  if (!address) return false
-  const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/;
-  return emailRegex.test(String(address).toLowerCase())
-}
-
-/**
  * 숫자 한자리라면 앞에 `0`을 붙인다.
  */
 export function twoDigit(day)

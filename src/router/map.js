@@ -73,21 +73,22 @@ const about = [
 
 const users = [
   {
-    path: '/user/account/',
-    name: 'user-account',
-    component: () => import('../pages/user/account.vue'),
+    path: '/user/:id',
+    name: 'user-detail',
+    component: () => import('../pages/user/detail.vue'),
     meta: {
       active: 'user',
       layout: 'default',
     },
   },
   {
-    path: '/user/create/',
+    path: '/user/create',
     name: 'user-create',
     component: () => import('../pages/user/create.vue'),
     meta: {
       active: 'user',
       layout: 'default',
+      admin: true,
     },
   },
 ]

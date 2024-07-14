@@ -18,7 +18,7 @@ export const authStore = defineStore('auth', () => {
   function setup(_token, _user)
   {
     if (!token) throw new Error('엑세스 토큰값이 없습니다.')
-    if (!user) throw new Error('유저 데이터가 없습니다.')
+    if (!user) throw new Error('계정 데이터가 없습니다.')
     token.value = _token
     user.value = {
       ..._user,
@@ -27,7 +27,7 @@ export const authStore = defineStore('auth', () => {
   }
 
   /**
-   * 처음 접속할때 인증검사를 하면서 유저 정보와 엑세스토큰을 가져온다.
+   * 처음 접속할때 인증검사를 하면서 계정 정보와 엑세스토큰을 가져온다.
    * @return {Promise}
    */
   async function check()
@@ -52,7 +52,7 @@ export const authStore = defineStore('auth', () => {
   }
 
   /**
-   * 스토어에 들어있는 엑세스 토큰과 유저정보를 삭제한다.
+   * 스토어에 들어있는 엑세스 토큰과 계정정보를 삭제한다.
    */
   function clear()
   {

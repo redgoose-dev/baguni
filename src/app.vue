@@ -1,21 +1,23 @@
 <template>
-  <component v-if="layout" :is="layout">
-    <ErrorApp v-if="errorData" :error="errorData"/>
-    <router-view v-else/>
+  <ErrorApp v-if="errorData" :error="errorData"/>
+  <component v-else-if="layout" :is="layout">
+    <router-view/>
   </component>
   <router-view v-else/>
 </template>
 
 <script setup>
-import { ref, computed, watch, onErrorCaptured } from 'vue'
+import { ref, computed, onErrorCaptured } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import AppError from './modules/AppError.js'
 import { LayoutDefault, LayoutShare } from './layouts'
+import { authStore } from './store/auth.js'
+import { userModes } from '../global/consts.js'
+import AppError from './modules/AppError.js'
 import ErrorApp from './pages/error/500.vue'
 
-const { DEV } = import.meta.env
 const router = useRouter()
 const route = useRoute()
+const auth = authStore()
 const errorData = ref()
 
 const layout = computed(() => {
@@ -31,22 +33,25 @@ const layout = computed(() => {
   }
 })
 
-// watch route name
-watch(() => route.name, () => {
-  // 오류난 화면에서 뒤로가기나 다른페이지로 이동했을때 오류값 초기화하기
-  if (!!errorData.value) errorData.value = undefined
-})
-
 onErrorCaptured((e) => {
   if (typeof e === 'string') errorData.value = new AppError(String(e))
   else if (e instanceof Error || e instanceof AppError) errorData.value = e
   else errorData.value = new AppError('Unknown Error', 500)
 })
 
-// router error
-// router.onError(e => {
-//   error.value = {
-//     message: e.message,
-//   }
-// })
+// router
+router.onError(e => {
+  errorData.value = new AppError('라우터 관련 오류가 발생했습니다.')
+})
+router.beforeEach((to, from) => {
+  if (!!errorData.value) errorData.value = undefined
+  checkAdminPage(!!to.meta.admin)
+})
+
+function checkAdminPage(isAdminPage)
+{
+  if (!isAdminPage) return
+  if (auth.user?.mode === userModes.ADMIN) return
+  errorData.value = new AppError('관리자만 접근할 수 있습니다.', 403)
+}
 </script>
