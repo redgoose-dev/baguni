@@ -78,6 +78,7 @@
   --scroll-bg: hsla(0 0% 100% / 0%);
   &::-webkit-scrollbar {
     width: var(--scroll-size);
+    height: var(--scroll-size);
   }
   &::-webkit-scrollbar-thumb {
     border: var(--scroll-padding) solid hsla(0 0% 100% / 0%);
