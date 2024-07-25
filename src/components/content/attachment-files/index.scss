@@ -43,11 +43,11 @@
       border-radius: 0;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
-      @include mixins.focus-content();
       --icon-margin: 0 auto;
       --icon-size: 24px;
       --icon-stroke: 2;
       --icon-color: var(--color-light);
+      @include mixins.focus-content();
       &:active {
         opacity: .5;
       }

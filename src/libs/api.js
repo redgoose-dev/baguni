@@ -23,14 +23,6 @@ function setup()
         }
       }
     },
-    async onResponse(ctx)
-    {
-      if (ctx.response.status === 401 && auth.token)
-      {
-        auth.clear()
-        await auth.check()
-      }
-    },
     onResponseError(ctx)
     {
       const err = new Error(ctx.response?._data?.message || 'Invalid error.')
@@ -85,7 +77,24 @@ export async function request(url, options = {})
     body,
   }
   _options.headers = options.headers || {}
-  return await instance(url, _options)
+  try
+  {
+    return await instance(url, _options)
+  }
+  catch (e)
+  {
+    const auth = authStore()
+    if (e.status === 401 && auth.token)
+    {
+      auth.clear()
+      await auth.check()
+      return await instance(url, _options)
+    }
+    else
+    {
+      throw e
+    }
+  }
 }
 
 /**

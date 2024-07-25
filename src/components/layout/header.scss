@@ -5,9 +5,9 @@
   top: 0;
   z-index: 2;
   box-sizing: border-box;
-  @include mixins.background-blur(16px);
   background: color-mix(in hsl, hsl(0 0% 100%), transparent 15%);
   padding: 0 var(--size-side-padding);
+  @include mixins.background-blur(16px);
   &__wrap {
     display: grid;
     grid-template-areas: 'symbol menus side';

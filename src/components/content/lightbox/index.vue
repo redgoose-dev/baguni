@@ -32,6 +32,7 @@ const props = defineProps({
 const emits = defineEmits([ 'close' ])
 const $root = ref()
 const open = ref(false)
+const backupScrollY = ref(0)
 
 watch(() => !!props.src, control)
 onUnmounted(() => control(false))
@@ -40,6 +41,7 @@ async function control(sw)
 {
   if (sw)
   {
+    backupScrollY.value = window.scrollY
     open.value = true
     await nextTick()
     $root.value.showModal()
@@ -52,6 +54,8 @@ async function control(sw)
     if ($root.value) $root.value.close()
     open.value = false
     controlRoot(false)
+    await nextTick()
+    window.scrollTo({ top: backupScrollY.value })
   }
 }
 

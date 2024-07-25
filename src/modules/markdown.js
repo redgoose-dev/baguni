@@ -14,11 +14,12 @@ export function markedSetup()
 export function baseRenderer(renderer = null)
 {
   if (!renderer) renderer = new Renderer()
-  renderer.heading = ({ text, level }) => {
+  renderer.heading = (op) => {
+    const { text, depth } = op
     const id = text.replace(/\s+/g, '_')
-    let str = `<h${level} id="${id}">`
+    let str = `<h${depth} id="${id}">`
     str += `<a href="#${id}" class="anchor">${sharp}</a>`
-    str += `${text}</h${level}>`
+    str += `${text}</h${depth}>`
     return str
   }
   renderer.image = (obj) => {

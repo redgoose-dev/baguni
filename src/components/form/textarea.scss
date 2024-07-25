@@ -16,6 +16,7 @@
   line-height: 1.42;
   resize: vertical;
   -webkit-tap-highlight-color: transparent;
+  @include mixins.custom-scrollbar();
   &::-webkit-input-placeholder {
     color: var(--textarea-placeholder, mixins.mix-alpha(var(--color-base), 45%));
   }
@@ -34,7 +35,6 @@
   &:focus:not([disabled]) {
     outline: 0;
   }
-  @include mixins.custom-scrollbar();
 }
 
 // size

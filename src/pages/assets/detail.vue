@@ -156,6 +156,7 @@ import { getFileIcon } from '../../libs/files.js'
 import { copyClipboardFile } from '../../libs/util.js'
 import { toast } from '../../modules/toast/index.js'
 import { parseMarkdown } from '../../modules/markdown.js'
+import { assetContentBody } from '../../libs/consts.js'
 import AppError from '../../modules/AppError.js'
 import Tag from '../../components/form/tag.vue'
 import ButtonBasic from '../../components/buttons/button-basic.vue'
@@ -167,6 +168,7 @@ import SelectCollection from '../collections/select-collection/index.vue'
 import LoadingScreen from '../../components/asset/loading/screen.vue'
 import Lightbox from '../../components/content/lightbox/index.vue'
 
+const { VITE_URL_PATH } = import.meta.env
 const $content = ref()
 const router = useRouter()
 const route = useRoute()
@@ -213,7 +215,9 @@ const $useCopyClipboard = computed(() => {
 })
 const $contentBody = computed(() => {
   if (!data.value?.description) return null
-  return parseMarkdown(data.value.description)
+  let parseDescription = data.value.description
+  parseDescription = parseDescription.replace(new RegExp(assetContentBody.host, 'g'), VITE_URL_PATH)
+  return parseMarkdown(parseDescription)
 })
 
 onMounted(async () => {

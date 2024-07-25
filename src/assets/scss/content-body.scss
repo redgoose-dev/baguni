@@ -2,7 +2,7 @@
 
 // content-body markdown style
 
-$ratios: '2/1', '1/2', '6/4', '4/6', '4/3', '3/4', '16/9', '21/9';
+$ratios: '2/1', '1/2', '3/2', '2/3', '4/3', '3/4', '6/4', '4/6', '10/8', '8/10', '16/9', '21/9';
 
 .content-body {
   // typography
@@ -20,7 +20,7 @@ $ratios: '2/1', '1/2', '6/4', '4/6', '4/3', '3/4', '16/9', '21/9';
   --mk-hd-scroll-margin-top: var(--markdown-head-scroll-margin-top, unset);
 
   // img
-  --mk-size-img-margin: var(--markdown-size-img-margin, #{1.5rem 0});
+  --mk-size-img-margin: var(--markdown-size-img-margin, 1.5rem);
 
   // code
   --mk-color-code-text: var(--markdown-color-code-text, var(--color-key-3));
@@ -41,6 +41,9 @@ $ratios: '2/1', '1/2', '6/4', '4/6', '4/3', '3/4', '16/9', '21/9';
   --mk-size-hr-margin: var(--markdown-size-hr-margin, #{5rem 0});
   --mk-size-hr-text: var(--markdown-size-hr-text, 12px);
   --mk-color-hr-text: var(--markdown-color-hr-text, --mk-color-base);
+
+  // image
+  --image-width: 100vw;
 
   font-size: var(--mk-size-text);
   line-height: var(--mk-size-text-length);
@@ -74,7 +77,7 @@ $ratios: '2/1', '1/2', '6/4', '4/6', '4/3', '3/4', '16/9', '21/9';
     }
   }
   :where(h1, h2, h3) {
-    margin: calc(var(--mk-size-margin) * 2) 0 calc(var(--mk-size-margin) * 1);
+    margin: calc(var(--mk-size-margin) * 1.5) 0 var(--mk-size-margin);
     font-weight: 800;
     line-height: 1.15;
   }
@@ -171,12 +174,12 @@ $ratios: '2/1', '1/2', '6/4', '4/6', '4/3', '3/4', '16/9', '21/9';
   }
   iframe {
     display: block;
-    margin: var(--mk-size-img-margin);
+    margin: var(--mk-size-img-margin) 0;
     max-width: 100%;
   }
   .iframe {
     position: relative;
-    margin: var(--mk-size-img-margin);
+    margin: var(--mk-size-img-margin) 0;
     aspect-ratio: 16 / 9;
     > iframe {
       width: 100%;
@@ -186,7 +189,7 @@ $ratios: '2/1', '1/2', '6/4', '4/6', '4/3', '3/4', '16/9', '21/9';
   embed {
     display: block;
     max-width: 100%;
-    margin: var(--mk-size-img-margin);
+    margin: var(--mk-size-img-margin) 0;
   }
   blockquote {
     position: relative;
@@ -217,18 +220,17 @@ $ratios: '2/1', '1/2', '6/4', '4/6', '4/3', '3/4', '16/9', '21/9';
   }
   video {
     display: block;
-    margin: var(--mk-size-img-margin);
+    margin: var(--mk-size-img-margin) 0;
     max-width: 100%;
   }
 
   // image
-  --image-width: 100vw;
   :where(img, .grid-item) {
     display: block;
     font-size: 9px;
     word-break: break-all;
     position: relative;
-    margin: var(--mk-size-img-margin);
+    margin: var(--mk-size-img-margin) 0;
     max-width: 100%;
   }
 
@@ -290,6 +292,9 @@ $ratios: '2/1', '1/2', '6/4', '4/6', '4/3', '3/4', '16/9', '21/9';
     @each $ratio in $ratios {
       &[data-ratio="#{$ratio}"] { --grid-item-ratio: #{$ratio}; }
     }
+    & + .grid-item, & + .grid-group {
+      margin-top: calc(var(--mk-size-img-margin) * 2);
+    }
     &:first-child {
       margin-top: 0;
     }
@@ -298,7 +303,7 @@ $ratios: '2/1', '1/2', '6/4', '4/6', '4/3', '3/4', '16/9', '21/9';
     }
   }
   .grid-group {
-    margin: var(--mk-size-img-margin);
+    margin: var(--mk-size-img-margin) 0;
     > .grid-item {
       margin-top: var(--grid-item-gap);
       margin-bottom: var(--grid-item-gap);
@@ -308,6 +313,9 @@ $ratios: '2/1', '1/2', '6/4', '4/6', '4/3', '3/4', '16/9', '21/9';
       &:last-child {
         margin-bottom: 0;
       }
+    }
+    & + .grid-group, & + .grid-item {
+      margin-top: calc(var(--mk-size-img-margin) * 2);
     }
   }
 }

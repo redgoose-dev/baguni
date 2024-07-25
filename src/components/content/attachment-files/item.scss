@@ -28,10 +28,10 @@
     overflow: clip;
     border: none;
     background: none;
-    @include mixins.focus-content();
     background: hsl(0 0% 94%);
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    @include mixins.focus-content();
     &:after {
       content: '';
       display: block;

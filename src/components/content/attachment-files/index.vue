@@ -108,6 +108,7 @@ import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
 import { request, formData, apiPath } from '../../../libs/api.js'
 import { fileUploader } from '../../../libs/files.js'
 import { createMarkdownItems, createHtmlItems, arrayToTextForReturn } from '../../../libs/strings.js'
+import { assetContentBody } from '../../../libs/consts.js'
 import { toast } from '../../../modules/toast/index.js'
 import ButtonGroup from '../../buttons/group.vue'
 import ButtonBasic from '../../buttons/button-basic.vue'
@@ -117,7 +118,6 @@ import DropFilesOverlay from '../../asset/drop-files/overlay.vue'
 import Icon from '../../../components/icons/index.vue'
 import Item from './item.vue'
 
-const { VITE_URL_PATH } = import.meta.env
 const _content = ref()
 const props = defineProps({
   assetId: Number,
@@ -140,7 +140,7 @@ const $index = computed(() => {
       .map(([_,value]) => {
         return { ...value }
       })
-      .sort((a,b) => b.id > a.id ? 1 : -1)
+      .sort((a,b) => b.id < a.id ? 1 : -1)
   }
   else
   {
@@ -280,7 +280,7 @@ function convertIdToCode(ids, type)
         const item = data.index[id]
         return {
           name: item.name,
-          path: `${VITE_URL_PATH}${apiPath}/file/${item.id}/`,
+          path: `${assetContentBody.host}${apiPath}/file/${item.id}/`,
           type: item.type,
         }
       }))
@@ -290,7 +290,7 @@ function convertIdToCode(ids, type)
         const item = data.index[id]
         return {
           name: item.name,
-          path: `${VITE_URL_PATH}${apiPath}/file/${item.id}/`,
+          path: `${assetContentBody.host}${apiPath}/file/${item.id}/`,
           type: item.type,
         }
       }))
