@@ -1,9 +1,9 @@
 <template>
-  <ErrorApp v-if="errorData" :error="errorData"/>
-  <component v-else-if="layout" :is="layout">
-    <router-view/>
-  </component>
-  <router-view v-else/>
+<ErrorApp v-if="errorData" :error="errorData"/>
+<component v-else-if="layout" :is="layout">
+  <router-view/>
+</component>
+<router-view v-else/>
 </template>
 
 <script setup>

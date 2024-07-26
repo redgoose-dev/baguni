@@ -111,6 +111,9 @@ export function outFile(req, res, options = {})
       message: _message,
     })
   }
+  // 캐시 유지시간 (초 * 분 * 시간 * 일)
+  const maxAge = 60 * 60 * 24 * 30
+  res.set('Cache-Control', `max-age=${maxAge}, public`)
   res.writeHead(200, { 'Content-Type': type })
   res.end(buffer)
 }

@@ -21,7 +21,7 @@
           color="key-1"
           left-icon="upload"
           size="small"
-          @click="uploadFiles">
+          @click="onUploadFiles">
           파일 업로드
         </ButtonBasic>
         <ButtonBasic
@@ -108,6 +108,7 @@ import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
 import { request, formData, apiPath } from '../../../libs/api.js'
 import { fileUploader } from '../../../libs/files.js'
 import { createMarkdownItems, createHtmlItems, arrayToTextForReturn } from '../../../libs/strings.js'
+import { sleep } from '../../../libs/util.js'
 import { assetContentBody } from '../../../libs/consts.js'
 import { toast } from '../../../modules/toast/index.js'
 import ButtonGroup from '../../buttons/group.vue'
@@ -194,15 +195,12 @@ async function uploadFile(file)
     toast.add('파일을 추가하지 못했습니다.', 'error').then()
   }
 }
-async function uploadFiles()
+async function uploadFiles(files)
 {
-  const files = await fileUploader({
-    multiple: true,
-    accept: 'image/*',
-  })
   for (let i=0; i<files.length; i++)
   {
     await uploadFile(files[i])
+    await sleep(200)
   }
 }
 
@@ -226,7 +224,17 @@ async function removeFiles(ids)
   for (let i=0; i<ids.length; i++)
   {
     await remove(ids[i])
+    await sleep(200)
   }
+}
+
+async function onUploadFiles()
+{
+  const files = await fileUploader({
+    multiple: true,
+    accept: 'image/*',
+  })
+  await uploadFiles(files)
 }
 
 function onSelectItem(id)
@@ -339,13 +347,7 @@ async function onDrop(e)
   }
   dropOverlay.value = false
   const files = e.dataTransfer.files
-  if (files.length > 0)
-  {
-    for (let i = 0; i<files.length; i++)
-    {
-      await uploadFile(files[i])
-    }
-  }
+  if (files.length > 0) await uploadFiles(files)
 }
 </script>
 

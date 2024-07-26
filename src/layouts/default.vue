@@ -38,6 +38,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { authStore } from '../store/auth.js'
 import { request, formData } from '../libs/api.js'
 import { getByte } from '../libs/strings.js'
+import { sleep } from '../libs/util.js'
 import { toast } from '../modules/toast/index.js'
 import LayoutHeader from '../components/layout/header.vue'
 import LayoutFooter from '../components/layout/footer.vue'
@@ -119,6 +120,7 @@ async function addAssets(files)
     {
       await addAsset(files[i])
       dropFiles.current = i + 1
+      await sleep(200)
     }
     toast.add('에셋 등록을 완료했습니다.', 'success').then()
     if (route.name === 'assets')
