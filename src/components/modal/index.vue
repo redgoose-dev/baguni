@@ -33,6 +33,7 @@ const props = defineProps({
 })
 const emits = defineEmits([ 'close' ])
 const open = ref(false)
+const backupScrollY = ref(0)
 
 function onClickDialog(e)
 {
@@ -65,12 +66,15 @@ async function control(sw)
   {
     $dialog.value?.blur()
     open.value = false
+    await nextTick()
+    window.scrollTo({ top: backupScrollY.value })
   }
 }
 
 function controlRoot(sw)
 {
   if (!props.hideScroll) return
+  if (sw) backupScrollY.value = window.scrollY
   if (!sw && document.getElementById('modal').children.length > 1) return
   document.querySelector('html').classList[sw ? 'add' : 'remove']('mode-not-scroll')
 }
