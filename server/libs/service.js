@@ -1,5 +1,6 @@
 import { existsSync, rmSync } from 'node:fs'
 import sizeOf from 'image-size'
+import iconv from 'iconv-lite'
 import { tagRegex } from '../../global/strings.js'
 import { tables, getItem, addItem, removeItem, getCount, editItem } from './db.js'
 import { ownerModes } from '../../global/consts.js'
@@ -99,11 +100,12 @@ export function removeTag(tag, assetId)
 export function addFileData(file)
 {
   const { path, originalname, mimetype, size, ...restFile } = file
+  const originalName = iconv.decode(Buffer.from(originalname, 'binary'), 'utf-8')
   const res = addItem({
     table: tables.file,
     values: [
       { key: 'path', value: path },
-      { key: 'name', value: originalname },
+      { key: 'name', value: originalName },
       { key: 'type', value: mimetype },
       { key: 'size', value: size },
       {
@@ -125,6 +127,7 @@ export function addFileData(file)
 export function editFileData(file, id)
 {
   const { path, originalname, mimetype, size, ...restFile } = file
+  const originalName = iconv.decode(Buffer.from(originalname, 'binary'), 'utf-8')
   editItem({
     table: tables.file,
     where: 'id = $id',
@@ -139,7 +142,7 @@ export function editFileData(file, id)
     values: {
       '$id': id,
       '$path': path,
-      '$name': originalname,
+      '$name': originalName,
       '$type': mimetype,
       '$size': size,
       '$meta': JSON.stringify({
