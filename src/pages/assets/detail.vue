@@ -10,7 +10,7 @@
       @click="onClickFile">
       <img
         v-if="$file.type === 'image'"
-        :src="$file.src"
+        :src="`${$file.src}?v=${$file.v}`"
         :alt="$file.name">
       <i v-else>
         <Icon :name="$file.icon"/>
@@ -191,6 +191,7 @@ const $file = computed(() => {
     type: type.split('/')[0],
     name,
     icon,
+    v: new Date(data.value.files.main.updated_at).getTime(),
   }
 })
 const $fileMeta = computed(() => {

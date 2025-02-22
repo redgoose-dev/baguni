@@ -1,8 +1,8 @@
 @use 'mixins';
-@import 'normalize';
-@import 'fonts';
-@import 'keyframes';
-@import 'content-body';
+@forward 'normalize';
+@forward 'fonts';
+@forward 'keyframes';
+@forward 'content-body';
 
 :root {
   // fonts

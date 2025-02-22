@@ -109,7 +109,7 @@ import Icon from '../../../components/icons/index.vue'
 
 <style lang="scss" scoped>
 @use '../../../assets/scss/mixins';
-@import '../page';
+@forward '../page';
 
 .icons-index {
   margin: 0;

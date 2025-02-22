@@ -34,5 +34,5 @@ const pageBasic = ref(1)
 </script>
 
 <style lang="scss" scoped>
-@import '../page';
+@forward '../page';
 </style>

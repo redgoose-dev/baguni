@@ -34,6 +34,7 @@
               :title="item.title"
               :meta="[ item.regdate ]"
               :theme="assets.filter.indexTheme"
+              :v="item.v"
               class="item">
               <template #body>
                 <nav class="item-nav">
@@ -133,11 +134,12 @@ const collection = reactive({
 const $index = computed(() => {
   if (!(data.index?.length > 0)) return []
   return data.index.map(item => {
-    const { id, title, description, cover_file_id, file_id, type, regdate } = item
-    let thumbnail = cover_file_id ? `${apiPath}/file/${cover_file_id}/` : undefined
+    const { id, title, description, cover_file_id, file_id, type, regdate, updated_at } = item
+    const v = new Date(updated_at).getTime()
+    let thumbnail = cover_file_id ? `${apiPath}/file/${cover_file_id}/?v=${v}` : undefined
     if (!thumbnail && /^image/.test(type))
     {
-      thumbnail = file_id ? `${apiPath}/file/${file_id}/?width=480&height=320&quality=75&type=cover` : undefined
+      thumbnail = file_id ? `${apiPath}/file/${file_id}/?width=480&height=320&quality=75&type=cover&v=${v}` : undefined
     }
     return {
       id,

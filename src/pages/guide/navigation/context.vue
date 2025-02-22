@@ -89,5 +89,5 @@ function onSelectDropdown(item)
 </script>
 
 <style lang="scss" scoped>
-@import '../page';
+@forward '../page';
 </style>

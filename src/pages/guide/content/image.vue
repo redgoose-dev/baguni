@@ -50,5 +50,5 @@ import ImageItem from '../../../components/content/image/index.vue'
 
 <style lang="scss" scoped>
 @use '../../../assets/scss/mixins';
-@import '../page';
+@forward '../page';
 </style>

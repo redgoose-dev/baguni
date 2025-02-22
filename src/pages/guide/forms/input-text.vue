@@ -130,5 +130,5 @@ const textareaExample = ref('description..')
 </script>
 
 <style lang="scss" scoped>
-@import '../page';
+@forward '../page';
 </style>

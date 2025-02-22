@@ -47,6 +47,7 @@ export default async (req, res) => {
         `${tables.file}.size`,
         `${tables.file}.meta`,
         `${tables.file}.regdate`,
+        `${tables.file}.updated_at`,
         `${tables.mapAssetFile}.type`,
       ],
       join: `join ${tables.mapAssetFile} on ${tables.file}.id = ${tables.mapAssetFile}.file`,
@@ -65,6 +66,7 @@ export default async (req, res) => {
             size: o.size,
             meta: parseJSON(o.meta),
             date: o.regdate,
+            updated_at: o.updated_at,
           }
           break
         case fileTypes.coverOriginal:
@@ -81,6 +83,8 @@ export default async (req, res) => {
             type: o.type,
             size: o.size,
             meta: parseJSON(o.meta),
+            date: o.regdate,
+            updated_at: o.updated_at,
           })
           break
       }

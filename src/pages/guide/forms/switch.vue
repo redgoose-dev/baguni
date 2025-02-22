@@ -97,5 +97,5 @@ const labelValue = ref({ theme: 'light', label: false })
 </script>
 
 <style lang="scss" scoped>
-@import '../page';
+@forward '../page';
 </style>

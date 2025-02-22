@@ -98,7 +98,7 @@ function onClickOpenFullSizeWindow()
 
 <style lang="scss" scoped>
 @use '../../../assets/scss/mixins';
-@import '../page';
+@forward '../page';
 .modal-window {
   --modal-min-width: 480px;
   --modal-padding: 30px;

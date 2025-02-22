@@ -111,5 +111,5 @@ import ButtonGroup from '../../../components/buttons/group.vue'
 </script>
 
 <style lang="scss" scoped>
-@import '../page';
+@forward '../page';
 </style>

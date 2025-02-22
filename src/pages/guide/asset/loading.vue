@@ -38,7 +38,7 @@ import Loading from '../../../components/asset/loading/index.vue'
 
 <style lang="scss" scoped>
 @use '../../../assets/scss/mixins';
-@import '../page';
+@forward '../page';
 .loader-move {
   width: 400px;
   .loader {

@@ -157,11 +157,12 @@ const $assets = computed(() => {
   return {
     total: data.assets.total,
     index: data.assets.index.map(item => {
-      const { id, title, description, type, file_id, cover_file_id, regdate } = item
-      let thumbnail = cover_file_id ? `${apiPath}/file/${cover_file_id}/` : undefined
+      const { id, title, description, type, file_id, cover_file_id, regdate, updated_at } = item
+      const v = new Date(updated_at).getTime()
+      let thumbnail = cover_file_id ? `${apiPath}/file/${cover_file_id}/?v=${v}` : undefined
       if (!thumbnail && /^image/.test(type))
       {
-        thumbnail = file_id ? `${apiPath}/file/${file_id}/?width=480&height=320&quality=75&type=cover` : undefined
+        thumbnail = file_id ? `${apiPath}/file/${file_id}/?width=480&height=320&quality=75&type=cover&v=${v}` : undefined
       }
       return {
         id,

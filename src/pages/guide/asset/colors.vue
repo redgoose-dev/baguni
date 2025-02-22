@@ -67,7 +67,7 @@
 
 <style lang="scss" scoped>
 @use '../../../assets/scss/mixins';
-@import '../page';
+@forward '../page';
 
 .light-mode {
   background: var(--color-light);

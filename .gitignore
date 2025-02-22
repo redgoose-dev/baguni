@@ -9,6 +9,5 @@ tmp/
 # files
 .DS_Store
 .env.local
-bun.lockb
 docker-compose.yml
 action.sh

@@ -74,7 +74,7 @@ export const loggerError = createLogger({
 })
 
 // for development
-if (isDev)
+if (isDev())
 {
   const consoleFormatForSuccess = printf(({ level, message, timestamp }) => {
     return `${level} [${timestamp}] ${message}`

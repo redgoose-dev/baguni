@@ -62,7 +62,7 @@ const exampleSlider = reactive({
 </script>
 
 <style lang="scss" scoped>
-@import '../page';
+@forward '../page';
 
 .ex-sliders {
   user-select: none;

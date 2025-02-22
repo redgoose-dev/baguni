@@ -53,7 +53,7 @@ function onClickImage(image)
 
 <style lang="scss" scoped>
 @use '../../../assets/scss/mixins';
-@import '../page';
+@forward '../page';
 .images {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

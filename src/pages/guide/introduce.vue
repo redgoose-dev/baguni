@@ -20,7 +20,7 @@
 
 <style lang="scss" scoped>
 @use '../../assets/scss/mixins';
-@import './page';
+@forward './page';
 .content-body {
   font-size: 14px;
   line-height: 1.42;
