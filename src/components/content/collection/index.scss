@@ -3,7 +3,7 @@
 .collection-item {
   position: relative;
   display: grid;
-  grid-template-columns: 240px 1fr auto;
+  grid-template-columns: var(--cover-size, 240px) 1fr auto;
   align-items: center;
   border-radius: 8px;
   box-shadow:
@@ -31,20 +31,23 @@
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
     overflow: clip;
+    aspect-ratio: var(--cover-ratio, 6/4);
     a {
       display: block;
+      height: 100%;
       -webkit-tap-highlight-color: transparent;
     }
     img {
       display: block;
-      max-width: 100%;
-      aspect-ratio: 6/4;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
     }
     i {
       display: grid;
       place-content: center;
-      aspect-ratio: 6/4;
+      width: 100%;
+      height: 100%;
       background: var(--color-blur);
       --icon-size: 42px;
       --icon-stroke: 1;
@@ -53,12 +56,12 @@
   }
   &__body {
     min-width: 0;
-    margin: 0 0 0 16px;
-    padding: 16px 0;
+    padding: 0 16px;
     .title {
       margin: 0;
-      font-size: 18px;
+      font-size: 15px;
       line-height: 1.15;
+      @include mixins.single-line-text;
       a {
         text-decoration: none;
         color: var(--color-base);
@@ -66,22 +69,23 @@
       }
     }
     .description {
-      margin: 4px 0 0;
-      font-size: 12px;
-      line-height: 1.25;
+      margin: 2px 0 0;
+      font-size: 11px;
+      line-height: 1.15;
       color: var(--color-weak);
       word-break: keep-all;
       overflow-wrap: break-word;
-      @include mixins.multiple-line-text(3);
+      @include mixins.single-line-text;
     }
     .meta {
       display: flex;
       flex-wrap: wrap;
       gap: 4px 6px;
-      margin: 10px 0 0;
+      margin: 6px 0 0;
+      user-select: none;
       span {
         display: block;
-        font-size: 11px;
+        font-size: 10px;
         line-height: 1.15;
         font-weight: 500;
         &:not(:last-child):after {
@@ -90,36 +94,19 @@
       }
     }
   }
-  &__side {
-    margin: 0 32px;
-    &:not(:has(.button.button--key-1)) {
-      .dropdown {
-        opacity: 1;
-      }
-    }
+  &__manage {
+    display: flex;
+    justify-content: end;
+    margin: 8px 0 0;
   }
   .dropdown {
     transition: opacity 120ms ease-out;
     --context-width: 120px;
   }
   @include mixins.hover() {
-    .collection-item__side {
-      &:is(:has(.button)) {
-        .dropdown {
-          opacity: 0;
-        }
-      }
-    }
     &:hover {
       &:after {
         box-shadow: 0 0 0 2px mixins.mix-alpha(var(--color-key-3), 100%);
-      }
-      .collection-item__side {
-        &:is(:has(.button)) {
-          .dropdown {
-            opacity: 1;
-          }
-        }
       }
     }
   }

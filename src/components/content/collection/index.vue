@@ -24,29 +24,29 @@
       <span>{{props.assetsCount}}개의 에셋</span>
       <span>{{props.regdate}}</span>
     </p>
+    <nav class="collection-item__manage">
+      <Dropdown
+        ref="$dropdown"
+        v-model="openDropdown"
+        position="right"
+        class="dropdown">
+        <template #trigger>
+          <Button
+            size="small"
+            right-icon="chevron-down"
+            :color="openDropdown ? 'weak' : ''">
+            관리
+          </Button>
+        </template>
+        <Context
+          :items="[
+            { key: 'edit', label: '수정', icon: 'edit' },
+            { key: 'remove', label: '삭제', icon: 'trash-2', color: 'danger' },
+          ]"
+          @select="onSelectContext"/>
+      </Dropdown>
+    </nav>
   </div>
-  <nav class="collection-item__side">
-    <Dropdown
-      ref="$dropdown"
-      v-model="openDropdown"
-      position="right"
-      class="dropdown">
-      <template #trigger>
-        <Button
-          size="small"
-          right-icon="chevron-down"
-          :color="openDropdown ? 'weak' : ''">
-          옵션
-        </Button>
-      </template>
-      <Context
-        :items="[
-          { key: 'edit', label: '수정', icon: 'edit' },
-          { key: 'remove', label: '삭제', icon: 'trash-2', color: 'danger' },
-        ]"
-        @select="onSelectContext"/>
-    </Dropdown>
-  </nav>
 </div>
 </template>
 

@@ -1,3 +1,5 @@
+@use '../../assets/scss/mixins' as mixins;
+
 .collections {
   margin: var(--size-content-margin-top) 0 0;
   padding: 0 var(--size-side-padding);
@@ -18,7 +20,18 @@
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 20px 0;
+  gap: var(--gap, 20px);
+  grid-template-columns: repeat(var(--column, 1), 1fr);
+  align-items: start;
+  --cover-size: 180px;
+  > li {
+    min-width: 0;
+  }
+  @include mixins.responsive(desktop) {
+    --column: 2;
+    --cover-size: 150px;
+    --cover-ratio: 6/5;
+  }
 }
 
 .bottom {
