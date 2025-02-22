@@ -60,7 +60,7 @@
           class="explorer__empty"/>
         <nav class="explorer__paginate">
           <Paginate
-            v-model="queryParams.page"
+            :model-value="queryParams.page"
             :total="data.total"
             :size="assets.indexSize"
             :range="assets.paginateSize"
@@ -73,7 +73,7 @@
           :total="data.total"
           :q="queryParams.q"
           @update-keyword="onFilterUpdateKeyword"
-          @update="fetch"
+          @update="onFilterUpdate"
           @reset="onFilterReset"/>
       </div>
     </div>
@@ -153,13 +153,19 @@ const $index = computed(() => {
 
 onMounted(() => fetch())
 watch(() => route.query, async (value, _oldValue) => {
-  if ((Number(value.page) || 1) !== queryParams.page) queryParams.page = Number(value.page)
-  if (value.q !== queryParams.q)
+  let update = false
+  if (Number(value.page || 1) !== Number(queryParams.page || 1))
   {
+    update = true
+    queryParams.page = Number(value.page)
+  }
+  if (String(value.q || '') !== String(queryParams.q || ''))
+  {
+    update = true
     queryParams.q = value.q || ''
     _filter.value.updateSearchKeyword(queryParams.q)
   }
-  fetch().then()
+  if (update) await fetch()
 })
 
 async function fetch()
@@ -231,10 +237,16 @@ async function onChangePage(page)
     page,
   }
   if (newQuery.page === 1) delete newQuery.page
-  queryParams.page = page
   await router.push(`./${serialize(newQuery, true)}`)
 }
 
+async function onFilterUpdate()
+{
+  runFetch.value = false
+  await onChangePage(1)
+  runFetch.value = true
+  await fetch()
+}
 async function onFilterUpdateKeyword(q)
 {
   let { query } = route
