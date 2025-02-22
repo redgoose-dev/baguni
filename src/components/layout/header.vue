@@ -68,8 +68,8 @@
             </template>
             <Context
               :items="[
-                { key: 'account', label: '계정 관리하기', icon: 'user' },
-                $admin && { key: 'add-user', label: '계정 만들기', icon: 'user' },
+                { key: 'account', label: '계정 관리하기', icon: 'user-round-cog' },
+                $admin && { key: 'add-user', label: '계정 만들기', icon: 'user-round-plus' },
                 { key: 'logout', label: '로그아웃', icon: 'log-out', color: 'danger' },
               ].filter(Boolean)"
               @select="onSelectProfileDropdown"/>

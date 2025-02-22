@@ -9,7 +9,7 @@
   @dragover.prevent="onDragOver"
   @dragleave.prevent="onDragLeave"
   @dragend.prevent="onDragEnd"
-  @drop.prevent="onDrop">
+  @drop="onDrop">
   <LayoutHeader/>
   <div v-if="!hideContent" class="container">
     <slot/>
@@ -57,6 +57,9 @@ const dropFiles = reactive({
 })
 const hideContent = ref(false)
 const allowDrag = ref(true)
+const allowRouteName = [
+  'assets'
+]
 
 const $limitFileSize = computed(() => {
   return getByte(auth.user?.json?.asset?.file_mainLimitSize || 10485760)
@@ -69,10 +72,11 @@ function onDragStart()
 /**
  * drag over event
  */
-function onDragOver(e)
+function onDragOver()
 {
   if (!allowDrag.value) return
   if (dropFiles.open) return
+  if (!allowRouteName.includes(route.name)) return
   dropFiles.open = true
 }
 /**
@@ -92,6 +96,8 @@ function onDragEnd()
  */
 async function onDrop(e)
 {
+  if (!allowRouteName.includes(route.name)) return
+  e.preventDefault()
   if (!allowDrag.value)
   {
     allowDrag.value = true
@@ -123,14 +129,8 @@ async function addAssets(files)
       await sleep(200)
     }
     toast.add('에셋 등록을 완료했습니다.', 'success').then()
-    if (route.name === 'assets')
-    {
-      await blink()
-    }
-    else
-    {
-      await router.push('/')
-    }
+    if (route.name === 'assets') await blink()
+    await router.push(`/`)
   }
   catch (e)
   {

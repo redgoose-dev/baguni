@@ -8,7 +8,8 @@
 .asset-image {
   margin: 0;
   user-select: none;
-  background-color: hsl(0 0% 98%);
+  background: var(--color-bg);
+  @include mixins.checkerboard(20px, hsl(0 0% 94%));
   .trigger {
     display: block;
     margin: 0;
