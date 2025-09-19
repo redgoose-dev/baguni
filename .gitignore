@@ -1,5 +1,6 @@
 # directories
 .idea/
+.vscode/
 node_modules/
 .AppleDouble/
 dist/
@@ -8,6 +9,7 @@ tmp/
 
 # files
 .DS_Store
-.env.local
+.env.*
 docker-compose.yml
-action.sh
+podman-compose.yml
+cmd.sh

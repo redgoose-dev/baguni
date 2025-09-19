@@ -1,0 +1,84 @@
+@use '../../assets/scss/mixins';
+
+.context {
+  > ul {
+    margin: 0;
+    padding: 12px 0;
+    list-style: none;
+    width: var(--context-width, auto);
+    box-sizing: border-box;
+    border-radius: 8px;
+    background-color: var(--color-bg);
+    box-shadow:
+      0 4px 16px hsla(0 0% 0% / 15%),
+      0 1px 4px hsla(0 0% 0% / 15%),
+      0 0 0 .5px hsla(0 0% 0% / 10%);
+  }
+}
+
+.context-item {
+  --context-item-fill: var(--color-base);
+  --context-item-bg: none;
+  display: grid;
+  align-items: center;
+  gap: 0 8px;
+  min-width: 0;
+  width: 100%;
+  height: 30px;
+  margin: 0;
+  padding: 0 16px;
+  box-sizing: border-box;
+  text-align: left;
+  border: none;
+  background: var(--context-item-bg);
+  font-size: 13px;
+  color: var(--context-item-fill);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -.25px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  span {
+    min-width: 0;
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: clip;
+  }
+  &:hover:not(:disabled) {
+    background-color: #{mixins.mix-alpha(var(--color-weak), 8%)};
+  }
+  &:active {
+    opacity: .5;
+  }
+  &:focus-visible:not(:disabled) {
+    outline: 2px solid var(--color-key-1);
+    outline-offset: -2px;
+    border-radius: 4px;
+  }
+  // icon
+  &--is-icon {
+    grid-template-columns: auto 1fr;
+    --icon-margin: 0;
+    --icon-size: 16px;
+    --icon-stroke: 2;
+    --icon-color: var(--context-item-fill);
+  }
+  // color
+  &--key-1 {
+    --context-item-fill: var(--color-key-1);
+  }
+  &--key-2 {
+    --context-item-fill: var(--color-key-2);
+  }
+  &--key-3 {
+    --context-item-fill: var(--color-key-3);
+  }
+  &--success {
+    --context-item-fill: var(--color-success);
+  }
+  &--danger {
+    --context-item-fill: var(--color-danger);
+  }
+}

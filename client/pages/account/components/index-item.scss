@@ -1,0 +1,88 @@
+@use '../../../assets/scss/mixins';
+
+.item {
+  padding: 0;
+  --shadow-box-radius: 12px;
+  .header {
+    display: flex;
+    align-items: center;
+    background: var(--color-blur);
+    padding: 10px 20px;
+    border-radius: var(--shadow-box-radius) var(--shadow-box-radius) 0 0;
+    h1 {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0;
+      line-height: 1.05;
+      user-select: none;
+      --icon-size: 18px;
+      --icon-stroke: 2.25;
+      strong {
+        font-weight: 700;
+        font-size: 16px;
+      }
+    }
+    nav {
+      padding: 0;
+    }
+    &.active {
+      background: var(--color-key-3);
+      h1 {
+        color: var(--color-light);
+        --icon-color: var(--color-light);
+      }
+    }
+  }
+  .body {
+    display: flex;
+    gap: 0;
+    align-items: center;
+    padding: 24px 0;
+    figure {
+      display: grid;
+      place-content: center;
+      margin: 0;
+      padding: 0 42px;
+      user-select: none;
+      > * {
+        display: block;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: mixins.mix-alpha(var(--color-blur), 50%);
+      }
+      > i {
+        display: grid;
+        place-content: center;
+        --icon-size: 36px;
+        --icon-stroke: 1.25;
+        --icon-color: var(--color-weak);
+      }
+    }
+  }
+}
+
+.metas {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 16px 72px;
+  dl {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    line-height: 1.15;
+  }
+  dt {
+    font-size: 11px;
+    user-select: none;
+  }
+  dd {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+  }
+}

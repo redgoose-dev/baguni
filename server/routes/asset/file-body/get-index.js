@@ -2,32 +2,36 @@
  * [GET] /asset/:id/file-body/
  *
  * Get body files from asset
- * 에셋 상세보기 데이터 가져오기
+ * 에셋 바디용 파일 데이터 가져오기
  */
 
-import { success, error } from '../../output.js'
+import ServiceError from '../../../classes/ServiceError.js'
+import { getQuery } from '../../../libs/server.js'
+import { onRequest, onResponse, setResponse } from '../../../libs/service.js'
 import { connect, disconnect, tables, getCount, getItems } from '../../../libs/db.js'
 import { checkAuthorization } from '../../../libs/token.js'
-import { fileTypes } from '../../../libs/consts.js'
+import { fileTypes } from '../../../libs/assets.js'
 import { parseJSON } from '../../../libs/objects.js'
-import { checkAssetOwner } from '../../../libs/service.js'
-import { ownerModes } from '../../../../global/consts.js'
-import ServiceError from '../../../libs/ServiceError.js'
 
-export default async (req, res) => {
+export default async (req, _ctx) => {
+
+  let response
+
+  // trigger request event
+  await onRequest(req, _ctx)
+
   try
   {
-    const assetId = Number(req.params.id)
-    if (!assetId) throw new ServiceError('에셋 id가 없습니다.', 500)
+    const id = Number(req.params.id)
+    if (!id) throw new ServiceError('ID 값이 없습니다.', { status: 204 })
 
     // connect db
     connect({ readonly: true })
+
     // check auth
-    const auth = checkAuthorization(req.headers.authorization)
+    const auth = checkAuthorization(req)
 
-    // check owner
-    checkAssetOwner(ownerModes.ASSET, auth.id, assetId)
-
+    const { file_type, order, sort } = getQuery(req.url)
     let index, total
     let fields = []
     let join = []
@@ -35,75 +39,84 @@ export default async (req, res) => {
     let values = {}
 
     // 기본적인 쿼리 만들기
-    fields.push(`${tables.file}.*`)
-    join.push(`join ${tables.file} on (${tables.mapAssetFile}.file = ${tables.file}.id and ${tables.mapAssetFile}.type like '${fileTypes.body}')`)
-    where += ` and ${tables.mapAssetFile}.asset = $id`
-    values['$id'] = assetId
+    where += ` AND module LIKE '${tables.asset}'`
+    where += ` AND module_id = ${id}`
+    where += ` AND mode LIKE '${fileTypes.body}'`
+
+    // 파일의 타입 (type 필드에서 키워드 검색)
+    if (file_type) where += ` AND type LIKE '%${file_type}%'`
 
     // repair where
-    where = where.trim().replace(/^and|or/, ' ')
+    where = where.trim().replace(/^AND|OR/, ' ')
 
     // get total
     total = getCount({
-      table: tables.mapAssetFile,
+      table: tables.file,
       join,
       where,
       values,
-    })
-    if (!(total.data > 0)) throw new ServiceError('에셋 바디용 파일이 없습니다.', 204)
-    // get index
-    index = getItems({
-      table: tables.mapAssetFile,
-      fields,
-      join,
-      where,
-      values,
-    })
-    if (index.data?.length > 0)
+    }).data
+    if (!(total > 0))
     {
-      index.data = index.data.map((o) => {
-        return {
-          id: o.id,
-          name: o.name,
-          type: o.type,
-          size: o.size,
-          meta: parseJSON(o.meta),
-        }
+      throw new ServiceError('에셋 바디용 파일이 없습니다.', {
+        status: 204,
       })
     }
 
-    // close db
-    disconnect()
-    // result
-    success(req, res, {
+    // get index
+    index = getItems({
+      table: tables.file,
+      fields,
+      join,
+      where,
+      order: Boolean(order || sort) ? order : 'id',
+      sort: Boolean(order || sort) ? sort : 'desc',
+      values,
+    }).data
+    if (index?.length > 0)
+    {
+      index = index.map((o) => ({
+        id: o.id,
+        name: o.name,
+        type: o.type,
+        size: o.size,
+        meta: parseJSON(o.meta),
+      }))
+    }
+
+    // set response
+    response = setResponse({
       message: '에셋 바디용 파일목록',
       data: {
-        total: total.data,
-        index: index.data,
+        total,
+        index,
       },
     })
   }
-  catch (e)
+  catch (_e)
   {
-    // close db
-    disconnect()
-    // result
-    switch (e.code)
+    switch (_e.status)
     {
       case 204:
-        success(req, res, {
-          message: '에셋 바디용 파일이 없습니다.',
-          code: 204,
-        })
+        response = setResponse('에셋 바디용 파일이 없습니다.', 204)
         break
       default:
-        error(req, res, {
-          code: e.code,
-          message: '에셋 바디용 파일을 가져오지 못했습니다.',
-          _file: __filename,
-          _err: e,
-        })
+        response = setResponse(new ServiceError('에셋 바디용 파일을 가져오지 못했습니다.', {
+          status: _e.status,
+          text: _e.statusText || _e.message,
+          url: `${req.method} ${req.url}`,
+        }))
         break
     }
   }
+  finally
+  {
+    disconnect()
+  }
+
+  // trigger response event
+  await onResponse(req, response, _ctx)
+
+  return response
+
 }

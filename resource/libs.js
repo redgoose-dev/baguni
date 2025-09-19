@@ -1,7 +1,4 @@
-import { createInterface } from 'node:readline/promises'
-import { stdin, stdout } from 'node:process'
-
-export const appName = 'BA.GU.NI'
+import { hashSync, genSaltSync } from 'bcryptjs'
 
 export function message(type, msg)
 {
@@ -27,23 +24,49 @@ export function message(type, msg)
   }
 }
 
+/**
+ * prompt
+ *
+ * @param {string} message
+ * @return {Promise<string>}
+ */
 export async function prompt(message)
 {
-  const rl = createInterface({
-    input: stdin,
-    output: stdout,
-  })
-  const answer = await rl.question(`${message} `)
-  rl.close()
-  return answer
+  process.stdout.write(`${message} `)
+  for await (const line of console)
+  {
+    return line?.trim() || ''
+  }
 }
 
-export async function multiplePrompt(messages)
+/**
+ * 아이디 검증하기
+ * @param {string} str
+ * @return {boolean}
+ */
+export function verifyId(str)
 {
-  let result = []
-  for (let message of messages)
-  {
-    result.push(await prompt(message))
-  }
-  return result
+  return /^[a-zA-Z0-9_-]+$/.test(String(str))
+}
+
+/**
+ * 비밀번호 해시화하기
+ * @param {string} password 비밀번호 문자
+ */
+export function hashPassword(password)
+{
+  const salt = genSaltSync(9)
+  return hashSync(String(password), salt)
+}
+
+/**
+ * 이메일 주소 검증하기
+ * @param {string} address
+ * @return {boolean}
+ */
+export function verifyEmail(address)
+{
+  if (!address) return false
+  const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{1,}))$/;
+  return emailRegex.test(String(address).toLowerCase())
 }

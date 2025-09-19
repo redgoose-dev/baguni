@@ -1,4 +1,4 @@
-# 바구니(Baguni)
+# 바구니(BAGUNI)
 
 웹 프로그램 `바구니`는 이미지나 파일들을 저장하고 탐색하고 보관하기 위하여 만들어진 프로그램입니다.
 
@@ -23,7 +23,7 @@
 git clone https://github.com/redgoose-dev/baguni.git
 cd baguni
 bun install
-bun run app-install
+bun run app:install
 ```
 
 
@@ -37,11 +37,10 @@ bun run app-install
 bun run dev
 ```
 
-만약 서버 포트를 바꾸고 싶다면 `.env.local` 파일을 열어서 `VITE_PORT="4200"` 항목을 추가하거나 수정하면 됩니다.
-
+만약 서버 포트를 바꾸고 싶다면 `.env.local` 파일을 열어서 `PORT="4200"` 항목을 추가하거나 수정하면 됩니다.
 이 프로젝트는 하나의 서버에서 프론트엔드와 백엔드 영역 둘다 사용하고 있습니다.
 
-- `/src`: 프론트엔드 영역
+- `/client`: 프론트엔드 영역
 - `/server`: 백엔드 영역
 
 ### Production
@@ -68,63 +67,32 @@ bun run preview
 
 ```shell
 docker run \
-  -e EMAIL=name@domain.com \
-  -e NAME=username \
-  -e PASSWORD=1234 \
+  -n baguni \
   -p 3000:80 \
   -v ./data:/app/data \
-  -v ./.env.local:/app/.env.local \
+  -v ./.env.docker:/app/.env.local \
   redgoose/baguni:latest
 ```
 
 컨테이너를 만들때 참고할 부분은 다음과 같습니다.
 
 - 컨테이너가 만들어질때 내부에서 프로그램을 빌드하고 로컬서버를 띄웁니다. 포트는 80
-- `-e` 파라메터로 `EMAIL`, `NAME`, `PASSWORD` 세개의 값이 존재하면 빌드후에 인스톨을 합니다. (인스톨은 자정할 디렉토리 경로를 만들고 데이터베이스를 초기화하며 사용자 계정을 만듭니다.)
-- 컨테이너를 생성할때 내부에서 빌드과정이 있다보니 열리는데까지 시간이 조금 걸립니다.
-- 인스톨이 끝나면 내부에서 `/data` 디렉토리가 만들어지며 `.env.local`파일이 만들어지거나 업데이트 됩니다.
-- 첫 인스톨 이후에 컨테이너를 다시 만들거나 실행을 한다면 EMAIL, NAME, PASSWORD 값을 생략해도 됩니다. (`/data` 디렉토리와 업데이트된 `.env.local` 파일은 꼭 필요합니다.)
-- `-v` 파라메터로 설치한 장소와 컨테이너의 장소를 볼륨화 시킬 수 있습니다. 예제와 같이 최소한 `/app/data`와 `/app/.env.local` 두개만 존재하면 됩니다. `.env.local` 파일은 디렉토리가 아니기 때문에 이미 파일로 만들어두시는걸 추천드립니다.
+- 서버가 열리면 최초에 `docker exec -it baguni bun run app:install` 명령을 실행하여 앱 설치를 합니다. 설치가 완료되면 `/data` 디렉토리가 만들어집니다.
+- `-v` 파라메터로 설치한 장소와 컨테이너의 장소를 볼륨화 시킬 수 있습니다. 예제와 같이 최소한 `/app/data`와 `/app/.env.local` 두개만 존재하면 됩니다.
 
-제가 현재 서버 운영하고 있는 docker-compose.yml 파일의 모습은 다음과 같습니다.
+docker-compose.yml 파일의 모습은 다음과 같습니다.
 
 ```yaml
-version: "3.8"
-
 services:
-  baguni:
-    image: redgoose/baguni:latest
+  keep:
     container_name: baguni
-    restart: unless-stopped
+    image: redgoose/baguni:latest
     volumes:
-      - ./.env.local:/app/.env.local
+      - ./.env:/app/.env.local
       - ./data:/app/data
-      - ./public:/app/public
-      - ./index.html:/app/index.html
-    environment:
-      - EMAIL="xxx@xxx.xxx"
-      - NAME="xxxx"
-      - PASSWORD="1234"
-      - TZ=Asia/Seoul
+    ports:
+      - '3000:80'
 ```
-
-이렇게 원하는 파일을 볼륨화하여 커스터마이즈 할 수 있습니다. (파비콘이나 index.html 파일같은것들을 직접 고쳐서 씁니다.)  
-.env 파일과 다른 요소들을 수정하면 `docker-compose restart`으로 컨테이너를 내렷다 올리면 됩니다.
-
-
-## Tech stack
-
-이 프로그램은 다음과 같은 기술을 이용했습니다. (일부분입니다.)
-
-- bun
-- express
-- vite
-- multer
-- winston
-- lucide
-- vue
-- pinia
-- scss
 
 
 ## Support

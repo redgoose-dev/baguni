@@ -1,0 +1,44 @@
+.form {
+  margin: 30px 0 0;
+}
+
+.fields {
+  margin: 0;
+  padding: 0;
+  border: none;
+  display: grid;
+  gap: 30px 0;
+  > legend {
+    font-size: 0;
+  }
+}
+
+.field {
+  > h3 {
+    margin: 0;
+    line-height: 1.05;
+    font-size: 14px;
+    font-weight: 600;
+    user-select: none;
+  }
+  > div {
+    margin: 12px 0 0;
+    > p {
+      margin: 6px 0 0;
+      font-size: 11px;
+      color: var(--color-weak);
+      line-height: 1.15;
+    }
+  }
+}
+
+.passwords {
+  display: flex;
+  gap: 0 12px;
+}
+
+.bottom-nav {
+  margin: 52px 0 0;
+  display: flex;
+  justify-content: center;
+}

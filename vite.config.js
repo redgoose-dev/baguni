@@ -1,34 +1,54 @@
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
+const { HOST, PORT, PORT_CLIENT } = Bun.env
+
 const config = defineConfig(async ({ mode }) => {
-  const { VITE_HOST, VITE_PORT, VITE_OPEN_BROWSER, VITE_DIR_OUT } = loadEnv(mode, process.cwd())
   return {
+    root: 'client',
+    publicDir: './public',
+    base: '/',
     server: {
-      host: VITE_HOST,
-      port: Number(VITE_PORT),
-      open: VITE_OPEN_BROWSER === 'true',
+      host: HOST,
+      port: Number(PORT_CLIENT),
+      open: false,
+      proxy: {
+        '/api': {
+          target: `http://0.0.0.0:${PORT}/api`,
+          changeOrigin: true,
+          rewrite: path => path.replace(/^\/api\/?/, '/'),
+        },
+        '/file': {
+          target: `http://0.0.0.0:${PORT}/file`,
+          changeOrigin: true,
+          rewrite: path => path.replace(/^\/file\/?/, '/'),
+        },
+      },
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler',
+        },
+      },
     },
     build: {
-      outDir: VITE_DIR_OUT || 'dist',
+      outDir: '../dist/public',
+      emptyOutDir: true,
       rollupOptions: {
         output: {
           assetFileNames: (assetInfo) => {
             const info = assetInfo.name.split('.')
             let ext = info[info.length - 1]
-            if (/png|jpe?g|svg|gif|tiff|bmp|ico|webp/i.test(ext))
-            {
-              ext = 'images/'
-            }
-            else if (/css/.test(ext))
-            {
-              ext = 'css/'
-            }
-            else
-            {
-              ext = ''
-            }
+            if (/png|jpe?g|svg|gif|ico|webp|avif/i.test(ext)) ext = 'images/'
+            else if (/css/.test(ext)) ext = 'css/'
+            else if (/woff?2|ttf/i.test(ext)) ext = 'fonts/'
+            else ext = ''
             return `assets/${ext}[name]-[hash][extname]`
+          },
+          manualChunks: {
+            vue: [ 'vue', 'vue-router', 'pinia' ],
+            vendor: [],
           },
         },
       },
@@ -39,7 +59,6 @@ const config = defineConfig(async ({ mode }) => {
         },
       },
     },
-    define: {},
     plugins: [
       vue({
         template: {

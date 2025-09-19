@@ -1,0 +1,23 @@
+{
+  "appName": "바구니",
+  "asset": {
+    "pagePerCount": 24,
+    "pageRange": 10
+  },
+  "collection": {
+    "pagePerCount": 24
+  },
+  "file": {
+    "limit": {
+      "main": 31457280,
+      "cover": 1048576,
+      "body": 10485760,
+      "bodyCount": 50
+    },
+    "coverSize": {
+      "width": 640,
+      "height": 480
+    },
+    "cacheMaxAge": 2592000
+  }
+}

@@ -5,7 +5,8 @@ CREATE TABLE `asset` (
   `description` TEXT NULL,
   `type` TEXT NULL,
   `json` TEXT NULL,
-  `regdate` TEXT NOT NULL,
+  `mode` TEXT NOT NULL DEFAULT 'private', -- public,private
+  `created_at` TEXT NOT NULL,
   `updated_at` TEXT NOT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT)
 );
@@ -13,10 +14,9 @@ CREATE TABLE `asset` (
 -- Collection data
 CREATE TABLE `collection` (
   `id` INTEGER NOT NULL UNIQUE,
-  `title` TEXT NOT NULL,
-  `description` TEXT NULL,
-  `regdate` TEXT NOT NULL,
-  `updated_at` TEXT NOT NULL,
+  `title` TEXT NOT NULL, -- 제목
+  `description` TEXT NULL, -- 설명
+  `created_at` TEXT NOT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT)
 );
 
@@ -28,8 +28,10 @@ CREATE TABLE `file` (
   `type` TEXT NOT NULL, -- 파일 타입
   `size` INTEGER NOT NULL, -- 파일 용량
   `meta` TEXT NOT NULL DEFAULT '{}', -- 파일의 정보 (날짜,이미지사이즈)
-  `regdate` TEXT NOT NULL,
-  `updated_at` TEXT NOT NULL,
+  `module` TEXT NOT NULL, -- 모듈 (asset,collection)
+  `module_id` INTEGER NOT NULL, -- 모듈 ID
+  `mode` TEXT NULL, -- 파일의 성격 (main,cover-origin,cover-create,body)
+  `created_at` TEXT NOT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT)
 );
 
@@ -40,58 +42,14 @@ CREATE TABLE `tag` (
   PRIMARY KEY (`id` AUTOINCREMENT)
 );
 
--- User data
-CREATE TABLE `user` (
-  `id` INTEGER NOT NULL UNIQUE,
-  `email` TEXT NOT NULL UNIQUE,
-  `name` TEXT NOT NULL,
-  `password` TEXT NOT NULL UNIQUE,
-  `json` TEXT NOT NULL DEFAULT '{}',
-  `mode` TEXT NULL,
-  `regdate` TEXT NOT NULL,
-  PRIMARY KEY (`id` AUTOINCREMENT)
-);
-
 -- Share
 CREATE TABLE `share` (
   `id` INTEGER NOT NULL UNIQUE,
   `code` TEXT NOT NULL UNIQUE,
   `asset` INTEGER NOT NULL UNIQUE,
-  `regdate` TEXT NOT NULL,
+  `created_at` TEXT NOT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT),
   FOREIGN KEY (`asset`) REFERENCES `asset` (`id`)
-);
-
--- asset/file 매핑 테이블
-CREATE TABLE `map_asset_file` (
-  `id` INTEGER NOT NULL UNIQUE,
-  `asset` INTEGER NOT NULL, -- asset 테이블 ID
-  `file` INTEGER NOT NULL UNIQUE, -- file 테이블 ID
-  `type` TEXT NULL, -- 메인 데이터인지에 대한 플래그 (fileTypes)
-  PRIMARY KEY (`id` AUTOINCREMENT),
-  FOREIGN KEY (`asset`) REFERENCES `asset` (`id`),
-  FOREIGN KEY (`file`) REFERENCES `file` (`id`)
-);
-
--- asset/tag 매핑 테이블
-CREATE TABLE `map_asset_tag` (
-  `id` INTEGER NOT NULL UNIQUE,
-  `asset` INTEGER NOT NULL, -- asset 테이블 ID
-  `tag` INTEGER NOT NULL, -- tag 테이블 ID
-  PRIMARY KEY (`id` AUTOINCREMENT),
-  FOREIGN KEY (`asset`) REFERENCES `asset` (`id`),
-  FOREIGN KEY (`tag`) REFERENCES `tag` (`id`)
-);
-
--- collection/file 매핑 테이블
-CREATE TABLE `map_collection_file` (
-  `id` INTEGER NOT NULL UNIQUE,
-  `collection` INTEGER NOT NULL, -- collection 테이블 ID
-  `file` INTEGER NOT NULL, -- file 테이블 ID
-  `type` TEXT NULL, -- 메인 데이터인지에 대한 플래그 (fileTypes)
-  PRIMARY KEY (`id` AUTOINCREMENT),
-  FOREIGN KEY (`collection`) REFERENCES `collection` (`id`),
-  FOREIGN KEY (`file`) REFERENCES `file` (`id`)
 );
 
 -- collection/asset 매핑 테이블
@@ -104,25 +62,34 @@ CREATE TABLE `map_collection_asset` (
   FOREIGN KEY (`asset`) REFERENCES `asset` (`id`)
 );
 
--- Asset 소유자
-CREATE TABLE `owner` (
+-- asset/tag 매핑 테이블
+CREATE TABLE `map_asset_tag` (
   `id` INTEGER NOT NULL UNIQUE,
-  `user` INTEGER NOT NULL, -- user 테이블 ID
-  `asset` INTEGER NULL, -- asset 테이블 ID
-  `collection` INTEGER NULL, -- asset 테이블 ID
-  `public` INTEGER NOT NULL DEFAULT 0, -- 공개여부
+  `asset` INTEGER NOT NULL, -- asset 테이블 ID
+  `tag` INTEGER NOT NULL, -- tag 테이블 ID
   PRIMARY KEY (`id` AUTOINCREMENT),
-  FOREIGN KEY (`user`) REFERENCES `user` (`id`),
   FOREIGN KEY (`asset`) REFERENCES `asset` (`id`),
-  FOREIGN KEY (`collection`) REFERENCES `collection` (`id`)
+  FOREIGN KEY (`tag`) REFERENCES `tag` (`id`)
 );
 
--- refresh tokens
+-- table `provider`
+CREATE TABLE `provider` (
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `code` TEXT NOT NULL, -- provider name (password)
+  `user_id` TEXT NOT NULL, -- user id
+  `user_name` TEXT NULL, -- user name
+  `user_avatar` TEXT NULL, -- user avatar
+  `user_email` TEXT NULL, -- user email
+  `user_password` TEXT NULL, -- user password (for code=password)
+  `created_at` TEXT NOT NULL -- created date
+);
+
+-- tokens
 CREATE TABLE `tokens` (
   `id` INTEGER NOT NULL UNIQUE,
   `refresh` TEXT NOT NULL UNIQUE,
   `access` TEXT NOT NULL UNIQUE,
   `expired` TEXT NOT NULL,
-  `regdate` TEXT NOT NULL,
+  `created_at` TEXT NOT NULL,
   PRIMARY KEY (`id` AUTOINCREMENT)
 );

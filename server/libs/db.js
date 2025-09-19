@@ -1,6 +1,7 @@
 import { Database } from 'bun:sqlite'
-import { dataPath } from './consts.js'
 import { removeUndefinedValueKey } from './objects.js'
+
+const { DATA_PATH } = Bun.env
 
 /** @var {Database} db */
 export let db
@@ -10,14 +11,11 @@ export const tables = {
   collection: 'collection',
   file: 'file',
   tag: 'tag',
-  user: 'user',
+  provider: 'provider',
   share: 'share',
   tokens: 'tokens',
-  mapAssetFile: 'map_asset_file',
-  mapAssetTag: 'map_asset_tag',
-  mapCollectionFile: 'map_collection_file',
   mapCollectionAsset: 'map_collection_asset',
-  owner: 'owner',
+  mapAssetTag: 'map_asset_tag',
 }
 
 /**
@@ -30,7 +28,7 @@ export const tables = {
 export function connect(options = {})
 {
   if (!!db) return
-  db = new Database(`${dataPath}/db.sqlite`, {
+  db = new Database(`${DATA_PATH}/db.sqlite`, {
     ...options,
   })
 }
@@ -51,7 +49,7 @@ export function disconnect()
  * @param {string[]} [options.fields]
  * @param {string} [options.where]
  * @param {string|array} [options.join]
- * @param {string} [options.order] id,title,regdate
+ * @param {string} [options.order] id,title,created_at
  * @param {string} [options.sort] desc,asc
  * @param {string} [options.limit]
  * @param {any} [options.values]
@@ -63,15 +61,16 @@ export function getItems(options = {})
   const { table, fields, where, join, order, sort, limit, values, run, prefix, debug } = options
   const field = fields?.length ? fields.join(',') : '*'
   let _prefix = prefix || ''
-  let _where = where ? `where ${where}` : ''
-  let _order = order ? `order by ${order} ${sort || 'desc'}` : ''
-  _order = (!order && sort) ? `order by id ${sort}` : _order
+  let _where = where ? `WHERE ${where}` : ''
+  let _order = order ? `ORDER BY ${order} ${sort || 'desc'}` : ''
+  _order = (!order && sort) ? `ORDER BY id ${sort}` : _order
   let _limit = limit || ''
-  const sql = optimiseSql(`select ${_prefix} ${field} from ${table} ${parseJoin(join)} ${_where} ${_order} ${_limit}`)
+  const sql = optimiseSql(`SELECT ${_prefix} ${field} FROM ${table} ${parseJoin(join)} ${_where} ${_order} ${_limit}`)
   if (debug) console.warn('getItems():', sql)
   let data
   if (run !== false)
   {
+    if (!db) connect({ readwrite: true })
     const query = db.query(sql)
     data = query.all(values)
   }
@@ -84,19 +83,16 @@ export function getItems(options = {})
 
 /**
  * get count item
- * @param {string} [options.table]
- * @param {string} [options.where]
- * @param {string} [options.join]
- * @param {any} [options.values]
- * @param {boolean} [options.run]
+ * @param {object} options
  * @return {object}
  */
 export function getCount(options)
 {
   const { table, fields, where, join, values, run, prefix, after, debug } = options
-  let _field = fields || 'count(*) as count'
-  const sql = optimiseSql(`select ${prefix || ''} ${_field} from ${table} ${parseJoin(join)} ${where ? `where ${where}` : ''} ${after || ''}`)
+  let _field = fields || 'COUNT(*) AS count'
+  const sql = optimiseSql(`SELECT ${prefix || ''} ${_field} FROM ${table} ${parseJoin(join)} ${where ? `WHERE ${where}` : ''} ${after || ''}`)
   if (debug) console.warn('getCount():', sql)
+  if (!db) connect({ readwrite: true })
   const query = db.query(sql)
   const result = query.get(values)
   let data
@@ -122,7 +118,8 @@ export function getItem(options)
 {
   const { table, fields, where, join, values, run } = options
   const field = fields?.length ? fields.join(',') : '*'
-  const sql = optimiseSql(`select ${field} from ${table} ${parseJoin(join)} ${where ? `where ${where}` : ''}`)
+  const sql = optimiseSql(`SELECT ${field} FROM ${table} ${parseJoin(join)} ${where ? `WHERE ${where}` : ''}`)
+  if (!db) connect({ readwrite: true })
   const query = db.query(sql)
   const data = (run !== false) ? query.get(values) : undefined
   return {
@@ -156,8 +153,12 @@ export function addItem(options)
     }
     if (item.value) objects.push(item.value)
   })
-  const sql = optimiseSql(`insert into ${table} (${fields.join(', ')}) values (${valueNames.join(', ')})`)
-  if (run !== false) db.run(sql, objects)
+  const sql = optimiseSql(`INSERT INTO ${table} (${fields.join(', ')}) VALUES (${valueNames.join(', ')})`)
+  if (run !== false)
+  {
+    if (!db) connect({ readwrite: true })
+    db.run(sql, objects)
+  }
   return {
     sql,
     values,
@@ -177,8 +178,12 @@ export function addItems(options = {})
 {
   const { table, fields, values, run } = options
   const placeholders = values.map(() => `(${fields.map(() => ('?')).join(',')})`).join(', ')
-  const sql = optimiseSql(`insert into ${table} (${fields.join(', ')}) values ${placeholders}`)
-  if (run !== false) db.run(sql, [].concat(...values))
+  const sql = optimiseSql(`INSERT INTO ${table} (${fields.join(', ')}) VALUES ${placeholders}`)
+  if (run !== false)
+  {
+    if (!db) connect({ readwrite: true })
+    db.run(sql, [].concat(...values))
+  }
   return {
     sql,
     values,
@@ -199,9 +204,13 @@ export function addItems(options = {})
 export function editItem(options = {})
 {
   const { table, set, where, values, run, debug } = options
-  let sql = optimiseSql(`update ${table} set ${set ? set.filter(Boolean).join(', ') : ''} ${where ? `where ${where}` : ''}`)
+  let sql = optimiseSql(`UPDATE ${table} SET ${set ? set.filter(Boolean).join(', ') : ''} ${where ? `WHERE ${where}` : ''}`)
   if (debug) console.warn(sql)
-  if (run !== false) db.run(sql, removeUndefinedValueKey(values))
+  if (run !== false)
+  {
+    if (!db) connect({ readwrite: true })
+    db.run(sql, removeUndefinedValueKey(values))
+  }
   return {
     sql,
     values,
@@ -219,8 +228,12 @@ export function editItem(options = {})
 export function removeItem(options = {})
 {
   const { table, where, values, run } = options
-  const sql = optimiseSql(`delete from ${table} ${where ? `where ${where}` : ''}`)
-  if (run !== false) db.run(sql, values || {})
+  const sql = optimiseSql(`DELETE FROM ${table} ${where ? `WHERE ${where}` : ''}`)
+  if (run !== false)
+  {
+    if (!db) connect({ readwrite: true })
+    db.run(sql, values || {})
+  }
   return {
     sql,
     values,
@@ -234,11 +247,12 @@ export function removeItem(options = {})
  */
 export function getLastIndex(table)
 {
-  const sql = `select max(id) as maxID from ${table}`
+  const sql = `SELECT MAX(id) AS max_id FROM ${table}`
+  if (!db) connect({ readwrite: true })
   const query = db.query(sql)
   return {
     sql,
-    data: query.get()?.maxID || 0,
+    data: query.get()?.max_id || 0,
   }
 }
 
@@ -248,7 +262,8 @@ export function getLastIndex(table)
  */
 export function clearTokens()
 {
-  const sql = `delete from ${tables.tokens} where expired <= CURRENT_TIMESTAMP`
+  const sql = `DELETE FROM ${tables.tokens} WHERE expired <= CURRENT_TIMESTAMP`
+  if (!db) connect({ readwrite: true })
   db.run(sql, [])
   return {
     sql,

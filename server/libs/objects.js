@@ -1,31 +1,10 @@
 /**
- * check exist value
- * @param {object} obj
- * @param {string[]} keys
- * @return {string}
- */
-export function checkExistValue(obj, keys)
-{
-  if (!obj) return 'object'
-  if (!(keys?.length > 0)) return 'keys'
-  for (let i = 0; i < keys.length; i++)
-  {
-    const key = keys[i]
-    if (!(key in obj) || obj[key] === null || obj[key] === undefined)
-    {
-      return key
-    }
-  }
-  return ''
-}
-
-/**
  * check exist value in object
  * @param {object} obj
  * @param {string[]} keys
  * @return {boolean}
  */
-export function checkExistValueInObject(obj, keys)
+export function checkExistInObject(obj, keys)
 {
   return keys.some(key => (key in obj) && obj[key] !== null && obj[key] !== undefined)
 }
@@ -82,24 +61,4 @@ export function removeUndefinedValueKey(obj)
 {
   return Object.fromEntries(Object.entries(obj)
     .filter(([_, value]) => value !== undefined))
-}
-
-/**
- * 배열속 객체의 순서 번호를 찾는다
- */
-export function findObjectByKey(arr, keyName, value)
-{
-  return arr.findIndex(item => item[keyName] === value)
-}
-
-/**
- * 배열속 객체를 찾는다
- * @param {array} arr
- * @param {string|number} key
- * @param {string|number|boolean} value
- * @return {object}
- */
-export function findObjectByValue(arr, key, value)
-{
-  return arr.find(obj => obj[key] === value)
 }

@@ -1,26 +1,23 @@
-import { exit } from 'node:process'
 import { rm, mkdir, exists } from 'node:fs/promises'
 import { Database } from 'bun:sqlite'
 import { randomBytes } from 'node:crypto'
 import minimist from 'minimist'
-import { message, prompt } from './libs.js'
-import { dataPath } from '../server/libs/consts.js'
-import { hashPassword } from '../server/libs/strings.js'
-import { verifyEmail } from '../global/strings.js'
-import { userPreference } from '../global/defaults.js'
+import { message, prompt, hashPassword, verifyEmail, verifyId } from './libs.js'
 
+const { DATA_PATH } = Bun.env
 const argv = minimist(process.argv.slice(2))
 const paths = {
-  seedDb: `resource/seed.sql`,
-  db: `${dataPath}/db.sqlite`,
+  seedDb: `./resource/seed.sql`,
+  db: `${DATA_PATH}/db.sqlite`,
   env: '.env.local',
+  preference: './resource/preference.json',
 }
 const pathList = [
-  `${dataPath}/original`,
-  `${dataPath}/cover`,
-  `${dataPath}/cache`,
-  `${dataPath}/logs`,
-  `${dataPath}/tmp`,
+  `${DATA_PATH}/origin`,
+  `${DATA_PATH}/cover`,
+  `${DATA_PATH}/cache`,
+  `${DATA_PATH}/logs`,
+  `${DATA_PATH}/tmp`,
 ]
 let db
 
@@ -34,12 +31,14 @@ async function confirm()
   if (answer.toLowerCase() !== 'y')
   {
     message('error', 'You canceled the install.')
-    exit()
+    process.exit()
   }
 }
 
 /**
  * check directories
+ * 경로가 하나라도 만들어져 있으면 인스톨이 되어있다고 간주한다.
+ *
  * @return {Promise<boolean>}
  */
 async function checkData()
@@ -48,7 +47,7 @@ async function checkData()
     ...(pathList.map(path => exists(path))),
     exists(paths.db),
   ])
-  return res.includes(true) // 경로가 하나라도 만들어져 있으면 인스톨이 되어있다고 간주한다.
+  return res.includes(true)
 }
 
 async function confirmUninstall()
@@ -63,7 +62,7 @@ async function confirmUninstall()
   {
     // 데이터가 존재하는데 삭제한다고 선택하지 않았으니 진행을 종료한다.
     message('error', `Can't proceed because the data already exists.`)
-    exit()
+    process.exit()
   }
 }
 
@@ -74,6 +73,11 @@ async function confirmUninstall()
 async function inputUserAccount()
 {
   message('run', 'Enter admin information.')
+  const id = await inputField({
+    ask: '✏️ ID:',
+    type: 'id',
+    error: 'Invalid ID.',
+  })
   const email = await inputField({
     ask: '✏️ E-Mail:',
     type: 'email',
@@ -88,6 +92,7 @@ async function inputUserAccount()
     error: 'Invalid password.',
   })
   return {
+    id,
     email,
     name,
     password,
@@ -107,6 +112,13 @@ function inputField(op)
     {
       case 'email':
         if (!verifyEmail(answer))
+        {
+          if (error) message('error', error)
+          return resolve(inputField(op))
+        }
+        break
+      case 'id':
+        if (!verifyId(answer))
         {
           if (error) message('error', error)
           return resolve(inputField(op))
@@ -148,92 +160,89 @@ async function createDatabase()
   catch (e)
   {
     message('error', e.message)
-    exit()
+    process.exit()
   }
 }
 
 /**
- * 관리자 계정 추가
+ * 계정 추가
  * @param {string} [user.email] 이메일 주소
  * @param {string} [user.name] 이름
  * @param {string} [user.password] 패스워드
  * @return {Promise<void>}
  */
-async function addUser(user)
+async function addAccount(user)
 {
-  const { email, name, password } = user
-  const pref = JSON.stringify(userPreference) || '{}'
+  const { id, email, name, password } = user
   try
   {
-    const sql = `insert into user (email, name, password, json, mode, regdate) values (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`
-    db.run(sql, [ email, name, hashPassword(String(password)), pref, 'ADMIN' ])
+    const sql = `INSERT INTO provider (code, user_id, user_name, user_avatar, user_email, user_password, created_at) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`
+    db.run(sql, [ 'password', id, name, '', email, hashPassword(String(password)) ])
   }
   catch (e)
   {
     message('error', e.message)
     db.close()
-    exit()
+    process.exit()
   }
   message('run', `You've entered your admin information.`)
 }
 
-async function updateEnv()
+async function setupPreference()
 {
-  function editField(src, key, value)
-  {
-    const checkRegex = new RegExp(`(?<=^${key}=)`, 'gm')
-    if (checkRegex.test(src))
-    {
-      const regex = new RegExp(`(?<=^${key}=).*$`, 'gm')
-      return src.replace(regex, value)
-    }
-    else
-    {
-      src += `\n${key}='${value}'`
-      return src
-    }
-  }
   try
   {
-    let env = Bun.file(paths.env)
-    const existEnv = await env.exists()
-    let text = existEnv ? await env.text() : ''
-    text = editField(text, 'ACCESS_TOKEN_SECRET', randomBytes(16).toString('hex'))
-    text = editField(text, 'REFRESH_TOKEN_SECRET', randomBytes(24).toString('hex'))
-    await Bun.write(paths.env, text)
+    const file = Bun.file(paths.preference)
+    const pref = await file.json()
+    pref.token = {
+      accessSecret: randomBytes(16).toString('hex'),
+      accessExpires: '7h',
+      refreshSecret: randomBytes(24).toString('hex'),
+      refreshExpires: '14d',
+    }
+    await Bun.write(`${DATA_PATH}/preference.json`, JSON.stringify(pref, null, 2))
+    message('run', `Created preference.json`)
   }
   catch (e)
   {
     message('error', e.message)
-    exit()
+    process.exit()
   }
 }
 
 async function removeData()
 {
-  const exist = await exists(dataPath)
-  if (exist) await rm(dataPath, { recursive: true })
+  const exist = await exists(DATA_PATH)
+  if (exist) await rm(DATA_PATH, { recursive: true })
 }
 
 // actions
-if (argv.email && argv.name && argv.password)
+if (argv.id && argv.email && argv.name && argv.password)
 {
+  // if (await exists('./data'))
+  // {
+  //   await rm('./data', { recursive: true }) // 작업을 위하여 기존 데이터를 삭제한다.
+  // }
+  // check install data
   const installed = await checkData()
   if (installed)
   {
-    message('exit', 'Skip install')
-    exit()
+    message('exit', 'Installed')
+    process.exit()
   }
-  // 파라메터 정보로 곧장 설치하는 모드
-  const user = {
-    email: argv.email,
-    name: argv.name,
-    password: argv.password,
+  else
+  {
+    // 파라메터 정보로 곧장 설치하는 모드
+    await createDirectories()
+    await createDatabase()
+    await addAccount({
+      id: argv.id,
+      email: argv.email,
+      name: argv.name,
+      password: argv.password,
+    })
+    await setupPreference()
   }
-  await createDirectories()
-  await createDatabase()
-  await addUser(user)
-  await updateEnv()
 }
 else
 {
@@ -245,10 +254,10 @@ else
   const user = await inputUserAccount()
   await createDirectories()
   await createDatabase()
-  await addUser(user)
-  await updateEnv()
+  await addAccount(user)
+  await setupPreference()
 }
 
 message('exit', 'Complete install')
 if (db) db.close()
-exit()
+process.exit()

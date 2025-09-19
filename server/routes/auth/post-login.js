@@ -7,99 +7,144 @@
  * @param {'true'|undefined} [req.body.save]
  */
 
-import { success, error } from '../output.js'
-import { checkExistValue } from '../../libs/objects.js'
+import ServiceError from '../../classes/ServiceError.js'
+import { pref } from '../../classes/Preference.js'
+import { onRequest, onResponse, setResponse, checkFormData, getFormData } from '../../libs/service.js'
 import { connect, disconnect, tables, getItem, addItem } from '../../libs/db.js'
-import { verifyPassword } from '../../libs/strings.js'
-import { createToken } from '../../libs/token.js'
-import { cookie } from '../../libs/consts.js'
-import ServiceError from '../../libs/ServiceError.js'
+import { createToken, jwtToToken } from '../../libs/token.js'
+import * as cookie from '../../libs/cookie.js'
+import { verifyPassword } from './_lib.js'
 
-export default async (req, res) => {
+const { URL_PATH } = Bun.env
+
+export default async (req, _ctx) => {
+
+  let response
+
+  // trigger request event
+  await onRequest(req, _ctx)
+
   try
   {
-    // check value
-    const checkKey = checkExistValue(req.body, [ 'email', 'password' ])
-    if (checkKey) throw new Error(`There is no '${checkKey}' entry.`)
+    const body = await getFormData(req)
+    const { id, password, save } = body
+    const checkKey = checkFormData(body, [ 'id', 'password' ])
+    if (checkKey)
+    {
+      throw new ServiceError('필수값을 입력해주세요.', {
+        status: 400,
+        text: `'${checkKey}' 값이 없습니다.`,
+      })
+    }
+
     // connect db
     connect({ readwrite: true })
+
     // get data
-    const user = getItem({
-      table: tables.user,
-      where: 'email = $email',
-      values: { '$email': req.body.email },
+    const provider = getItem({
+      table: tables.provider,
+      where: 'user_id = $user_id',
+      values: { '$user_id': id },
     }).data
-    if (!user) throw new ServiceError('계정이 없습니다.', 401)
-    const checkPassword = verifyPassword(req.body.password, user.password)
-    if (!checkPassword) throw new ServiceError('비밀번호 인증 실패', 401)
+    if (!provider) throw new ServiceError('계정이 없습니다.', { status: 401 })
+
+    // check password
+    const checkPassword = verifyPassword(password, provider.user_password)
+    if (!checkPassword)
+    {
+      throw new ServiceError('비밀번호 인증 실패', { status: 401 })
+    }
+
     // create tokens
     const tokens = {
-      accessToken: createToken('access', {
-        id: user.id,
-        email: user.email,
+      access: createToken('access', {
+        id: provider.id,
+        user_id: provider.user_id,
       }),
-      refreshToken: createToken('refresh', {
-        id: user.id,
+      refresh: createToken('refresh', {
+        id: provider.id,
       }),
     }
-    if (!tokens.refreshToken)
+    if (!tokens.refresh)
     {
-      throw new ServiceError('리프레시 토큰을 만들 수 없습니다.', 500)
+      throw new ServiceError('리프레시 토큰을 만들 수 없습니다.')
     }
-    // 리프레시 토큰을 데이터베이스에 추가
+
+    // add data to database
     addItem({
       table: tables.tokens,
       values: [
         {
           key: 'refresh',
-          value: tokens.refreshToken.value,
+          value: tokens.refresh.value,
         },
         {
           key: 'access',
-          value: tokens.accessToken.value,
+          value: tokens.access.value,
         },
         {
           key: 'expired',
-          value: tokens.refreshToken.parse.exp,
+          value: tokens.refresh.parse.exp,
         },
         {
-          key: 'regdate',
+          key: 'created_at',
           valueName: 'CURRENT_TIMESTAMP',
         },
       ],
     })
+
+    // set public access token
+    const publicAccessToken = jwtToToken(tokens.access.value)
+
     // save cookie
-    const saveCookie = req.body.save?.toLowerCase() === 'true'
-    res.cookie(`${cookie.prefix}-access`, tokens.accessToken.value, {
-      ...cookie.options,
-      expires: saveCookie ? new Date(tokens.accessToken.parse.exp * 1000) : undefined,
-      secure: req.secure,
-    })
-    res.cookie(`${cookie.prefix}-refresh`, tokens.refreshToken.value, {
-      ...cookie.options,
-      expires: saveCookie ? new Date(tokens.refreshToken.parse.exp * 1000) : undefined,
-      secure: req.secure,
-    })
-    disconnect()
-    success(req, res, {
+    const saveCookie = save?.toLowerCase() === 'true'
+    cookie.save(
+      req,
+      'access',
+      publicAccessToken,
+      saveCookie ? tokens.access.parse.exp : undefined
+    )
+    cookie.save(
+      req,
+      'refresh',
+      tokens.refresh.value,
+      saveCookie ? tokens.refresh.parse.exp : undefined
+    )
+
+    // set response
+    response = setResponse({
       message: '로그인 성공',
       data: {
-        accessToken: tokens.accessToken.value,
-        refreshToken: tokens.refreshToken.value,
-        user: {
-          ...user,
-          password: undefined,
+        accessToken: publicAccessToken,
+        refreshToken: tokens.refresh.value,
+        account: {
+          ...provider,
+          user_password: undefined,
         },
+        preference: {
+          ...pref.output,
+          version: pref.version,
+        },
+        url: URL_PATH,
       },
     })
   }
-  catch (e)
+  catch (_e)
   {
-    error(req, res, {
-      code: e.code,
-      message: '인증 실패했습니다.',
-      _file: __filename,
-      _err: e,
-    })
+    response = setResponse(new ServiceError('인증 실패', {
+      status: _e.status,
+      text: _e.statusText || _e.message,
+      url: `${req.method} ${req.url}`,
+    }))
   }
+  finally
+  {
+    disconnect()
+  }
+
+  // trigger response event
+  await onResponse(req, response, _ctx)
+
+  return response
+
 }

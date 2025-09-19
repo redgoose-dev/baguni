@@ -1,0 +1,124 @@
+// MIXINS
+
+// responsive
+@mixin responsive($range)
+{
+  @if $range == tablet
+  {
+    @media (min-width: 768px) { @content; }
+  }
+  @else if $range == desktop
+  {
+    @media (min-width: 1024px) { @content; }
+  }
+  @else if $range == max
+  {
+    @media (min-width: 1440px) { @content; }
+  }
+}
+
+// gradient
+@mixin color-linear-gradient($matt-color, $start, $end, $direction:'vertical')
+{
+  background: $matt-color;
+  @if $direction == 'horizontal'
+  {
+    background: linear-gradient(to right, #{$start}, #{$end});
+  }
+  @else
+  {
+    background: linear-gradient(to bottom, #{$start}, #{$end});
+  }
+}
+
+// background blur
+@mixin background-blur($size: 8px)
+{
+  @supports (backdrop-filter: blur(#{$size})) or (-webkit-backdrop-filter: blur(#{$size})) {
+    backdrop-filter: blur(#{$size});
+    -webkit-backdrop-filter: blur(#{$size});
+    @content;
+  }
+}
+
+// single line text
+@mixin single-line-text()
+{
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-x: clip;
+}
+
+@mixin multiple-line-text($line: 2)
+{
+  display: -webkit-box;
+  -webkit-line-clamp: $line;
+  -webkit-box-orient: vertical;
+  overflow: clip;
+  text-overflow: ellipsis;
+}
+
+// focus
+@mixin focus-content($color: var(--color-key-1), $offset: -2px)
+{
+  outline: 2px solid #{mix-alpha($color, 0%)};
+  outline-offset: $offset;
+  &:focus-visible {
+    outline-color: $color;
+  }
+}
+
+// custom scrollbar
+@mixin custom-scrollbar()
+{
+  --scroll-size: 14px;
+  --scroll-padding: 4px;
+  --scroll-track: hsl(0 0% 65%);
+  --scroll-track-hover: hsl(0 0% 45%);
+  --scroll-bg: hsla(0 0% 100% / 0%);
+  &::-webkit-scrollbar {
+    width: var(--scroll-size);
+    height: var(--scroll-size);
+  }
+  &::-webkit-scrollbar-thumb {
+    border: var(--scroll-padding) solid hsla(0 0% 100% / 0%);
+    background-clip: padding-box;
+    border-radius: 9999px;
+    background-color: var(--scroll-track);
+    &:hover {
+      background-color: var(--scroll-track-hover);
+    }
+  }
+  &::-webkit-scrollbar-track {
+    background: var(--scroll-bg);
+  }
+}
+
+// mouse hover
+@mixin hover()
+{
+  @media (hover: hover) {
+    @content;
+  }
+}
+
+// checkerboard background
+@mixin checkerboard($size: 20px, $color1: #b0b0b0)
+{
+  background-image:
+    linear-gradient(45deg, #{$color1} 25%, transparent 25%),
+    linear-gradient(-45deg, #{$color1} 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #{$color1} 75%),
+    linear-gradient(-45deg, transparent 75%, #{$color1} 75%);
+  background-size: #{$size} #{$size};
+  background-position: 0 0, 0 calc($size / 2), calc($size / 2) calc(0px - ($size / 2)), calc(0px - ($size / 2)) 0px;
+}
+
+
+// FUNCTIONS
+
+// color-mix with alpha
+@function mix-alpha($color, $alpha: 100%)
+{
+  @return color-mix(in hsl, $color $alpha, transparent);
+}

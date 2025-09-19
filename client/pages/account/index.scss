@@ -1,0 +1,28 @@
+@use '../../assets/scss/mixins' as mixins;
+
+.accounts {
+  margin: var(--size-content-margin-top) 0 0;
+  padding: 0 var(--size-side-padding);
+  &__wrap {
+    margin: 0 auto;
+    max-width: var(--size-content-width);
+  }
+  &__body {
+    margin: 30px 0 0;
+  }
+  &__empty {
+    --empty-height: 480px;
+  }
+}
+
+.index-message {
+  margin: 0 0 8px;
+  text-align: right;
+  font-size: 13px;
+  user-select: none;
+}
+.index {
+  margin: 0;
+  display: grid;
+  gap: 32px 0;
+}

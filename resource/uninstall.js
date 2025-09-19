@@ -1,7 +1,7 @@
 import { rm } from 'node:fs/promises'
-import { exit } from 'node:process'
-import { message, prompt, appName } from './libs.js'
-import { dataPath } from '../server/libs/consts.js'
+import { message, prompt } from './libs.js'
+
+const { DATA_PATH } = Bun.env
 
 /**
  * 진행할것인지에 대한 확인
@@ -13,7 +13,7 @@ async function confirm()
   if (answer.toLowerCase() !== 'y')
   {
     message('error', 'You canceled the uninstall.')
-    exit()
+    process.exit()
   }
 }
 
@@ -23,12 +23,12 @@ async function confirm()
  */
 async function deleteUserResource()
 {
-  await rm(dataPath, { recursive: true })
+  await rm(DATA_PATH, { recursive: true })
   message('run', 'All data has been deleted.')
 }
 
-message('start', `Uninstall ${appName}`)
+message('start', `Uninstall App`)
 await confirm()
 await deleteUserResource()
 message('exit', 'Complete uninstall')
-exit()
+process.exit()

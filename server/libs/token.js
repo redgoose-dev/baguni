@@ -1,14 +1,8 @@
 import { sign, verify } from 'jsonwebtoken'
-import { tables, getCount, getItem } from './db.js'
-import { cookie } from './consts.js'
-import ServiceError from './ServiceError.js'
-
-const {
-  ACCESS_TOKEN_SECRET,
-  ACCESS_TOKEN_SECRET_EXPIRES,
-  REFRESH_TOKEN_SECRET,
-  REFRESH_TOKEN_SECRET_EXPIRES,
-} = import.meta.env
+import ServiceError from '../classes/ServiceError.js'
+import { pref } from '../classes/Preference.js'
+import { getQuery } from './server.js'
+import { tables, getItem } from './db.js'
 
 /**
  * create token
@@ -22,12 +16,12 @@ export function createToken(type, payload = {})
   switch (type)
   {
     case 'access':
-      secret = ACCESS_TOKEN_SECRET
-      expires = ACCESS_TOKEN_SECRET_EXPIRES // 엑세스 토큰 만료시간
+      secret = pref.token.accessSecret
+      expires = pref.token.accessExpires // 엑세스 토큰 만료시간
       break
     case 'refresh':
-      secret = REFRESH_TOKEN_SECRET
-      expires = REFRESH_TOKEN_SECRET_EXPIRES // 리프레시 토큰 만료시간
+      secret = pref.token.refreshSecret
+      expires = pref.token.refreshExpires // 리프레시 토큰 만료시간
       break
     default:
       return null
@@ -52,86 +46,87 @@ export function decodeToken(type, token)
   switch (type)
   {
     case 'access':
-      return verify(token, ACCESS_TOKEN_SECRET)
+      return verify(token, pref.token.accessSecret)
     case 'refresh':
-      return verify(token, REFRESH_TOKEN_SECRET)
-    default:
-      return null
+      return verify(token, pref.token.refreshSecret)
   }
+  return null
 }
 
 /**
- * get token from header authorization
- * @param {any} req
- * @return {string}
+ * get token
+ * Request 객체에서 토큰값을 가져온다.
+ *
+ * @param {Request} req
+ * @return {string|null}
  */
-export function getTokenFromHeader(req)
+export function getToken(req)
 {
-  if (!req?.headers?.authorization) return undefined
-  return req.headers.authorization.replace(/^Bearer /, '')
+  return req.headers.get('authorization') || getQuery(req.url, '_a')
 }
 
 /**
  * check authorization
- * @param {string} authorization
- * @param {boolean} useUser
+ * 헤더에 `authorization`값이 없으면 쿼리스트링 `_a`에서 토큰을 찾아본다.
+ * @param {Request} req
+ * @param {boolean} useProvider
  * @return {object}
  */
-export function checkAuthorization(authorization, useUser = true)
+export function checkAuthorization(req, useProvider = true)
 {
   try
   {
+    const authorization = getToken(req)
     if (!authorization) throw new Error('엑세스 토큰이 없습니다.')
-    const token = authorization.replace(/^Bearer /, '')
-    if (!token) throw new Error('엑세스 토큰이 없습니다.')
-    // try decode token
-    const decoded = decodeToken('access', token)
-    if (!decoded.id) throw new Error('잘못된 엑세스토큰입니다.')
     // check if the data exists in the database
-    const count = getCount({
+    const token = getItem({
       table: tables.tokens,
-      where: 'access = $access',
-      values: { '$access': token },
+      where: 'access LIKE $access',
+      values: { '$access': `%${authorization}` },
     }).data
-    if (!(count > 0)) throw new Error('데이터베이스에 엑세스 토큰이 없습니다.')
-    if (useUser)
+    if (!token) throw new Error('데이터베이스에 엑세스 토큰이 없습니다.')
+    // try decode token
+    const decoded = decodeToken('access', token.access)
+    if (!decoded.id) throw new Error('잘못된 엑세스토큰입니다.')
+    if (useProvider)
     {
-      const user = getItem({
-        table: tables.user,
-        fields: [ 'id', 'email', 'name', 'regdate', 'mode' ],
+      const provider = getItem({
+        table: tables.provider,
+        fields: [ 'id', 'user_id', 'user_email', 'user_name', 'user_avatar', 'created_at' ],
         where: `id = $id`,
         values: { '$id': decoded.id },
-      })
-      if (!user?.data?.id) throw new Error('계정 정보가 없습니다.')
-      return user.data
+      }).data
+      if (!provider?.id) throw new Error('계정 정보가 없습니다.')
+      return {
+        ...provider,
+        accessToken: authorization,
+      }
     }
     else
     {
       return {
         id: decoded.id,
         email: decoded.email,
+        accessToken: authorization,
       }
     }
   }
-  catch (e)
+  catch (_e)
   {
-    throw new ServiceError(e.message, 401)
+    throw new ServiceError(_e.message, {
+      status: 401,
+      text: _e.message,
+      file: __filename,
+    })
   }
 }
 
 /**
- * 쿠키에서 토큰을 가져와서 디코딩을 한다.
- * @param {object} req
- * @return {object} 계정 아이디와 토큰
+ * get token from jwt
+ * @param {string} jwt
+ * @return {string}
  */
-export function getAccessTokenFromCookie(req)
+export function jwtToToken(jwt)
 {
-  const accessToken = req.cookies[`${cookie.prefix}-access`]
-  if (!accessToken) throw new ServiceError('엑세스 토큰이 없습니다.', 403)
-  const decoded = decodeToken('access', accessToken)
-  if (!decoded?.id) throw new ServiceError('잘못된 엑세스 토큰입니다.', 403)
-  return {
-    userId: decoded.id,
-    token: accessToken,
-  }
+  return jwt.split('.')[2].slice(-32)
 }

@@ -1,216 +1,141 @@
-import { existsSync, rmSync } from 'node:fs'
-import sizeOf from 'image-size'
-import iconv from 'iconv-lite'
-import { tagRegex } from '../../global/strings.js'
-import { tables, getItem, addItem, removeItem, getCount, editItem } from './db.js'
-import { ownerModes } from '../../global/consts.js'
-import ServiceError from '../libs/ServiceError.js'
+import ServiceError from '../classes/ServiceError.js'
+import { pref } from '../classes/Preference.js'
+import { colorText, dateFormat } from './strings.js'
+import { printError } from './server.js'
 
 /**
- * 태그 데이터 추가하기
+ * on request
+ * @param {Request} req
+ * @param {DebugHTTPServer} _ctx
  */
-export function addTag(tag, assetId)
+export async function onRequest(req, _ctx)
 {
-  tag = tag.trim()
-  if (!tagRegex().test(tag)) return
-  let tagId = getItem({
-    table: tables.tag,
-    fields: [ 'id' ],
-    where: 'name like $name',
-    values: { '$name': tag },
-  }).data?.id
-  if (!tagId)
+  // check installed
+  if (!pref.installed)
   {
-    try
+    // 인스톨이 안되어있는 상태기 때문에 검사해본다.
+    if (await pref.checkInstall())
     {
-      tagId = addItem({
-        table: tables.tag,
-        values: [{ key: 'name', value: tag }],
-      }).data
+      // 인스톨 파일이 존재해서 pref 셋업한다.
+      await pref.setup()
     }
-    catch (e)
-    {}
-  }
-  if (tagId)
-  {
-    addItem({
-      table: tables.mapAssetTag,
-      values: [
-        { key: 'asset', value: assetId },
-        { key: 'tag', value: tagId },
-      ],
-    })
-  }
-}
-
-/**
- * 태그 데이터 제거하기
- */
-export function removeTag(tag, assetId)
-{
-  if (!(tag && assetId)) return
-  tag = tag.trim()
-  // 태그 아이디를 가져온다.
-  const tagId = getItem({
-    table: tables.tag,
-    fields: [ 'id' ],
-    where: 'name like $name',
-    values: { '$name': tag },
-  }).data?.id
-  if (!tagId) return
-  try
-  {
-    // 태그맵에서 데이터를 삭제한다.
-    removeItem({
-      table: tables.mapAssetTag,
-      where: 'asset = $asset and tag = $tagId',
-      values: {
-        '$asset': assetId,
-        '$tagId': tagId,
-      },
-    })
-  }
-  catch (e)
-  {}
-  // 태그맵에서 갯수를 가져온다.
-  const cnt = getCount({
-    table: tables.mapAssetTag,
-    where: 'tag = $tag',
-    values: { '$tag': tagId },
-  })
-  // 태그맵에서 데티어가 없으면 태그를 삭제한다.
-  if (!cnt.data)
-  {
-    try
+    else
     {
-      removeItem({
-        table: tables.tag,
-        where: 'id = $id',
-        values: { '$id': tagId },
+      throw new ServiceError('Not installed service.', {
+        status: 503,
+        url: req.url,
+        file: __filename,
       })
     }
-    catch (e)
-    {}
   }
+  const _url = new URL(req.url)
+  const date = dateFormat(new Date(), '{yyyy}-{MM}-{dd} {hh}:{mm}:{ss}')
+  const method = colorText(req.method, 'cyan')
+  const url = colorText(_url.pathname, 'blue')
+  console.log(`🪴 [${date}] ${method} ${url}`)
 }
 
 /**
- * 파일 데이터 추가하기
+ * on response
+ * @param {Request} req
+ * @param {Response} res
+ * @param {DebugHTTPServer} _ctx
  */
-export function addFileData(file)
+export async function onResponse(req, res, _ctx)
 {
-  const { path, originalname, mimetype, size, ...restFile } = file
-  const originalName = iconv.decode(Buffer.from(originalname, 'binary'), 'utf-8')
-  const res = addItem({
-    table: tables.file,
-    values: [
-      { key: 'path', value: path },
-      { key: 'name', value: originalName },
-      { key: 'type', value: mimetype },
-      { key: 'size', value: size },
-      {
-        key: 'meta',
-        value: JSON.stringify({
-          ...getImageSize(path, mimetype),
-        }),
-      },
-      { key: 'regdate', valueName: 'CURRENT_TIMESTAMP' },
-      { key: 'updated_at', valueName: 'CURRENT_TIMESTAMP' },
-    ].filter(Boolean),
-  })
-  return res.data
-}
-
-/**
- * 파일 데이터 수정하기
- */
-export function editFileData(file, id)
-{
-  const { path, originalname, mimetype, size, ...restFile } = file
-  const originalName = iconv.decode(Buffer.from(originalname, 'binary'), 'utf-8')
-  editItem({
-    table: tables.file,
-    where: 'id = $id',
-    set: [
-      `path = $path`,
-      `name = $name`,
-      `type = $type`,
-      `size = $size`,
-      `meta = $meta`,
-      `updated_at = CURRENT_TIMESTAMP`,
-    ],
-    values: {
-      '$id': id,
-      '$path': path,
-      '$name': originalName,
-      '$type': mimetype,
-      '$size': size,
-      '$meta': JSON.stringify({
-        ...getImageSize(path, mimetype),
-      }),
-    },
-  })
-}
-
-/**
- * 안쓰는 파일들 삭제한다.
- */
-export function removeJunkFiles(files)
-{
-  if (!files) return
-  Object.values(files).forEach((file) => {
-    if (!existsSync(file[0].path)) return
-    rmSync(file[0].path)
-  })
-}
-
-export function removeFile(file)
-{
-  if (!file) return
-  if (!existsSync(file)) return
-  rmSync(file)
-}
-
-/**
- * 이미지 사이즈를 가져온다.
- * @param {string} path
- * @param {strong} type
- * @return {object|undefined}
- */
-export function getImageSize(path, type)
-{
-  if (!(path && type && /^image/.test(type))) return undefined
-  const { width, height } = sizeOf(path)
-  return { width, height }
-}
-
-/**
- * 에셋 소유자인지 검사한다.
- * @param {string} mode
- * @param {number} user
- * @param {number} id
- */
-export function checkAssetOwner(mode, user, id)
-{
-  let where
-  let values = {
-    '$user': user,
-  }
-  switch (mode)
+  if (!res.ok && _ctx.development)
   {
-    case ownerModes.ASSET:
-      where = 'asset = $asset and user = $user'
-      values['$asset'] = id
-      break
-    case ownerModes.COLLECTION:
-      where = 'collection = $collection and user = $user'
-      values['$collection'] = id
-      break
+    const content = await res.text()
+    printError({
+      code: res?.status || 500,
+      message: res?.statusText || content || 'Unknown Error',
+      url: `${req.method} ${req.url}`,
+      err: req.err,
+    })
   }
-  const owner = getCount({
-    table: tables.owner,
-    where,
-    values,
+}
+
+/**
+ * set response
+ *
+ * @param {object|ServiceError|string} content
+ * @param {number} status
+ * @param {object} options
+ * @returns {Response}
+ */
+export function setResponse(content, status = 200, options = {})
+{
+  let _options = {
+    ...options,
+    status,
+  }
+  if (content instanceof ServiceError)
+  {
+    _options.status = content.status
+    _options.statusText = content.statusText
+    return new Response(content.message || 'Internal Server Error', _options)
+  }
+  else if (content instanceof ArrayBuffer || content instanceof Uint8Array)
+  {
+    return new Response(content, _options)
+  }
+  else if (typeof content === 'object')
+  {
+    return Response.json(content, _options)
+  }
+  else
+  {
+    return new Response(content, _options)
+  }
+}
+
+/**
+ * get form data
+ * @param {Request} req
+ * @return {Promise<object>}
+ */
+export async function getFormData(req)
+{
+  const data = await req.formData()
+  return Object.fromEntries(data)
+}
+
+/**
+ * check FormData
+ * @param {object} formData
+ * @param {string[]} keys
+ * @return {string}
+ */
+export function checkFormData(formData, keys = [])
+{
+  if (!keys?.length) return ''
+  if (!formData)
+  {
+    throw new Error('No form data.')
+  }
+  for (const key of keys)
+  {
+    const value = formData[key]
+    if (value === null || value === undefined) return key
+  }
+  return ''
+}
+
+/**
+ * checking file
+ * 파일인지 아닌지 검사한다.
+ * @param {string} path
+ * @return {boolean}
+ */
+export function checkingFile(path)
+{
+  const fileRegex = /\.[a-zA-Z0-9]{1,10}$/
+  return fileRegex.test(path)
+}
+
+export function checkingIgnorePath(ignorePaths = [], path)
+{
+  return ignorePaths.some(s => {
+    return path.startsWith(s)
   })
-  if (!(owner?.data > 0)) throw new ServiceError('데이터의 소유자가 아닙니다.', 403)
 }

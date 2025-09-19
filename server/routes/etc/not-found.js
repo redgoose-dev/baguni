@@ -2,11 +2,12 @@
  * [404] Not found
  */
 
-import { error } from '../output.js'
+import ServiceError from '../../classes/ServiceError.js'
+import { setResponse } from '../../libs/service.js'
 
-export default async (req, res) => {
-  error(req, res, {
-    code: 404,
-    message: 'Not found.',
-  })
+export default function notFound(req, _ctx)
+{
+  return setResponse(new ServiceError('Not Found', {
+    status: 404,
+  }))
 }
