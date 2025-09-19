@@ -12,7 +12,7 @@ import { onRequest, onResponse, setResponse } from '../../libs/service.js'
 import { connect, disconnect, tables, getItem } from '../../libs/db.js'
 import { checkAuthorization, getToken } from '../../libs/token.js'
 import { ASSET_MODE } from '../asset/_lib.js'
-import { getCachePath } from './_lib.js'
+import { getCachePath, removeFile } from './_lib.js'
 
 const { DATA_PATH } = Bun.env
 
@@ -42,23 +42,36 @@ export default async (req, _ctx) => {
     // 파일 캐시파일이 있는경우
     if (await cacheFile.exists())
     {
-      const cache = await cacheFile.json()
-      _file = Bun.file(cache.path, { type: cache.type })
-      if (await _file.exists())
+      const _cache = await cacheFile.json()
+      if (_cache.cache)
       {
-        if (cache.public)
+        const _resize = getResizeImageSource(_cache.path, query)
+        if (_resize.path === _cache.cache)
+        {
+          _file = Bun.file(_cache.cache)
+        }
+      }
+      else
+      {
+        _file = Bun.file(_cache.path, { type: _cache.type })
+      }
+      if (_file && (await _file.exists()))
+      {
+        if (_cache.public)
         {
           // 공개 파일일 경우
-          output.path = cache.path
-          output.type = cache.type
+          output.path = _cache.path
+          output.type = _cache.type
+          if (_cache.cache) output.cache = _cache.cache
         }
         else
         {
           // 비공개 파일일 경우
-          if (getToken(req) === cache.token)
+          if (getToken(req) === _cache.token)
           {
-            output.path = cache.path
-            output.type = cache.type
+            output.path = _cache.path
+            output.type = _cache.type
+            if (_cache.cache) output.cache = _cache.cache
           }
           else
           {
@@ -72,6 +85,7 @@ export default async (req, _ctx) => {
       {
         // 문제가 있는 파일이라고 판단하여 캐시파일을 삭제한다.
         await cacheFile.delete()
+        if (_cache.cache) removeFile(_cache.cache).then()
       }
     }
 
@@ -108,11 +122,19 @@ export default async (req, _ctx) => {
       }
       // auth.accessToken
       const isPublic = asset?.mode === ASSET_MODE.PUBLIC
+      // make resize image
+      let cache = ''
+      if (/^image/.test(file.type) && (query.w || query.h))
+      {
+        const _resize = getResizeImageSource(file.path, query)
+        cache = _resize.path
+      }
       // make cache file
       makeCacheFile({
         id,
         public: isPublic,
         path: file.path,
+        cache,
         module: file.module,
         module_id: file.module_id,
         fileName: file.name,
@@ -137,7 +159,7 @@ export default async (req, _ctx) => {
     {
       buffer = await filePathToBuffer(_file, {
         type: output.type,
-        query,
+        query: !output.cache ? query : {},
       })
     }
     else
@@ -191,7 +213,7 @@ export default async (req, _ctx) => {
  */
 async function makeCacheFile(op = {})
 {
-  const _output = {
+  let _output = {
     file: op.id,
     public: op.public,
     path: op.path,
@@ -201,6 +223,7 @@ async function makeCacheFile(op = {})
     type: op.fileType,
   }
   if (op.token) _output.token = op.token
+  if (op.cache) _output.cache = op.cache
   const _file = Bun.file(getCachePath(op.id), { type: 'application/json' })
   await Bun.write(_file, JSON.stringify(_output, null, 2))
 }
@@ -227,17 +250,8 @@ async function filePathToBuffer(file, { type, query })
 }
 async function resizeImage(file, options = {})
 {
-  const { w, h, t, q } = options
-  const filePaths = file.name.replace(/^.\//, '').split('/')
-  const op = {
-    w: w ? Number(w) : undefined,
-    h: h ? Number(h) : undefined,
-    t: t || 'cover',
-    q: q ? Number(q) : 85,
-  }
-  const _query = optionsToQuery(op)
-  const _path = `${DATA_PATH}/cache/${filePaths[2]}/${filePaths[3]}${_query}`
-  const _cacheFile = Bun.file(_path)
+  const _resize = getResizeImageSource(file.name, options)
+  const _cacheFile = Bun.file(_resize.path)
   if (await _cacheFile.exists())
   {
     return await _cacheFile.arrayBuffer()
@@ -246,16 +260,32 @@ async function resizeImage(file, options = {})
   {
     const _resized = await sharp(await file.arrayBuffer())
       .resize({
-        width: op.w,
-        height: op.h,
-        fit: op.t,
+        width: _resize.options.w,
+        height: _resize.options.h,
+        fit: _resize.options.t,
       })
       .keepMetadata()
-      .webp({ quality: op.q })
+      .webp({ quality: _resize.options.q })
       .toBuffer()
     const _buffer = _resized.buffer.slice(0)
-    Bun.write(_path, _buffer).then()
+    Bun.write(_resize.path, _buffer).then()
     return _buffer
+  }
+}
+function getResizeImageSource(filename, query = {})
+{
+  const { w, h, t, q } = query
+  const filePaths = filename.replace(/^.\//, '').split('/')
+  const op = {
+    w: w ? Number(w) : undefined,
+    h: h ? Number(h) : undefined,
+    t: t || 'cover',
+    q: q ? Number(q) : 85,
+  }
+  const _query = optionsToQuery(op)
+  return {
+    path: `${DATA_PATH}/cache/${filePaths[2]}/${filePaths[3]}${_query}`,
+    options: op,
   }
 }
 function optionsToQuery(op = {})
@@ -267,10 +297,3 @@ function optionsToQuery(op = {})
   if (op.q) query.push(`q=${op.q}`)
   return query.length > 0 ? `__${query.join('&')}` : ''
 }
-
-// function imageResize()
-// {
-//   return new Promise((resolve, reject) => {
-//
-//   })
-// }
