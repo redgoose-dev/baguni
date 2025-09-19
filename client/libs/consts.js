@@ -1,9 +1,5 @@
-export const ASSET_MODE = {
-  PUBLIC: 'public',
-  PRIVATE: 'private',
-}
-
+// 에셋 본문에서 키워드를 치환하기 위한 재료들
 export const assetContentBody = {
-  host: '{{API_HOST}}',
-  hostLine: new RegExp('(\{\{API_HOST\}\}/file/[^/]+/)', 'g'),
+  host: '{{HOST}}',
+  hostLine: new RegExp('(\{\{HOST\}\}/file/[^/]+/)', 'g'),
 }
