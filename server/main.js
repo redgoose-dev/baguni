@@ -20,10 +20,6 @@ pref.server = serve({
   port: server.port,
   hostname: server.host,
   routes,
-  fetch: async (req, server) => {
-    console.log('fetch()')
-    return new Response('FOOFO')
-  },
   error: error,
 })
 

@@ -1,6 +1,5 @@
 import { pref } from '../classes/Preference.js'
-import { colorText } from './strings.js'
-import { dateFormat } from './strings.js'
+import { colorText, dateFormat } from './strings.js'
 
 const { NODE_ENV  } = Bun.env
 

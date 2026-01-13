@@ -44,8 +44,9 @@ export default async (req, _ctx) => {
 
     // 기본적인 쿼리 만들기
     fields.push(`${tables.asset}.*`)
-    fields.push(`(SELECT id FROM ${tables.file} WHERE ${tables.file}.module_id = ${tables.asset}.id AND mode LIKE '${fileTypes.main}') as file_id`)
-    fields.push(`(SELECT id FROM ${tables.file} WHERE ${tables.file}.module_id = ${tables.asset}.id AND mode LIKE '${fileTypes.coverCreate}') as cover_file_id`)
+    fields.push(`(SELECT id FROM ${tables.file} WHERE ${tables.file}.module LIKE $module AND ${tables.file}.module_id = ${tables.asset}.id AND mode LIKE '${fileTypes.main}') as file_id`)
+    fields.push(`(SELECT id FROM ${tables.file} WHERE ${tables.file}.module LIKE $module AND ${tables.file}.module_id = ${tables.asset}.id AND mode LIKE '${fileTypes.coverCreate}') as cover_file_id`)
+    values['$module'] = tables.asset
 
     // 파일의 타입 (file.type 필드에서 키워드 검색)
     if (file_type)

@@ -9,7 +9,6 @@ const argv = minimist(process.argv.slice(2))
 const paths = {
   seedDb: `./resource/seed.sql`,
   db: `${DATA_PATH}/db.sqlite`,
-  env: '.env.local',
   preference: './resource/preference.json',
 }
 const pathList = [

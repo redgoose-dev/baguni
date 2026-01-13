@@ -11,5 +11,4 @@ tmp/
 .DS_Store
 .env.*
 docker-compose.yml
-podman-compose.yml
 cmd.sh
