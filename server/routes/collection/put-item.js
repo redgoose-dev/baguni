@@ -71,7 +71,7 @@ export default async (req, _ctx) => {
     // add file data
     if (uploadedFiles.coverOrigin)
     {
-      addFileData({
+      await addFileData({
         file: uploadedFiles.coverOrigin,
         module: tables.collection,
         module_id: collectionId,
@@ -80,7 +80,7 @@ export default async (req, _ctx) => {
     }
     if (uploadedFiles.coverCreate)
     {
-      addFileData({
+      await addFileData({
         file: uploadedFiles.coverCreate,
         module: tables.collection,
         module_id: collectionId,

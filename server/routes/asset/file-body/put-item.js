@@ -59,7 +59,7 @@ export default async (req, _ctx) => {
     })
 
     // add data
-    const fileId = addFileData({
+    const fileId = await addFileData({
       file: uploadedFile.body,
       module: tables.asset,
       module_id: id,

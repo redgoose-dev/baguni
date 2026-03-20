@@ -97,7 +97,7 @@ export default async (req, _ctx) => {
     // add file data
     if (uploadedFiles.file)
     {
-      addFileData({
+      await addFileData({
         file: uploadedFiles.file,
         module: tables.asset,
         module_id: assetId,
@@ -106,7 +106,7 @@ export default async (req, _ctx) => {
     }
     if (uploadedFiles.coverOrigin)
     {
-      addFileData({
+      await addFileData({
         file: uploadedFiles.coverOrigin,
         module: tables.asset,
         module_id: assetId,
@@ -115,7 +115,7 @@ export default async (req, _ctx) => {
     }
     if (uploadedFiles.coverCreate)
     {
-      addFileData({
+      await addFileData({
         file: uploadedFiles.coverCreate,
         module: tables.asset,
         module_id: assetId,
@@ -139,6 +139,7 @@ export default async (req, _ctx) => {
   }
   catch (_e)
   {
+    console.error(_e)
     // remove junk files
     await removeJunkFiles(uploadedFiles)
     // set response

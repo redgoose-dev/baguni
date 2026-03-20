@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto'
-import sizeOf from 'image-size'
+import { imageSizeFromFile } from 'image-size/fromFile'
 import ServiceError from '../../classes/ServiceError.js'
 import { pref } from '../../classes/Preference.js'
 import { tables, getItems, getItem, addItem, removeItem } from '../../libs/db.js'
@@ -136,9 +136,9 @@ export async function fileUpload(mode, file, options = {})
  * @param {'asset'|'collection'} op.module
  * @param {number} op.module_id
  * @param {string} op.mode (main|body|cover-create|cover-origin)
- * @return {number}
+ * @return {Promise<number>}
  */
-export function addFileData(op = {})
+export async function addFileData(op = {})
 {
   const { file, module, module_id, mode } = op
   return addItem({
@@ -151,7 +151,7 @@ export function addFileData(op = {})
       {
         key: 'meta',
         value: JSON.stringify({
-          ...getImageSize(file.path, file.mime),
+          ...(await getImageSize(file.path, file.mime)),
         }),
       },
       { key: 'module', value: module },
@@ -182,7 +182,7 @@ export async function changeFileData(op = {})
   if (!uploadedFile) return
   // 파일 데이터가 있기 때문에 이전 파일은 삭제한다.
   if (id) removeFileData(id)
-  addFileData({
+  await addFileData({
     file: uploadedFile,
     module,
     module_id,
@@ -268,12 +268,12 @@ export async function removeJunkFiles(files)
  * 이미지 사이즈를 가져온다.
  * @param {string} path
  * @param {string} type
- * @return {object|undefined}
+ * @return {Promise<object|undefined>}
  */
-export function getImageSize(path, type)
+export async function getImageSize(path, type)
 {
   if (!(path && type && /^image/.test(type))) return undefined
-  const { width, height } = sizeOf(path)
+  const { width, height } = await imageSizeFromFile(path)
   return { width, height }
 }
 
