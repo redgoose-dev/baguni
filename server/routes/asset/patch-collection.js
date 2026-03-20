@@ -79,7 +79,7 @@ export default async (req, _ctx) => {
     {
       removeItem({
         table: tables.mapCollectionAsset,
-        where: `collection IN (${compare.removed.join(',')})`,
+        where: `asset = ${id} AND collection IN (${compare.removed.join(',')})`,
       })
     }
 
