@@ -7,6 +7,7 @@ import { onRequest, onResponse, setResponse } from '../../libs/service.js'
 import { checkingFile, checkingIgnorePath } from '../../libs/service.js'
 import { STATIC_CACHE_MAX_AGE } from '../../libs/assets.js'
 
+const { URL_PATH } = Bun.env
 const ignorePaths = [
   '/.well-known',
 ]
@@ -59,7 +60,9 @@ export default async (req, _ctx) => {
         if (await clientFile.exists())
         {
           const html = await clientFile.text()
-          response = setResponse(html, 200, {
+          const siteUrl = (URL_PATH || '/').replace(/\/$/, '')
+          const rendered = html.replaceAll('__SITE_URL__', siteUrl)
+          response = setResponse(rendered, 200, {
             headers: {
               'Server': 'bun',
               'Content-Type': 'text/html; charset=utf-8',
