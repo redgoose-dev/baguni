@@ -4,7 +4,7 @@
   margin: var(--size-content-margin-top) 0 0;
   padding: 0 var(--size-side-padding);
   &__wrap {
-    max-width: 1440px;
+    max-width: var(--size-content-width-max);
     margin: 0 auto;
   }
   &__body {
@@ -88,7 +88,7 @@
     }
     &.thumbnail {
       --assets-index-column: 3;
-      --assets-index-gap: 20px;
+      --assets-index-gap: 16px;
     }
   }
   &__empty {
@@ -118,7 +118,7 @@
           }
           &.thumbnail {
             --assets-index-column: 3;
-            --assets-index-gap: 24px;
+            --assets-index-gap: 20px;
           }
         }
       }
@@ -139,7 +139,6 @@
           }
           &.thumbnail {
             --assets-index-column: 4;
-            --assets-index-gap: 28px;
           }
         }
       }

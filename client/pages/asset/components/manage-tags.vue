@@ -2,7 +2,8 @@
 <fieldset class="manage-tags">
   <legend>태그 입력 폼</legend>
   <p class="description">
-    글의 주제, 성격 및 관련된 키워드를 쉼표로 구분하여 입력하세요. 구체적이고 관련성 높은 태그를 입력할수록 검색 결과에서 더 잘 노출됩니다.
+    글의 주제, 성격 및 관련된 키워드를 쉼표로 구분하여 입력하세요. 구체적이고 관련성 높은 태그를 입력할수록 검색 결과에서 더 잘 노출됩니다.<br/>
+    태그는 <strong>{{display.limitTag}}개</strong>까지 입력할 수 있습니다.
   </p>
   <div class="add-tag">
     <div class="input-tag">
@@ -13,6 +14,7 @@
           v-model="inputTag"
           placeholder="태그이름"
           size="small"
+          :disabled="_disabledInput"
           :maxlength="20"
           :use-submit="true"
           @submit="addTag"/>
@@ -21,7 +23,7 @@
             size="small"
             color="key-1"
             left-icon="plus"
-            :disabled="!$existInputTag"
+            :disabled="!_existInputTag || _disabledInput"
             @click="onClickAddTag">
             추가
           </Button>
@@ -68,6 +70,7 @@
 
 <script setup>
 import { ref, computed, reactive } from 'vue'
+import { authStore } from '../../../store/index.js'
 import { tagRegex } from '../../../libs/strings.js'
 import { debounce } from '../../../libs/util.js'
 import { toast } from '../../../modules/toast/index.js'
@@ -79,16 +82,24 @@ import Modal from '../../../components/modal/index.vue'
 import TagSelector from '../../../components/content/tag-selector/index.vue'
 
 const $inputTagName = ref()
+const auth = authStore()
 const props = defineProps({
   modelValue: Array,
 })
 const emits = defineEmits([ 'update:modelValue' ])
 const inputTag = ref('')
-const $existInputTag = computed(() => {
-  return inputTag.value.length > 0
-})
 const tagSelector = reactive({
   open: false,
+})
+const display = reactive({
+  limitTag: auth.preference.asset.limitTagCount,
+})
+
+const _disabledInput = computed(() => {
+  return display.limitTag <= props.modelValue.length
+})
+const _existInputTag = computed(() => {
+  return inputTag.value.length > 0
 })
 
 function onClickAddTag(e)

@@ -167,6 +167,10 @@ $ratios: '2/1', '1/2', '3/2', '2/3', '4/3', '3/4', '6/4', '4/6', '10/8', '8/10',
       font-size: .875em;
       font-weight: 400;
       line-height: 1.68;
+      &.language-prompt {
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
     }
   }
   input[type=checkbox] {

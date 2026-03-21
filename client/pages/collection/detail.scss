@@ -5,7 +5,7 @@
   padding: 0 var(--size-side-padding);
   &__wrap {
     margin: 0 auto;
-    max-width: var(--size-content-width);
+    max-width: var(--size-content-width-max);
   }
   &__body {
     margin: 30px 0 0;
@@ -111,10 +111,16 @@
   padding: 0;
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px 24px;
+  grid-template-columns: repeat(var(--column, 3), 1fr);
+  gap: var(--gap, 16px);
   > li {
     min-width: 0;
+  }
+  @include mixins.responsive(desktop) {
+    --column: 4;
+  }
+  @include mixins.responsive(max) {
+    --column: 6;
   }
 }
 .item-nav {

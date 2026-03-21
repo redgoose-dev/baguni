@@ -2,7 +2,8 @@
   "appName": "바구니",
   "asset": {
     "pagePerCount": 24,
-    "pageRange": 10
+    "pageRange": 10,
+    "limitTagCount": 5
   },
   "collection": {
     "pagePerCount": 24

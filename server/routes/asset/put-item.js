@@ -126,7 +126,12 @@ export default async (req, _ctx) => {
     // add tags data
     if (tags)
     {
-      tags.split(',').forEach(tag => addTagData(tag, assetId))
+      const _tags = tags.split(',')
+      if (pref.asset.limitTagCount < _tags.length)
+      {
+        throw new ServiceError(`태그는 ${pref.asset.limitTagCount}개까지 등록할 수 있습니다.`, { status: 400 })
+      }
+      _tags.forEach(tag => addTagData(tag, assetId))
     }
 
     // set response

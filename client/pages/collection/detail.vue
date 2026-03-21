@@ -128,7 +128,7 @@ const router = useRouter()
 const route = useRoute()
 const auth = authStore()
 const display = reactive({
-  size: 12,
+  size: auth.preference.collection.pagePerCount,
   order: 'id',
   sort: 'desc',
 })

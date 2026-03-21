@@ -5,7 +5,7 @@
   padding: 0 var(--size-side-padding);
   &__wrap {
     margin: 0 auto;
-    max-width: var(--size-content-width);
+    max-width: var(--size-content-width-max);
   }
   &__body {
     margin: 30px 0 0;
@@ -20,8 +20,8 @@
   padding: 0;
   list-style: none;
   display: grid;
-  gap: var(--gap, 20px);
-  grid-template-columns: repeat(var(--column, 3), 1fr);
+  gap: var(--gap, 16px);
+  grid-template-columns: repeat(var(--column, 4), 1fr);
   align-items: start;
   > li {
     min-width: 0;
@@ -51,7 +51,8 @@
     }
   }
   @include mixins.responsive(desktop) {
-    --column: 4;
+    --column: 5;
+    --gap: 20px;
   }
 }
 
