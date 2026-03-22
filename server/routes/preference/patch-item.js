@@ -4,11 +4,11 @@
  * 환경설정 데이터 업데이트
  */
 
-import ServiceError from '../../classes/ServiceError.js'
-import { pref } from '../../classes/Preference.js'
-import { onRequest, onResponse, setResponse } from '../../libs/service.js'
-import { connect, disconnect } from '../../libs/db.js'
-import { checkAuthorization } from '../../libs/token.js'
+import ServiceError from '@/classes/ServiceError.js'
+import { pref } from '@/classes/Preference.js'
+import { onRequest, onResponse, setResponse } from '@/libs/service.js'
+import { connect, disconnect } from '@/libs/db.js'
+import { checkAuthorization } from '@/libs/token.js'
 
 export default async (req, _ctx) => {
 

@@ -75,6 +75,7 @@ class Preference {
     this.asset = compare.asset
     this.collection = compare.collection
     this.file = compare.file
+    this.token = compare.token
   }
 
   /**
