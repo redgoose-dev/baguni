@@ -26,3 +26,8 @@ export const allowFileTypes = [
 export const limitUploadSize = 10485760 // 10MB
 
 export const STATIC_CACHE_MAX_AGE = 60 * 60 * 24 * 365 // 1 year
+
+export const TOKEN_TYPE = {
+  ACCESS: 'access',
+  REFRESH: 'refresh',
+}

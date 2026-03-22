@@ -20,5 +20,8 @@
       "height": 480
     },
     "cacheMaxAge": 2592000
+  },
+  "token": {
+    "pagePerCount": 24
   }
 }

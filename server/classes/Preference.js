@@ -10,6 +10,7 @@ class Preference {
   appName = 'BAGUNI'
   version = pkg.version
   token = {}
+  _token = {}
   asset = {}
   collection = {}
   file = {}
@@ -28,6 +29,7 @@ class Preference {
     {
       this.appName = data.appName
       this.token = data.token
+      this._token = data._token
       this.asset = data.asset
       this.collection = data.collection
       this.file = data.file
@@ -42,6 +44,7 @@ class Preference {
       asset: this.asset,
       collection: this.collection,
       file: this.file,
+      token: this.token,
     }
   }
 
@@ -62,7 +65,7 @@ class Preference {
   {
     const origin = await this.load()
     if (!origin) return
-    if (src.token) delete src.token
+    if (src._token) delete src._token
     const compare = {
       ...origin,
       ...src,

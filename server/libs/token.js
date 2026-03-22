@@ -8,20 +8,21 @@ import { tables, getItem } from './db.js'
  * create token
  * @param {'access'|'refresh'} type
  * @param {object} payload
+ * @param {object} options
  * @return {object}
  */
-export function createToken(type, payload = {})
+export function createToken(type, payload = {}, options = {})
 {
   let secret, expires
   switch (type)
   {
     case 'access':
-      secret = pref.token.accessSecret
-      expires = pref.token.accessExpires // 엑세스 토큰 만료시간
+      secret = pref._token.accessSecret
+      expires = options?.expires || pref._token.accessExpires // 엑세스 토큰 만료시간
       break
     case 'refresh':
-      secret = pref.token.refreshSecret
-      expires = pref.token.refreshExpires // 리프레시 토큰 만료시간
+      secret = pref._token.refreshSecret
+      expires = options?.expires || pref._token.refreshExpires // 리프레시 토큰 만료시간
       break
     default:
       return null
@@ -29,9 +30,11 @@ export function createToken(type, payload = {})
   const value = sign(payload, secret, {
     expiresIn: expires,
   })
+  const parse = decodeToken(type, value)
+  if (!parse) throw new Error('Failed parse token')
   return {
     value,
-    parse: decodeToken(type, value),
+    parse,
   }
 }
 
@@ -43,13 +46,17 @@ export function createToken(type, payload = {})
  */
 export function decodeToken(type, token)
 {
-  switch (type)
+  try
   {
-    case 'access':
-      return verify(token, pref.token.accessSecret)
-    case 'refresh':
-      return verify(token, pref.token.refreshSecret)
+    switch (type)
+    {
+      case 'access':
+        return verify(token, pref._token.accessSecret)
+      case 'refresh':
+        return verify(token, pref._token.refreshSecret)
+    }
   }
+  catch (_) {}
   return null
 }
 
@@ -87,7 +94,7 @@ export function checkAuthorization(req, useProvider = true)
     if (!token) throw new Error('데이터베이스에 엑세스 토큰이 없습니다.')
     // try decode token
     const decoded = decodeToken('access', token.access)
-    if (!decoded.id) throw new Error('잘못된 엑세스토큰입니다.')
+    if (!decoded?.id) throw new Error('잘못된 엑세스토큰입니다.')
     if (useProvider)
     {
       const provider = getItem({

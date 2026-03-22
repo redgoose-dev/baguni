@@ -77,6 +77,7 @@ CREATE TABLE `tokens` (
   `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
   `refresh` TEXT NOT NULL UNIQUE,
   `access` TEXT NOT NULL UNIQUE,
+  `name` TEXT,
   `expired` TEXT NOT NULL,
   `created_at` TEXT NOT NULL
 );

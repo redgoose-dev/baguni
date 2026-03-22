@@ -4,14 +4,14 @@
  * 에셋목록
  */
 
-import ServiceError from '../../classes/ServiceError.js'
-import { pref } from '../../classes/Preference.js'
-import { getQuery } from '../../libs/server.js'
-import { onRequest, onResponse, setResponse } from '../../libs/service.js'
-import { connect, disconnect, tables, getCount, getItems } from '../../libs/db.js'
-import { parseJSON } from '../../libs/objects.js'
-import { fileTypes } from '../../libs/assets.js'
-import { checkAuthorization } from '../../libs/token.js'
+import ServiceError from '@/classes/ServiceError.js'
+import { pref } from '@/classes/Preference.js'
+import { getQuery } from '@/libs/server.js'
+import { onRequest, onResponse, setResponse } from '@/libs/service.js'
+import { connect, disconnect, tables, getCount, getItems } from '@/libs/db.js'
+import { parseJSON } from '@/libs/objects.js'
+import { fileTypes } from '@/libs/assets.js'
+import { checkAuthorization } from '@/libs/token.js'
 
 export default async (req, _ctx) => {
 
@@ -94,7 +94,6 @@ export default async (req, _ctx) => {
     values['$offset'] = (_page - 1) * values['$limit']
 
     // get index
-    const ids = {}
     let index = getItems({
       table: tables.asset,
       prefix: 'distinct',
@@ -115,7 +114,6 @@ export default async (req, _ctx) => {
         {
           index[i].json = parseJSON(index[i].json)
         }
-        ids[index[i].id] = i
       }
     }
     else

@@ -4,11 +4,11 @@
  * 로그아웃
  */
 
-import ServiceError from '../../classes/ServiceError.js'
-import { onRequest, onResponse, setResponse } from '../../libs/service.js'
-import { connect, disconnect, tables, removeItem } from '../../libs/db.js'
-import { checkAuthorization } from '../../libs/token.js'
-import * as cookie from '../../libs/cookie.js'
+import ServiceError from '@/classes/ServiceError.js'
+import { onRequest, onResponse, setResponse } from '@/libs/service.js'
+import { connect, disconnect, tables, removeItem } from '@/libs/db.js'
+import { checkAuthorization } from '@/libs/token.js'
+import * as cookie from '@/libs/cookie.js'
 
 export default async (req, _ctx) => {
 

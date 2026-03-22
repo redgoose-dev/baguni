@@ -53,6 +53,7 @@ export default async (req, _ctx) => {
     {
       if (!accessToken) throw 'no access token'
       parseAccessToken = decodeToken('access', accessToken)
+      if (!parseAccessToken) throw 'Failed parsing access token.'
     }
     catch (_e)
     {
@@ -139,7 +140,8 @@ async function retryGetToken(src = {})
 
   // parsing refresh token
   const parsed = decodeToken('refresh', refreshToken)
-  const provider = getProvider(parsed.id)
+  if (!parsed) throw new Error('Failed parsing refresh token.')
+  const provider = getProvider(parsed?.id)
   const newAccessToken = createToken('access', {
     id: provider.id,
     email: provider.user_id,
@@ -161,6 +163,7 @@ async function retryGetToken(src = {})
 
   // parse access token
   const parseAccessToken = decodeToken('access', newAccessToken.value)
+  if (!parseAccessToken) throw new Error('Failed parsing access token.')
 
   return {
     accessToken: newAccessToken.value,

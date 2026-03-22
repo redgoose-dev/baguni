@@ -94,6 +94,15 @@ export default {
     DELETE: async (req, ctx) => (await import('./auth/delete-provider.js')).default(req, ctx),
   },
 
+  // token
+  '/api/token/': {
+    GET: async (req, ctx) => (await import('./token/get-index.js')).default(req, ctx),
+    PUT: async (req, ctx) => (await import('./token/put-item.js')).default(req, ctx),
+  },
+  '/api/token/:id/': {
+    DELETE: async (req, ctx) => (await import('./token/delete-item.js')).default(req, ctx),
+  },
+
   // file
   '/file/:id/': {
     // 파일 열기

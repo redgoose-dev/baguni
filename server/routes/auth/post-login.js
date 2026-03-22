@@ -7,12 +7,13 @@
  * @param {'true'|undefined} [req.body.save]
  */
 
-import ServiceError from '../../classes/ServiceError.js'
-import { pref } from '../../classes/Preference.js'
-import { onRequest, onResponse, setResponse, checkFormData, getFormData } from '../../libs/service.js'
-import { connect, disconnect, tables, getItem, addItem } from '../../libs/db.js'
-import { createToken, jwtToToken } from '../../libs/token.js'
-import * as cookie from '../../libs/cookie.js'
+import ServiceError from '@/classes/ServiceError.js'
+import { pref } from '@/classes/Preference.js'
+import { onRequest, onResponse, setResponse, checkFormData, getFormData } from '@/libs/service.js'
+import { connect, disconnect, tables, getItem, addItem } from '@/libs/db.js'
+import { TOKEN_TYPE } from '@/libs/assets.js'
+import { createToken, jwtToToken } from '@/libs/token.js'
+import * as cookie from '@/libs/cookie.js'
 import { verifyPassword } from './_lib.js'
 
 const { URL_PATH } = Bun.env
@@ -57,11 +58,11 @@ export default async (req, _ctx) => {
 
     // create tokens
     const tokens = {
-      access: createToken('access', {
+      access: createToken(TOKEN_TYPE.ACCESS, {
         id: provider.id,
         user_id: provider.user_id,
       }),
-      refresh: createToken('refresh', {
+      refresh: createToken(TOKEN_TYPE.REFRESH, {
         id: provider.id,
       }),
     }
@@ -85,6 +86,10 @@ export default async (req, _ctx) => {
         {
           key: 'expired',
           value: tokens.refresh.parse.exp,
+        },
+        {
+          key: 'name',
+          value: 'login',
         },
         {
           key: 'created_at',

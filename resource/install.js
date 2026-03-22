@@ -193,7 +193,7 @@ async function setupPreference()
   {
     const file = Bun.file(paths.preference)
     const pref = await file.json()
-    pref.token = {
+    pref._token = {
       accessSecret: randomBytes(16).toString('hex'),
       accessExpires: '7h',
       refreshSecret: randomBytes(24).toString('hex'),

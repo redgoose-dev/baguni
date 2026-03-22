@@ -1,12 +1,12 @@
 /**
- * [DELETE] /provider/:id/
+ * [DELETE] /token/
  *
- * 프로바이더 삭제
+ * 토큰 삭제하기
  */
 
 import ServiceError from '@/classes/ServiceError.js'
 import { onRequest, onResponse, setResponse } from '@/libs/service.js'
-import { connect, disconnect, tables, getCount, getItem, removeItem } from '@/libs/db.js'
+import { connect, disconnect, tables, getItem, removeItem } from '@/libs/db.js'
 import { checkAuthorization } from '@/libs/token.js'
 
 export default async (req, _ctx) => {
@@ -28,39 +28,37 @@ export default async (req, _ctx) => {
     const auth = checkAuthorization(req)
 
     // get collection data
-    const provider = getItem({
-      table: tables.provider,
+    const token = getItem({
+      table: tables.tokens,
       where: `id = ${id}`,
     }).data
-    if (!provider)
+    if (!token)
     {
-      throw new ServiceError('프로바이더 데이터가 없습니다.', { status: 400 })
+      throw new ServiceError('토큰 데이터가 없습니다.', { status: 400 })
     }
 
-    const countProvider = getCount({
-      table: tables.provider,
-    }).data
-    if (countProvider <= 1)
+    // 로그인 아이디와 토큰 아이디가 동일하면 오류
+    if (auth.id === token.id)
     {
-      throw new ServiceError('프로바이더는 최소 1개 이상 존재해야 합니다.', { status: 400 })
+      throw new ServiceError('동일한 토큰을 삭제할 수 없습니다.', { status: 400 })
     }
 
     // remove data
     removeItem({
-      table: tables.provider,
+      table: tables.tokens,
       where: `id = ${id}`,
     })
 
     // set response
     response = setResponse({
-      message: '프로바이더를 삭제했습니다.',
+      message: '토큰을 삭제했습니다.',
     })
   }
   catch (_e)
   {
     req.err = _e
     // set response
-    response = setResponse(new ServiceError('프로바이더를 삭제하지 못했습니다.', {
+    response = setResponse(new ServiceError('토큰을 삭제하지 못했습니다.', {
       status: _e.status,
       text: _e.statusText || _e.message,
       url: `${req.method} ${req.url}`,

@@ -144,7 +144,6 @@ export default async (req, _ctx) => {
   }
   catch (_e)
   {
-    console.error(_e)
     // remove junk files
     await removeJunkFiles(uploadedFiles)
     // set response
