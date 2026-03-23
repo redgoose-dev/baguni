@@ -35,6 +35,7 @@ const icons = {
   'grid': lucide.Grid,
   'grid-2x2': lucide.Grid2x2,
   'key-round': lucide.KeyRound,
+  'key-square': lucide.KeySquare,
   'info': lucide.Info,
   'image': lucide.Image,
   'link-2': lucide.Link2,

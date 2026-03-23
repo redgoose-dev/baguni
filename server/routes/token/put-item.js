@@ -3,7 +3,7 @@
  *
  * Create token
  * @data {string} name 토큰을 설명하는 이름
- * @data {string} expires 만료기간 (7s, 7m, 7h, 7d, 7w, 7M, 7y)
+ * @data {string} expires 만료기간 (1s, 1m, 1h, 1d, 1y)
  */
 
 import ServiceError from '@/classes/ServiceError.js'

@@ -79,7 +79,7 @@ export default async (req, _ctx) => {
         index[i] = {
           id: index[i].id,
           token: jwtToToken(index[i].access),
-          expired: parsed?.exp ? dateFormat(new Date(parsed.exp * 1000), '{yyyy}-{MM}-{dd} {hh}:{mm}:{ss}') : null,
+          expired: (index[i].expired && parsed?.exp) ? dateFormat(new Date(parsed.exp * 1000), '{yyyy}-{MM}-{dd} {hh}:{mm}:{ss}') : null,
           name: index[i].name,
           created_at: index[i].created_at,
         }

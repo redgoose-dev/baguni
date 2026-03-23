@@ -3,7 +3,7 @@
   ref="$root"
   :name="props.name"
   :id="props.id"
-  :value="props.modelValue"
+  :value="value"
   :required="props.required"
   :disabled="props.disabled"
   :readonly="props.readonly"
@@ -32,7 +32,6 @@ const $root = ref()
 const props = defineProps({
   name: String,
   id: String,
-  modelValue: String,
   placeholder: {
     type: String,
     default: 'Please input keyword.',
@@ -46,7 +45,10 @@ const props = defineProps({
   color: String, // error
   autoSize: Boolean,
 })
-const emits = defineEmits([ 'update:modelValue', 'position', 'submit' ])
+const value = defineModel({
+  type: String,
+})
+const emits = defineEmits([ 'position', 'submit' ])
 
 function onChangePosition(e)
 {
@@ -59,7 +61,7 @@ function onChangePosition(e)
 function onChangeText(e)
 {
   if (props.autoSize) changeHeight()
-  emits('update:modelValue', e.target.value)
+  value.value = e.target.value
 }
 
 function changeHeight()

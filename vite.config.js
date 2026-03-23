@@ -71,11 +71,6 @@ const config = defineConfig(() => {
         },
       },
     },
-    resolve: {
-      alias: {
-        '#': new URL('./client', import.meta.url).pathname,
-      },
-    },
     plugins: [
       vue({
         template: {

@@ -4,7 +4,7 @@
   :type="props.type"
   :name="props.name"
   :id="props.id"
-  :value="props.modelValue"
+  :value="value"
   :required="props.required"
   :disabled="props.disabled"
   :readonly="props.readonly"
@@ -35,7 +35,6 @@ const props = defineProps({
   type: { type: String, default: 'text' }, // text,password,number,date,time
   name: String,
   id: String,
-  modelValue: [ String, Number ],
   placeholder: {
     type: String,
     default: 'Please input keyword.',
@@ -53,7 +52,10 @@ const props = defineProps({
   list: String,
   useSubmit: Boolean,
 })
-const emits = defineEmits([ 'update:modelValue', 'position', 'submit', 'click'  ])
+const value = defineModel({
+  type: [ String, Number ],
+})
+const emits = defineEmits([ 'position', 'submit', 'click'  ])
 
 function focus()
 {
@@ -72,14 +74,14 @@ function onChangePosition(e)
 
 function onChangeText(e)
 {
-  let value = e.target.value
+  let text = e.target.value
   switch (props.type)
   {
     case 'number':
-      value = Number(value)
+      text = Number(text)
       break
   }
-  emits('update:modelValue', value)
+  value.value = text
 }
 
 function onSubmit(e)

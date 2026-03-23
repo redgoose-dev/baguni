@@ -92,6 +92,7 @@ export function checkAuthorization(req, useProvider = true)
       values: { '$access': `%${authorization}` },
     }).data
     if (!token) throw new Error('데이터베이스에 엑세스 토큰이 없습니다.')
+    if (!token.expired) throw new Error('사용할 수 없는 토큰입니다.')
     // try decode token
     const decoded = decodeToken('access', token.access)
     if (!decoded?.id) throw new Error('잘못된 엑세스토큰입니다.')

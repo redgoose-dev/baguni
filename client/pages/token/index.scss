@@ -1,0 +1,24 @@
+@use '../../assets/scss/mixins';
+
+.token {
+  margin: var(--size-content-margin-top) 0 0;
+  padding: 0 var(--size-side-padding);
+  &__wrap {
+    max-width: var(--size-content-width);
+    margin: 0 auto;
+  }
+}
+
+.content {
+  margin: 30px 0 0;
+}
+
+.index {
+  margin: 0 0 36px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(var(--index-column, 1), 1fr);
+  gap: var(--index-gap, 12px);
+  > li {}
+}

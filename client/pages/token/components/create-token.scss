@@ -1,0 +1,70 @@
+@use '../../../assets/scss/mixins' as mixins;
+
+.create-token {
+  padding: 36px;
+  box-sizing: border-box;
+  width: 75vw;
+  max-width: 560px;
+}
+
+.post {
+  margin: 30px 0 0;
+  position: relative;
+  padding: 0;
+  border: none;
+  display: grid;
+  gap: 24px 0;
+  > fieldset {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    border: none;
+    display: grid;
+    gap: 24px 0;
+    > legend {
+      font-size: 0;
+      position: absolute;
+    }
+  }
+}
+
+.field {
+  > p {
+    margin: 0;
+    line-height: 1.15;
+    .label {
+      font-size: 14px;
+      font-weight: 600;
+      user-select: none;
+    }
+  }
+  > div {
+    margin: 6px 0 0;
+  }
+}
+
+.expire-in {
+  width: 180px;
+  &__unit {
+    margin-left: -1px;
+    --icon-color: var(--color-light);
+    &:deep(> select) {
+      padding-left: 16px;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      background: var(--color-weak);
+      color: var(--color-light);
+    }
+  }
+}
+
+.submit {
+  margin: 10px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0 10px;
+  .button {
+    width: auto;
+  }
+}

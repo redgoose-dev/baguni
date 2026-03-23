@@ -78,6 +78,6 @@ CREATE TABLE `tokens` (
   `refresh` TEXT NOT NULL UNIQUE,
   `access` TEXT NOT NULL UNIQUE,
   `name` TEXT,
-  `expired` TEXT NOT NULL,
+  `expired` TEXT,
   `created_at` TEXT NOT NULL
 );

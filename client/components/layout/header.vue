@@ -69,6 +69,7 @@
             <Context
               :items="[
                 { key: 'account', label: '계정', icon: 'user-round', color: route.meta.active === 'account' ? 'key-3' : '' },
+                { key: 'token', label: '토큰', icon: 'key-square', color: route.meta.active === 'token' ? 'key-3' : '' },
                 { key: 'preference', label: '환경설정', icon: 'cog', color: route.meta.active === 'preference' ? 'key-3' : '' },
                 { key: 'logout', label: '로그아웃', icon: 'log-out', color: 'danger' },
               ].filter(Boolean)"
@@ -113,6 +114,9 @@ function onSelectProfileDropdown({ key })
   {
     case 'account':
       router.push(`/account/`)
+      break
+    case 'token':
+      router.push(`/token/`)
       break
     case 'preference':
       router.push('/preference/')

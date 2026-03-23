@@ -182,6 +182,15 @@ const preference = [
   },
 ]
 
+const token = [
+  {
+    path: '/token/',
+    name: 'token',
+    component: () => import('../pages/token/index.vue'),
+    meta: { active: 'token', layout: 'default' },
+  },
+]
+
 export default [
   ...asset,
   ...collection,
@@ -189,6 +198,7 @@ export default [
   ...share,
   ...auth,
   ...preference,
+  ...token,
   ...(guide ? guide : []),
   {
     path: '/:pathMatch(.*)*',

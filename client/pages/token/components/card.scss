@@ -1,0 +1,101 @@
+@use '../../../assets/scss/mixins';
+
+.card {
+  --radius: 6px;
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0 24px;
+  align-items: center;
+  padding: 20px 24px;
+  background-color: var(--color-bg);
+  box-shadow: 0 0 0 .5px hsla(0 0% 0% / 16%), 0 2px 8px hsla(0 0% 0% / 12%);
+  border-radius: var(--radius);
+  outline: 2px solid var(--outline-color, #{mixins.mix-alpha(var(--color-key-3), 0%)});
+  outline-offset: -1px;
+  transition: outline 120ms ease-out;
+  &:hover {
+    --outline-color: var(--color-key-3);
+  }
+}
+
+.body {}
+
+.id {
+  margin: 0;
+  padding: 0 12px;
+  line-height: 1.15;
+  font-size: 20px;
+  letter-spacing: -1px;
+}
+
+.token {
+  width: 320px;
+}
+
+.name {
+  margin: 0 0 10px;
+  line-height: 1.15;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.date {
+  margin: 10px 0 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px 6px;
+  font-size: 11px;
+  line-height: 1.15;
+  dt {
+    color: var(--color-weak);
+    user-select: none;
+    &:before {
+      content: '- ';
+    }
+    &:after {
+      content: ':';
+    }
+  }
+  dd {
+    margin: 0;
+    strong {
+      font-weight: 700;
+      color: var(--color-key-3);
+    }
+  }
+}
+
+.control {
+  display: flex;
+  gap: 0 8px;
+  user-select: none;
+  &:not(:empty) {
+    margin: 12px -2px 0;
+  }
+  button {
+    display: block;
+    margin: 0;
+    padding: 2px;
+    font-size: 11px;
+    line-height: 1.05;
+    border: none;
+    background: none;
+    font-weight: 700;
+    border-radius: 2px;
+    @include mixins.focus-content();
+    &:not(:disabled) {
+      cursor: pointer;
+    }
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.side {
+  display: flex;
+  gap: 0 8px;
+  align-items: center;
+}
