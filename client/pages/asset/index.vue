@@ -210,7 +210,6 @@ async function fetch()
     // response data
     if (res?.data)
     {
-      console.log('index.length: ', res?.data?.index?.length || 0)
       const { total, index } = res?.data
       data.total = total
       data.index = index
