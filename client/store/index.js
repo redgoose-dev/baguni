@@ -105,9 +105,10 @@ const defaultAssetsIndexFilter = {
 
 export const assetStore = defineStore('asset', {
   state: () => {
+    const auth = authStore()
     return {
-      indexSize: 24,
-      paginateSize: 8,
+      indexSize: auth.preference?.asset?.pagePerCount || 24,
+      paginateSize: auth.preference?.asset?.pageRange || 10,
       filter: {
         ...pureObject(defaultAssetsIndexFilter),
         ...(getStorage(STORAGE_KEYS.ASSET_FILTER) || {}),
