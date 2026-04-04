@@ -8,9 +8,28 @@
   height: calc(78vh - 172px);
   max-width: 960px;
   max-height: 540px;
+  margin-inline: auto;
   background: var(--color-blur);
 }
 
 .bottom {
   margin: 24px 0 0;
+}
+
+.zoom {
+  display: grid;
+  align-items: center;
+  grid-template-columns: auto 1fr auto;
+  gap: 0 12px;
+  width: 200px;
+  .icon {
+    --icon-margin: -4px -2px;
+    --icon-size: 20px;
+    --icon-stroke: 2;
+    --icon-color: var(--color-weak);
+  }
+  input {
+    margin: 0;
+    width: 100%;
+  }
 }

@@ -18,23 +18,26 @@
 <style lang="scss" scoped>
 .bottom-nav {
   display: grid;
-  grid-template-areas: 'left center right';
+  grid-template-areas: 'bottom-left bottom-center bottom-right';
   align-items: center;
   > div {
     display: flex;
     gap: 0 8px;
   }
   &__left {
-    grid-area: left;
-    place-self: start;
+    grid-area: bottom-left;
+    place-self: center;
+    justify-self: start;
   }
   &__center {
-    grid-area: center;
+    grid-area: bottom-center;
     place-self: center;
+    justify-self: center;
   }
   &__right {
-    grid-area: right;
-    place-self: end;
+    grid-area: bottom-right;
+    place-self: center;
+    justify-self: end;
   }
 }
 </style>

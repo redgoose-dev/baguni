@@ -62,6 +62,8 @@ const icons = {
   'user-round-plus': lucide.UserRoundPlus,
   'youtube': lucide.Youtube,
   'x': lucide.X,
+  'zoom-in': lucide.ZoomIn,
+  'zoom-out': lucide.ZoomOut,
 }
 
 export function iconRandomPick()
