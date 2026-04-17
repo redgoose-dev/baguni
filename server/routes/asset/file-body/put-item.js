@@ -33,7 +33,7 @@ export default async (req, _ctx) => {
     // check file
     if (!checkFile(file))
     {
-      throw new ServiceError('첨부파일이 없어나 잘못된 형식입니다.', { status: 400 })
+      throw new ServiceError('첨부파일이 없거나 잘못된 형식입니다.', { status: 400 })
     }
 
     // connect db
