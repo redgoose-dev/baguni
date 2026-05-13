@@ -41,15 +41,18 @@ export default async (req, _ctx) => {
 
     // 기본적인 쿼리 만들기
     fields.push(`${tables.asset}.*`)
-    fields.push(`(SELECT id FROM ${tables.file} WHERE ${tables.file}.module_id = ${tables.asset}.id AND mode LIKE '${fileTypes.main}') as file_id`)
-    fields.push(`(SELECT id FROM ${tables.file} WHERE ${tables.file}.module_id = ${tables.asset}.id AND mode like '${fileTypes.coverCreate}') AS cover_file_id`)
-    join.push(`JOIN ${tables.mapCollectionAsset} ON ${tables.asset}.id = ${tables.mapCollectionAsset}.asset AND ${tables.mapCollectionAsset}.collection = $collection`)
+    fields.push(`f_main.id as file_id`)
+    fields.push(`f_cover.id AS cover_file_id`)
+    where = `${tables.asset}.id IN (SELECT asset FROM ${tables.mapCollectionAsset} WHERE collection = $collection)`
     values['$collection'] = id
+    join = [
+      `LEFT JOIN ${tables.file} f_main ON (f_main.module = '${tables.asset}' AND f_main.module_id = ${tables.asset}.id AND f_main.mode = '${fileTypes.main}')`,
+      `LEFT JOIN ${tables.file} f_cover ON (f_cover.module = '${tables.asset}' AND f_cover.module_id = ${tables.asset}.id AND f_cover.mode = '${fileTypes.coverCreate}')`,
+    ]
 
-    // get total
+    // get total (WHERE IN으로 집계, file JOIN 불필요)
     total = getCount({
       table: tables.asset,
-      join,
       where,
       values,
     }).data
@@ -75,7 +78,6 @@ export default async (req, _ctx) => {
       values,
     })
     index = index.data?.length > 0 ? index.data : []
-    // 목록에서 데이터를 돌리면서 값을 조정한다.
     for (let i=0; i<index.length; i++)
     {
       if (index[i].json) index[i].json = parseJSON(index[i].json)

@@ -56,5 +56,4 @@ router.onError(e => {
 watch(() => route.name, () => {
   if (!!errorData.value) errorData.value = undefined
 })
-
 </script>

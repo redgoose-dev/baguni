@@ -6,6 +6,16 @@ const { DATA_PATH } = Bun.env
 /** @var {Database} db */
 export let db
 
+/**
+ * DB 파일 크기 기반 PRAGMA 값 캐시
+ * 매 요청마다 파일 stat을 하지 않도록 일정 시간 간격으로만 갱신한다.
+ */
+let _pragmaCache = { mmap: 0, cache: 0, updatedAt: 0 }
+const PRAGMA_TTL = 1000 * 60 * 60 // 1시간마다 갱신
+
+/**
+ * db table 목록
+ */
 export const tables = {
   asset: 'asset',
   collection: 'collection',
@@ -31,6 +41,18 @@ export function connect(options = {})
   db = new Database(`${DATA_PATH}/db.sqlite`, {
     ...options,
   })
+  // 성능 최적화 PRAGMA
+  // WAL 모드: 읽기/쓰기 동시성 향상, 쓰기 연결에서만 설정 (DB 파일에 영구 저장됨)
+  if (!options.readonly)
+  {
+    db.run('PRAGMA journal_mode = WAL')
+    db.run('PRAGMA synchronous = NORMAL')
+  }
+  // DB 파일 크기 기반 PRAGMA - 1시간마다 갱신되는 캐시값 사용
+  const { mmap, cache } = getPragmaValues()
+  db.run(`PRAGMA mmap_size = ${mmap}`)
+  db.run(`PRAGMA cache_size = ${cache}`)
+  db.run('PRAGMA temp_store = MEMORY')
 }
 
 /**
@@ -296,4 +318,21 @@ function parseJoin(src)
     return src
   }
   return ''
+}
+
+/**
+ * DB 파일 크기 기반 PRAGMA 값 캐시를 반환한다.
+ * @return {object}
+ */
+function getPragmaValues()
+{
+  const now = Date.now()
+  if (now - _pragmaCache.updatedAt < PRAGMA_TTL) return _pragmaCache
+  const dbSize = Bun.file(`${DATA_PATH}/db.sqlite`).size
+  _pragmaCache = {
+    mmap: Math.ceil(dbSize * 3),
+    cache: -Math.ceil((dbSize * 3) / 1024), // 음수 = KB 단위
+    updatedAt: now,
+  }
+  return _pragmaCache
 }

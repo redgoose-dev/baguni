@@ -36,8 +36,8 @@ export default async (req, _ctx) => {
 
     // 기본적인 쿼리 만들기
     fields.push(`${tables.collection}.*`)
-    fields.push(`(SELECT COUNT(*) FROM ${tables.mapCollectionAsset} WHERE ${tables.mapCollectionAsset}.collection = ${tables.collection}.id) AS asset_count`)
-    fields.push(`(SELECT id FROM ${tables.file} WHERE ${tables.file}.module LIKE '${tables.collection}' AND ${tables.file}.module_id = ${tables.collection}.id AND mode LIKE '${fileTypes.coverCreate}') AS cover_file_id`)
+    fields.push(`f_cover.id AS cover_file_id`)
+    join.push(`LEFT JOIN ${tables.file} f_cover ON (f_cover.module = '${tables.collection}' AND f_cover.module_id = ${tables.collection}.id AND f_cover.mode = '${fileTypes.coverCreate}')`)
 
     // 키워드 검색
     if (q)

@@ -60,6 +60,21 @@ CREATE TABLE `map_asset_tag` (
   `tag` INTEGER REFERENCES `tag` -- tag 테이블 ID
 );
 
+-- 인덱스: map_collection_asset 조인 성능 개선
+CREATE INDEX IF NOT EXISTS `idx_map_collection_asset_collection` ON `map_collection_asset`(`collection`);
+CREATE INDEX IF NOT EXISTS `idx_map_collection_asset_asset` ON `map_collection_asset`(`asset`);
+
+-- 인덱스: asset 목록 조회 성능 개선
+CREATE INDEX IF NOT EXISTS `idx_asset_created_at` ON `asset`(`created_at` DESC);
+CREATE INDEX IF NOT EXISTS `idx_asset_updated_at` ON `asset`(`updated_at` DESC);
+
+-- 인덱스: file 서브쿼리 성능 개선 (module_id, mode, module 조합)
+CREATE INDEX IF NOT EXISTS `idx_file_module_id_mode` ON `file`(`module`, `module_id`, `mode`);
+
+-- 인덱스: map_asset_tag 조인 성능 개선
+CREATE INDEX IF NOT EXISTS `idx_map_asset_tag_asset` ON `map_asset_tag`(`asset`);
+CREATE INDEX IF NOT EXISTS `idx_map_asset_tag_tag` ON `map_asset_tag`(`tag`);
+
 -- table `provider`
 CREATE TABLE `provider` (
   `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,

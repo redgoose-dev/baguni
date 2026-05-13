@@ -43,10 +43,13 @@ export default async (req, _ctx) => {
     }
 
     // 기본적인 쿼리 만들기
+    // file_id, cover_file_id: 서브쿼리 대신 LEFT JOIN 으로 처리
+    // (서브쿼리는 결과 행마다 반복 실행되어 느림, JOIN은 1회 처리)
     fields.push(`${tables.asset}.*`)
-    fields.push(`(SELECT id FROM ${tables.file} WHERE ${tables.file}.module LIKE $module AND ${tables.file}.module_id = ${tables.asset}.id AND mode LIKE '${fileTypes.main}') as file_id`)
-    fields.push(`(SELECT id FROM ${tables.file} WHERE ${tables.file}.module LIKE $module AND ${tables.file}.module_id = ${tables.asset}.id AND mode LIKE '${fileTypes.coverCreate}') as cover_file_id`)
-    values['$module'] = tables.asset
+    fields.push(`f_main.id as file_id`)
+    fields.push(`f_cover.id as cover_file_id`)
+    join.push(`LEFT JOIN ${tables.file} f_main ON (f_main.module = '${tables.asset}' AND f_main.module_id = ${tables.asset}.id AND f_main.mode = '${fileTypes.main}')`)
+    join.push(`LEFT JOIN ${tables.file} f_cover ON (f_cover.module = '${tables.asset}' AND f_cover.module_id = ${tables.asset}.id AND f_cover.mode = '${fileTypes.coverCreate}')`)
 
     // 파일의 타입 (file.type 필드에서 키워드 검색)
     if (file_type)
