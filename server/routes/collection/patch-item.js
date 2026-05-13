@@ -4,12 +4,12 @@
  * 컬렉션 수정
  */
 
-import ServiceError from '../../classes/ServiceError.js'
-import { onRequest, onResponse, setResponse, getFormData } from '../../libs/service.js'
-import { connect, disconnect, tables, getItems, getItem, editItem } from '../../libs/db.js'
-import { checkAuthorization } from '../../libs/token.js'
-import { checkExistInObject } from '../../libs/objects.js'
-import { fileTypes } from '../../libs/assets.js'
+import ServiceError from '@/classes/ServiceError.js'
+import { onRequest, onResponse, setResponse, getFormData } from '@/libs/service.js'
+import { connect, disconnect, tables, getItems, getItem, editItem } from '@/libs/db.js'
+import { checkAuthorization } from '@/libs/token.js'
+import { checkExistInObject } from '@/libs/objects.js'
+import { fileTypes } from '@/libs/assets.js'
 import { checkFile, changeFileData, removeFileData, removeJunkFiles } from '../file/_lib.js'
 
 export default async (req, _ctx) => {

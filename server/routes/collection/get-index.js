@@ -4,12 +4,12 @@
  * 컬렉션 목록
  */
 
-import ServiceError from '../../classes/ServiceError.js'
-import { getQuery } from '../../libs/server.js'
-import { onRequest, onResponse, setResponse } from '../../libs/service.js'
-import { connect, disconnect, tables, getCount, getItems } from '../../libs/db.js'
-import { checkAuthorization } from '../../libs/token.js'
-import { fileTypes } from '../../libs/assets.js'
+import ServiceError from '@/classes/ServiceError.js'
+import { getQuery } from '@/libs/server.js'
+import { onRequest, onResponse, setResponse } from '@/libs/service.js'
+import { connect, disconnect, tables, getCount, getItems } from '@/libs/db.js'
+import { checkAuthorization } from '@/libs/token.js'
+import { fileTypes } from '@/libs/assets.js'
 
 export default async (req, _ctx) => {
 

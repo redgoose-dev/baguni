@@ -4,10 +4,10 @@
  * 컬렉션 삭제
  */
 
-import ServiceError from '../../classes/ServiceError.js'
-import { onRequest, onResponse, setResponse } from '../../libs/service.js'
-import { connect, disconnect, tables, getItem, removeItem } from '../../libs/db.js'
-import { checkAuthorization } from '../../libs/token.js'
+import ServiceError from '@/classes/ServiceError.js'
+import { onRequest, onResponse, setResponse } from '@/libs/service.js'
+import { connect, disconnect, tables, getItem, removeItem } from '@/libs/db.js'
+import { checkAuthorization } from '@/libs/token.js'
 import { removeFilesData } from '../file/_lib.js'
 
 export default async (req, _ctx) => {

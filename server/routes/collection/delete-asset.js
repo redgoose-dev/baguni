@@ -4,10 +4,10 @@
  * Remove asset in collection
  */
 
-import ServiceError from '../../classes/ServiceError.js'
-import { onRequest, onResponse, setResponse } from '../../libs/service.js'
-import { connect, disconnect, tables, getCount, getItem, removeItem } from '../../libs/db.js'
-import { checkAuthorization } from '../../libs/token.js'
+import ServiceError from '@/classes/ServiceError.js'
+import { onRequest, onResponse, setResponse } from '@/libs/service.js'
+import { connect, disconnect, tables, getCount, removeItem } from '@/libs/db.js'
+import { checkAuthorization } from '@/libs/token.js'
 
 export default async (req, _ctx) => {
 

@@ -1,5 +1,5 @@
 import { hashSync, compareSync, genSaltSync } from 'bcryptjs'
-import { tables, getItem } from '../../libs/db.js'
+import { tables, getItem } from '@/libs/db.js'
 
 export const PROVIDER_CODE = {
   PASSWORD: 'password',

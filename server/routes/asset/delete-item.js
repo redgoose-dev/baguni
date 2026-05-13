@@ -4,10 +4,10 @@
  * 에셋 삭제하기
  */
 
-import ServiceError from '../../classes/ServiceError.js'
-import { onRequest, onResponse, setResponse } from '../../libs/service.js'
-import { connect, disconnect, tables, getItem, removeItem } from '../../libs/db.js'
-import { checkAuthorization } from '../../libs/token.js'
+import ServiceError from '@/classes/ServiceError.js'
+import { onRequest, onResponse, setResponse } from '@/libs/service.js'
+import { connect, disconnect, tables, getItem, removeItem } from '@/libs/db.js'
+import { checkAuthorization } from '@/libs/token.js'
 import { removeFilesData } from '../file/_lib.js'
 import { removeTagsByAsset } from '../tag/_lib.js'
 

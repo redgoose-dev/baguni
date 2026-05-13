@@ -5,11 +5,11 @@
  * 에셋 바디용 파일을 삭제한다.
  */
 
-import ServiceError from '../../../classes/ServiceError.js'
-import { onRequest, onResponse, setResponse } from '../../../libs/service.js'
-import { connect, disconnect, tables, getCount } from '../../../libs/db.js'
-import { checkAuthorization } from '../../../libs/token.js'
-import { fileTypes } from '../../../libs/assets.js'
+import ServiceError from '@/classes/ServiceError.js'
+import { onRequest, onResponse, setResponse } from '@/libs/service.js'
+import { connect, disconnect, tables, getCount } from '@/libs/db.js'
+import { checkAuthorization } from '@/libs/token.js'
+import { fileTypes } from '@/libs/assets.js'
 import { removeFileData } from '../../file/_lib.js'
 
 export default async (req, _ctx) => {

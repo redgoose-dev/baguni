@@ -5,12 +5,12 @@
  * issue: https://github.com/redgoose-dev/baguni/issues/6
  */
 
-import ServiceError from '../../classes/ServiceError.js'
-import { onRequest, onResponse, setResponse, getFormData } from '../../libs/service.js'
-import { connect, disconnect, tables, getItems, getItem, editItem } from '../../libs/db.js'
-import { checkAuthorization } from '../../libs/token.js'
-import { parseJSON, checkExistInObject, compareArrays } from '../../libs/objects.js'
-import { fileTypes } from '../../libs/assets.js'
+import ServiceError from '@/classes/ServiceError.js'
+import { onRequest, onResponse, setResponse, getFormData } from '@/libs/service.js'
+import { connect, disconnect, tables, getItems, getItem, editItem } from '@/libs/db.js'
+import { checkAuthorization } from '@/libs/token.js'
+import { parseJSON, checkExistInObject, compareArrays } from '@/libs/objects.js'
+import { fileTypes } from '@/libs/assets.js'
 import { checkAssetMode } from './_lib.js'
 import { checkFile, changeFileData, removeFileData, removeJunkFiles, removeFile, getCachePath } from '../file/_lib.js'
 import { addTagData, removeTagData, tagRegex } from '../tag/_lib.js'

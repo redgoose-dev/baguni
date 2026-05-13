@@ -4,11 +4,11 @@
  * 컬렉션의 상세정보를 출력한다.
  */
 
-import ServiceError from '../../classes/ServiceError.js'
-import { onRequest, onResponse, setResponse } from '../../libs/service.js'
-import { connect, disconnect, tables, getItems, getItem } from '../../libs/db.js'
-import { checkAuthorization } from '../../libs/token.js'
-import { fileTypes } from '../../libs/assets.js'
+import ServiceError from '@/classes/ServiceError.js'
+import { onRequest, onResponse, setResponse } from '@/libs/service.js'
+import { connect, disconnect, tables, getItems, getItem } from '@/libs/db.js'
+import { checkAuthorization } from '@/libs/token.js'
+import { fileTypes } from '@/libs/assets.js'
 
 export default async (req, _ctx) => {
 

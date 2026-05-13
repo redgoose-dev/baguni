@@ -4,11 +4,11 @@
  * 에셋에서 여러 컬렉션을 추가하거나 제거한다.
  */
 
-import ServiceError from '../../classes/ServiceError.js'
-import { onRequest, onResponse, setResponse, getFormData } from '../../libs/service.js'
-import { connect, disconnect, tables, getCount, getItems, addItems, removeItem } from '../../libs/db.js'
-import { checkAuthorization } from '../../libs/token.js'
-import { compareArrays } from '../../libs/objects.js'
+import ServiceError from '@/classes/ServiceError.js'
+import { onRequest, onResponse, setResponse, getFormData } from '@/libs/service.js'
+import { connect, disconnect, tables, getCount, getItems, addItems, removeItem } from '@/libs/db.js'
+import { checkAuthorization } from '@/libs/token.js'
+import { compareArrays } from '@/libs/objects.js'
 
 export default async (req, _ctx) => {
 

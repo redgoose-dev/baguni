@@ -1,6 +1,6 @@
 {
   "name": "baguni",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "private": false,
   "type": "module",
   "license": "MIT",
@@ -11,10 +11,11 @@
     "app:uninstall": "bun run --bun resource/uninstall.js",
     "app:migrate-indexes": "bun run --bun tmp/migrate-add-indexes.js",
     "dev": "NODE_ENV=development concurrently \"bun run --bun server/main.js\" \"bunx --bun vite\"",
+    "dev:server": "bun run --bun server/main.js",
     "prebuild": "rm -rf ./dist",
     "build": "bun run --bun ./server/build.js && bunx --bun vite build",
     "preview": "bun run --bun dist/main.js",
-    "preview:server": "bun run --bun server/main.js",
+    "preview:server": "bun run --bun dist/main.js",
     "version-patch": "npm version patch",
     "build:test": "rm -rf ./dist/chunk && rm ./dist/main.js && bun run --bun ./server/build.js && bun run preview"
   },

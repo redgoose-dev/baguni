@@ -4,10 +4,10 @@
  * 컬렉션에서 에셋 추가
  */
 
-import ServiceError from '../../classes/ServiceError.js'
-import { onRequest, onResponse, setResponse, getFormData } from '../../libs/service.js'
-import { connect, disconnect, tables, getCount, addItem } from '../../libs/db.js'
-import { checkAuthorization } from '../../libs/token.js'
+import ServiceError from '@/classes/ServiceError.js'
+import { onRequest, onResponse, setResponse } from '@/libs/service.js'
+import { connect, disconnect, tables, getCount, addItem } from '@/libs/db.js'
+import { checkAuthorization } from '@/libs/token.js'
 
 export default async (req, _ctx) => {
 

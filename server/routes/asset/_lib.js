@@ -1,5 +1,3 @@
-import { tables, getItem } from '../../libs/db.js'
-
 export const ASSET_MODE = {
   PUBLIC: 'public',
   PRIVATE: 'private',

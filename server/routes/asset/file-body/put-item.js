@@ -5,13 +5,13 @@
  * 에셋 바디용 파일을 추가한다.
  */
 
-import ServiceError from '../../../classes/ServiceError.js'
-import { pref } from '../../../classes/Preference.js'
-import { onRequest, onResponse, setResponse, getFormData } from '../../../libs/service.js'
-import { connect, disconnect, tables, getCount, getItem } from '../../../libs/db.js'
-import { checkAuthorization } from '../../../libs/token.js'
-import { fileTypes, allowFileTypes } from '../../../libs/assets.js'
-import { parseJSON } from '../../../libs/objects.js'
+import ServiceError from '@/classes/ServiceError.js'
+import { pref } from '@/classes/Preference.js'
+import { onRequest, onResponse, setResponse, getFormData } from '@/libs/service.js'
+import { connect, disconnect, tables, getCount, getItem } from '@/libs/db.js'
+import { checkAuthorization } from '@/libs/token.js'
+import { fileTypes, allowFileTypes } from '@/libs/assets.js'
+import { parseJSON } from '@/libs/objects.js'
 import { checkFile, fileUpload, addFileData, removeJunkFiles } from '../../file/_lib.js'
 
 export default async (req, _ctx) => {

@@ -4,12 +4,12 @@
  * 컬렉션 만들기
  */
 
-import ServiceError from '../../classes/ServiceError.js'
-import { pref } from '../../classes/Preference.js'
-import { onRequest, onResponse, setResponse, getFormData } from '../../libs/service.js'
-import { connect, disconnect, tables, addItem } from '../../libs/db.js'
-import { checkAuthorization } from '../../libs/token.js'
-import { fileTypes, allowFileType } from '../../libs/assets.js'
+import ServiceError from '@/classes/ServiceError.js'
+import { pref } from '@/classes/Preference.js'
+import { onRequest, onResponse, setResponse, getFormData } from '@/libs/service.js'
+import { connect, disconnect, tables, addItem } from '@/libs/db.js'
+import { checkAuthorization } from '@/libs/token.js'
+import { fileTypes, allowFileType } from '@/libs/assets.js'
 import { checkFile, addFileData, fileUpload, removeJunkFiles } from '../file/_lib.js'
 
 export default async (req, _ctx) => {

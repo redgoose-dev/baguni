@@ -5,12 +5,12 @@
  * 에셋 상세보기 데이터 가져오기
  */
 
-import ServiceError from '../../classes/ServiceError.js'
-import { onRequest, onResponse, setResponse } from '../../libs/service.js'
-import { connect, disconnect, tables, getItems, getItem } from '../../libs/db.js'
-import { checkAuthorization } from '../../libs/token.js'
-import { parseJSON } from '../../libs/objects.js'
-import { fileTypes } from '../../libs/assets.js'
+import ServiceError from '@/classes/ServiceError.js'
+import { onRequest, onResponse, setResponse } from '@/libs/service.js'
+import { connect, disconnect, tables, getItems, getItem } from '@/libs/db.js'
+import { checkAuthorization } from '@/libs/token.js'
+import { parseJSON } from '@/libs/objects.js'
+import { fileTypes } from '@/libs/assets.js'
 
 export default async (req, _ctx) => {
 
