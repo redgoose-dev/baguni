@@ -5,6 +5,7 @@ node_modules/
 .AppleDouble/
 dist/
 data/
+tests/
 tmp/
 
 # files
