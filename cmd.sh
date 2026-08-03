@@ -31,18 +31,24 @@ ensure_git_tag() {
   VERSION="$1"
   GIT_TAG="${GIT_TAG_PREFIX}${VERSION}"
   HEAD_COMMIT="$(git rev-parse HEAD)"
+  REMOTE_MAIN_COMMIT="$(git rev-parse --verify refs/remotes/origin/main)"
+
+  if [ "$HEAD_COMMIT" != "$REMOTE_MAIN_COMMIT" ]; then
+    echo "Local HEAD is not the latest origin/main; skipping Git tag"
+    return 0
+  fi
 
   if git show-ref --verify --quiet "refs/tags/${GIT_TAG}"; then
     TAG_COMMIT="$(git rev-list -n 1 "$GIT_TAG")"
 
-    if [ "$TAG_COMMIT" != "$HEAD_COMMIT" ]; then
+    if [ "$TAG_COMMIT" != "$REMOTE_MAIN_COMMIT" ]; then
       echo "Git tag ${GIT_TAG} already exists at another commit; skipping"
       return 0
     fi
 
     echo "Git tag already exists: ${GIT_TAG}"
   else
-    git tag "$GIT_TAG" "$HEAD_COMMIT"
+    git tag "$GIT_TAG" "$REMOTE_MAIN_COMMIT"
     echo "Created Git tag: ${GIT_TAG}"
   fi
 
