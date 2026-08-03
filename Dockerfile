@@ -6,10 +6,10 @@ WORKDIR /app
 
 COPY . .
 
-RUN bun install --frozen-lockfile --verbose
+RUN bun install --frozen-lockfile
 RUN bun run build
 RUN rm -rf node_modules
-RUN bun install --production --verbose
+RUN bun install --production
 RUN rm -rf /tmp/* /root/.bun/cache
 
 # Runtime stage
