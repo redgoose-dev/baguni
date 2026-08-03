@@ -5,6 +5,7 @@
 node_modules/
 dist/
 data/
+scripts/
 tmp/
 
 # files
@@ -12,8 +13,6 @@ tmp/
 .gitignore
 *.md
 .env.*
-bun.lock
-action.sh
 Dockerfile
 docker-compose.yml
 cmd.sh
