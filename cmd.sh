@@ -77,6 +77,8 @@ publish() {
 
   docker "$@"
 
+  docker image rm "${IMAGE_REPOSITORY}:${VERSION}"
+
   mkdir -p "$(dirname "$LAST_PUBLISHED_VERSION_FILE")"
   printf '%s\n' "$VERSION" > "$LAST_PUBLISHED_VERSION_FILE"
 
