@@ -6,7 +6,7 @@
 
 import ServiceError from '@/classes/ServiceError.js'
 import { onRequest, onResponse, setResponse } from '@/libs/service.js'
-import { connect, disconnect, tables, removeItem } from '@/libs/db.js'
+import { tables, removeItem } from '@/libs/db.js'
 import { checkAuthorization } from '@/libs/token.js'
 import * as cookie from '@/libs/cookie.js'
 
@@ -19,9 +19,6 @@ export default async (req, _ctx) => {
 
   try
   {
-    // connect db
-    connect({ readwrite: true })
-
     // check auth
     const auth = checkAuthorization(req)
 
@@ -51,11 +48,6 @@ export default async (req, _ctx) => {
       text: _e.statusText || _e.message,
       url: `${req.method} ${req.url}`,
     }))
-  }
-  finally
-  {
-    // disconnect db
-    disconnect()
   }
 
   // trigger response event

@@ -7,7 +7,6 @@
 import ServiceError from '../../classes/ServiceError.js'
 import { pref } from '../../classes/Preference.js'
 import { onRequest, onResponse, setResponse } from '../../libs/service.js'
-import { connect, disconnect } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 
 export default async (req, _ctx) => {
@@ -19,9 +18,6 @@ export default async (req, _ctx) => {
 
   try
   {
-    // connect db
-    connect({ readonly: true })
-
     // check auth
     const auth = checkAuthorization(req)
 
@@ -38,10 +34,6 @@ export default async (req, _ctx) => {
       text: _e.statusText || _e.message,
       url: `${req.method} ${req.url}`,
     }))
-  }
-  finally
-  {
-    disconnect()
   }
 
   // trigger response event

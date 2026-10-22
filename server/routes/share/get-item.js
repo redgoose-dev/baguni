@@ -8,7 +8,7 @@
 import ServiceError from '../../classes/ServiceError.js'
 import { pref } from '../../classes/Preference.js'
 import { onRequest, onResponse, setResponse } from '../../libs/service.js'
-import { connect, disconnect, tables, getItems, getItem } from '../../libs/db.js'
+import { tables, getItems, getItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 import { parseJSON } from '../../libs/objects.js'
 import { fileTypes } from '../../libs/assets.js'
@@ -27,9 +27,6 @@ export default async (req, _ctx) => {
   {
     const code = String(req.params.code)
     if (!code) throw new ServiceError('CODE 값이 없습니다.', { status: 204 })
-
-    // connect db
-    connect({ readonly: true })
 
     // get share data
     const share = getItem({
@@ -120,10 +117,6 @@ export default async (req, _ctx) => {
         }))
         break
     }
-  }
-  finally
-  {
-    disconnect()
   }
 
   // trigger response event

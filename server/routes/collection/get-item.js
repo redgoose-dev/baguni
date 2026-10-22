@@ -6,7 +6,7 @@
 
 import ServiceError from '@/classes/ServiceError.js'
 import { onRequest, onResponse, setResponse } from '@/libs/service.js'
-import { connect, disconnect, tables, getItems, getItem } from '@/libs/db.js'
+import { tables, getItems, getItem } from '@/libs/db.js'
 import { checkAuthorization } from '@/libs/token.js'
 import { fileTypes } from '@/libs/assets.js'
 
@@ -21,9 +21,6 @@ export default async (req, _ctx) => {
   {
     const id = Number(req.params.id)
     if (!id) throw new ServiceError('ID 값이 없습니다.', { status: 204 })
-
-    // connect db
-    connect({ readonly: true })
 
     // check auth
     const auth = checkAuthorization(req)
@@ -96,10 +93,6 @@ export default async (req, _ctx) => {
         }))
         break
     }
-  }
-  finally
-  {
-    disconnect()
   }
 
   // trigger response event

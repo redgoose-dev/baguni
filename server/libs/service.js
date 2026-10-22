@@ -1,3 +1,4 @@
+import { connect } from './db.js'
 import ServiceError from '../classes/ServiceError.js'
 import { pref } from '../classes/Preference.js'
 import { colorText, dateFormat } from './strings.js'
@@ -28,6 +29,8 @@ export async function onRequest(req, _ctx)
       })
     }
   }
+  // 설치 후 첫 요청에서도 연결을 열 수 있다. 이후에는 같은 연결을 유지한다.
+  connect()
   const _url = new URL(req.url)
   const date = dateFormat(new Date(), '{yyyy}-{MM}-{dd} {hh}:{mm}:{ss}')
   const method = colorText(req.method, 'cyan')

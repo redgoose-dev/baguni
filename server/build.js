@@ -1,6 +1,6 @@
 
 // build server
-await Bun.build({
+const result = await Bun.build({
   root: '.',
   entrypoints: [ './server/main.js' ],
   outdir: './dist',
@@ -26,3 +26,9 @@ await Bun.build({
   },
   plugins: [],
 })
+
+if (!result.success)
+{
+  for (const log of result.logs) console.error(log)
+  process.exitCode = 1
+}

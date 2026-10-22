@@ -9,7 +9,7 @@ import ServiceError from '../../classes/ServiceError.js'
 import { pref } from '../../classes/Preference.js'
 import { getQuery } from '../../libs/server.js'
 import { onRequest, onResponse, setResponse } from '../../libs/service.js'
-import { connect, disconnect, tables, getItem } from '../../libs/db.js'
+import { tables, getItem } from '../../libs/db.js'
 import { checkAuthorization, getToken } from '../../libs/token.js'
 import { ASSET_MODE } from '../asset/_lib.js'
 import { getCachePath, removeFile } from './_lib.js'
@@ -28,9 +28,6 @@ export default async (req, _ctx) => {
     const query = getQuery(req.url)
     const id = Number(req.params.id)
     if (!id) throw new ServiceError('ID 값이 없습니다.', { status: 404 })
-
-    // connect db
-    connect({ readonly: true })
 
     // get cache file
     const cacheFile = Bun.file(getCachePath(id), { type: 'application/json' })
@@ -193,10 +190,6 @@ export default async (req, _ctx) => {
       text: _e.statusText || _e.message,
       url: `${req.method} ${req.url}`,
     }))
-  }
-  finally
-  {
-    disconnect()
   }
 
   // trigger response event

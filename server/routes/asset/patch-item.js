@@ -7,7 +7,7 @@
 
 import ServiceError from '@/classes/ServiceError.js'
 import { onRequest, onResponse, setResponse, getFormData } from '@/libs/service.js'
-import { connect, disconnect, tables, getItems, getItem, editItem } from '@/libs/db.js'
+import { tables, getItems, getItem, editItem } from '@/libs/db.js'
 import { checkAuthorization } from '@/libs/token.js'
 import { parseJSON, checkExistInObject, compareArrays } from '@/libs/objects.js'
 import { fileTypes } from '@/libs/assets.js'
@@ -39,9 +39,6 @@ export default async (req, _ctx) => {
       tags: undefined,
       mode: undefined,
     }
-
-    // connect db
-    connect({ readwrite: true })
 
     // check auth
     const auth = checkAuthorization(req)
@@ -248,10 +245,6 @@ export default async (req, _ctx) => {
       text: _e.statusText || _e.message,
       url: `${req.method} ${req.url}`,
     }))
-  }
-  finally
-  {
-    disconnect()
   }
 
   // trigger response event

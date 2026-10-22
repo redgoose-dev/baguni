@@ -8,7 +8,7 @@
 import { randomBytes } from 'node:crypto'
 import ServiceError from '../../classes/ServiceError.js'
 import { onRequest, onResponse, setResponse, getFormData } from '../../libs/service.js'
-import { connect, disconnect, tables, getCount, getItem, addItem } from '../../libs/db.js'
+import { tables, getCount, getItem, addItem } from '../../libs/db.js'
 import { checkAuthorization } from '../../libs/token.js'
 
 export default async (req, _ctx) => {
@@ -22,9 +22,6 @@ export default async (req, _ctx) => {
   {
     const id = Number(req.params.id)
     if (!id) throw new ServiceError('에셋 ID 값이 없습니다.', { status: 204 })
-
-    // connect db
-    connect({ readwrite: true })
 
     // check auth
     const auth = checkAuthorization(req)
@@ -100,10 +97,6 @@ export default async (req, _ctx) => {
         }))
         break
     }
-  }
-  finally
-  {
-    disconnect()
   }
 
   // trigger response event

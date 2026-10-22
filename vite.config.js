@@ -1,25 +1,30 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
+import { fileURLToPath } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 
-const { HOST, PORT, VITE_PORT } = Bun.env
+const envDir = fileURLToPath(new URL('.', import.meta.url))
 
-const config = defineConfig(() => {
+const config = defineConfig(({ mode }) => {
+  // Vite 설정 평가 시에는 .env가 아직 자동 로드되지 않는다.
+  const env = loadEnv(mode, envDir, '')
+  const port = Number(env.PORT || 80)
+  const portClient = Number(env.VITE_PORT || 81)
   return {
     root: 'client',
     publicDir: './public',
     base: '/',
     server: {
-      host: HOST,
-      port: Number(VITE_PORT),
+      host: env.HOST || '0.0.0.0',
+      port: portClient,
       open: false,
       proxy: {
         '/api': {
-          target: `http://0.0.0.0:${PORT}/api`,
+          target: `http://0.0.0.0:${port}/api`,
           changeOrigin: true,
           rewrite: path => path.replace(/^\/api\/?/, '/'),
         },
         '/file': {
-          target: `http://0.0.0.0:${PORT}/file`,
+          target: `http://0.0.0.0:${port}/file`,
           changeOrigin: true,
           rewrite: path => path.replace(/^\/file\/?/, '/'),
         },

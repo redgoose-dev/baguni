@@ -7,13 +7,6 @@ const { DATA_PATH } = Bun.env
 export let db
 
 /**
- * DB 파일 크기 기반 PRAGMA 값 캐시
- * 매 요청마다 파일 stat을 하지 않도록 일정 시간 간격으로만 갱신한다.
- */
-let _pragmaCache = { mmap: 0, cache: 0, updatedAt: 0 }
-const PRAGMA_TTL = 1000 * 60 * 60 // 1시간마다 갱신
-
-/**
  * db table 목록
  */
 export const tables = {
@@ -29,30 +22,31 @@ export const tables = {
 }
 
 /**
- * connect db
- * @param {object} options
- * @param {?boolean} [options.readonly]
- * @param {?boolean} [options.create]
- * @param {?boolean} [options.readwrite]
+ * 서버 수명 동안 하나의 읽기·쓰기 연결을 재사용한다.
+ * 설치 전에는 호출하지 않는다. 없는 DB를 생성하지 않는다.
  */
-export function connect(options = {})
+export function connect()
 {
-  if (!!db) return
-  db = new Database(`${DATA_PATH}/db.sqlite`, {
-    ...options,
+  if (db) return
+  const connection = new Database(`${DATA_PATH}/db.sqlite`, {
+    readwrite: true,
+    create: false,
   })
-  // 성능 최적화 PRAGMA
-  // WAL 모드: 읽기/쓰기 동시성 향상, 쓰기 연결에서만 설정 (DB 파일에 영구 저장됨)
-  if (!options.readonly)
+  try
   {
-    db.run('PRAGMA journal_mode = WAL')
-    db.run('PRAGMA synchronous = NORMAL')
+    connection.run('PRAGMA journal_mode = WAL')
+    connection.run('PRAGMA synchronous = NORMAL')
+    const { mmap, cache } = getPragmaValues()
+    connection.run(`PRAGMA mmap_size = ${mmap}`)
+    connection.run(`PRAGMA cache_size = ${cache}`)
+    connection.run('PRAGMA temp_store = MEMORY')
+    db = connection
   }
-  // DB 파일 크기 기반 PRAGMA - 1시간마다 갱신되는 캐시값 사용
-  const { mmap, cache } = getPragmaValues()
-  db.run(`PRAGMA mmap_size = ${mmap}`)
-  db.run(`PRAGMA cache_size = ${cache}`)
-  db.run('PRAGMA temp_store = MEMORY')
+  catch (error)
+  {
+    connection.close()
+    throw error
+  }
 }
 
 /**
@@ -92,7 +86,7 @@ export function getItems(options = {})
   let data
   if (run !== false)
   {
-    if (!db) connect({ readwrite: true })
+    if (!db) connect()
     const query = db.query(sql)
     data = query.all(values)
   }
@@ -114,7 +108,7 @@ export function getCount(options)
   let _field = fields || 'COUNT(*) AS count'
   const sql = optimiseSql(`SELECT ${prefix || ''} ${_field} FROM ${table} ${parseJoin(join)} ${where ? `WHERE ${where}` : ''} ${after || ''}`)
   if (debug) console.warn('getCount():', sql)
-  if (!db) connect({ readwrite: true })
+  if (!db) connect()
   const query = db.query(sql)
   const result = query.get(values)
   let data
@@ -141,7 +135,7 @@ export function getItem(options)
   const { table, fields, where, join, values, run } = options
   const field = fields?.length ? fields.join(',') : '*'
   const sql = optimiseSql(`SELECT ${field} FROM ${table} ${parseJoin(join)} ${where ? `WHERE ${where}` : ''}`)
-  if (!db) connect({ readwrite: true })
+  if (!db) connect()
   const query = db.query(sql)
   const data = (run !== false) ? query.get(values) : undefined
   return {
@@ -178,7 +172,7 @@ export function addItem(options)
   const sql = optimiseSql(`INSERT INTO ${table} (${fields.join(', ')}) VALUES (${valueNames.join(', ')})`)
   if (run !== false)
   {
-    if (!db) connect({ readwrite: true })
+    if (!db) connect()
     db.run(sql, objects)
   }
   return {
@@ -203,7 +197,7 @@ export function addItems(options = {})
   const sql = optimiseSql(`INSERT INTO ${table} (${fields.join(', ')}) VALUES ${placeholders}`)
   if (run !== false)
   {
-    if (!db) connect({ readwrite: true })
+    if (!db) connect()
     db.run(sql, [].concat(...values))
   }
   return {
@@ -230,7 +224,7 @@ export function editItem(options = {})
   if (debug) console.warn(sql)
   if (run !== false)
   {
-    if (!db) connect({ readwrite: true })
+    if (!db) connect()
     db.run(sql, removeUndefinedValueKey(values))
   }
   return {
@@ -253,7 +247,7 @@ export function removeItem(options = {})
   const sql = optimiseSql(`DELETE FROM ${table} ${where ? `WHERE ${where}` : ''}`)
   if (run !== false)
   {
-    if (!db) connect({ readwrite: true })
+    if (!db) connect()
     db.run(sql, values || {})
   }
   return {
@@ -270,7 +264,7 @@ export function removeItem(options = {})
 export function getLastIndex(table)
 {
   const sql = `SELECT MAX(id) AS max_id FROM ${table}`
-  if (!db) connect({ readwrite: true })
+  if (!db) connect()
   const query = db.query(sql)
   return {
     sql,
@@ -285,7 +279,7 @@ export function getLastIndex(table)
 export function clearTokens()
 {
   const sql = `DELETE FROM ${tables.tokens} WHERE expired <= CURRENT_TIMESTAMP`
-  if (!db) connect({ readwrite: true })
+  if (!db) connect()
   db.run(sql, [])
   return {
     sql,
@@ -321,18 +315,13 @@ function parseJoin(src)
 }
 
 /**
- * DB 파일 크기 기반 PRAGMA 값 캐시를 반환한다.
- * @return {object}
+ * 연결 생성 시 DB 크기에 맞춰 설정한다. 서버 재시작 때 다시 계산한다.
  */
 function getPragmaValues()
 {
-  const now = Date.now()
-  if (now - _pragmaCache.updatedAt < PRAGMA_TTL) return _pragmaCache
   const dbSize = Bun.file(`${DATA_PATH}/db.sqlite`).size
-  _pragmaCache = {
+  return {
     mmap: Math.ceil(dbSize * 3),
     cache: -Math.ceil((dbSize * 3) / 1024), // 음수 = KB 단위
-    updatedAt: now,
   }
-  return _pragmaCache
 }

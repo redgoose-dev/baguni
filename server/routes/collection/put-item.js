@@ -7,7 +7,7 @@
 import ServiceError from '@/classes/ServiceError.js'
 import { pref } from '@/classes/Preference.js'
 import { onRequest, onResponse, setResponse, getFormData } from '@/libs/service.js'
-import { connect, disconnect, tables, addItem } from '@/libs/db.js'
+import { tables, addItem } from '@/libs/db.js'
 import { checkAuthorization } from '@/libs/token.js'
 import { fileTypes, allowFileType } from '@/libs/assets.js'
 import { checkFile, addFileData, fileUpload, removeJunkFiles } from '../file/_lib.js'
@@ -24,9 +24,6 @@ export default async (req, _ctx) => {
   {
     // get body
     let { title, description, cover_origin, cover_create } = await getFormData(req)
-
-    // connect db
-    connect({ readwrite: true })
 
     // check auth
     const auth = checkAuthorization(req)
@@ -107,10 +104,6 @@ export default async (req, _ctx) => {
       text: _e.statusText || _e.message,
       url: `${req.method} ${req.url}`,
     }))
-  }
-  finally
-  {
-    disconnect()
   }
 
   // trigger response event

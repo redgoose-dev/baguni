@@ -7,7 +7,7 @@
 import ServiceError from '../../classes/ServiceError.js'
 import { pref } from '../../classes/Preference.js'
 import { onRequest, onResponse, setResponse } from '../../libs/service.js'
-import { connect, disconnect, tables, getCount, getItem, editItem } from '../../libs/db.js'
+import { tables, getCount, getItem, editItem } from '../../libs/db.js'
 import { createToken, decodeToken, jwtToToken } from '../../libs/token.js'
 import * as cookie from '../../libs/cookie.js'
 import { getProvider } from './_lib.js'
@@ -23,9 +23,6 @@ export default async (req, _ctx) => {
 
   try
   {
-    // connect db
-    connect({ readwrite: true })
-
     // get tokens
     let accessToken = cookie.get(req, 'access')
     const refreshToken = cookie.get(req, 'refresh')
@@ -110,10 +107,6 @@ export default async (req, _ctx) => {
       text: _e.statusText || _e.message,
       url: `${req.method} ${req.url}`,
     }))
-  }
-  finally
-  {
-    disconnect()
   }
 
   // trigger response event

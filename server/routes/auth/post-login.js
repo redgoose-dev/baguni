@@ -10,7 +10,7 @@
 import ServiceError from '@/classes/ServiceError.js'
 import { pref } from '@/classes/Preference.js'
 import { onRequest, onResponse, setResponse, checkFormData, getFormData } from '@/libs/service.js'
-import { connect, disconnect, tables, getItem, addItem } from '@/libs/db.js'
+import { tables, getItem, addItem } from '@/libs/db.js'
 import { TOKEN_TYPE } from '@/libs/assets.js'
 import { createToken, jwtToToken } from '@/libs/token.js'
 import * as cookie from '@/libs/cookie.js'
@@ -37,9 +37,6 @@ export default async (req, _ctx) => {
         text: `'${checkKey}' 값이 없습니다.`,
       })
     }
-
-    // connect db
-    connect({ readwrite: true })
 
     // get data
     const provider = getItem({
@@ -141,10 +138,6 @@ export default async (req, _ctx) => {
       text: _e.statusText || _e.message,
       url: `${req.method} ${req.url}`,
     }))
-  }
-  finally
-  {
-    disconnect()
   }
 
   // trigger response event

@@ -6,7 +6,7 @@
 
 import ServiceError from '@/classes/ServiceError.js'
 import { onRequest, onResponse, setResponse, getFormData } from '@/libs/service.js'
-import { connect, disconnect, tables, getCount, getItems, addItems, removeItem } from '@/libs/db.js'
+import { tables, getCount, getItems, addItems, removeItem } from '@/libs/db.js'
 import { checkAuthorization } from '@/libs/token.js'
 import { compareArrays } from '@/libs/objects.js'
 
@@ -25,9 +25,6 @@ export default async (req, _ctx) => {
     // get body
     const body = await getFormData(req)
     let { collections } = body
-
-    // connect db
-    connect({ readwrite: true })
 
     // check auth
     const auth = checkAuthorization(req)
@@ -97,10 +94,6 @@ export default async (req, _ctx) => {
       text: _e.statusText || _e.message,
       url: `${req.method} ${req.url}`,
     }))
-  }
-  finally
-  {
-    disconnect()
   }
 
   // trigger response event

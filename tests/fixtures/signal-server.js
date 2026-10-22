@@ -1,0 +1,5 @@
+await import('../../server/main.js')
+const database = await import('../../server/libs/db.js')
+if (!database.db) throw new Error('DB not connected')
+process.on('exit', () => { if (database.db) process.exitCode = 2 })
+console.log('TEST_READY')

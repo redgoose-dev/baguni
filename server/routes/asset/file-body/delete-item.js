@@ -7,7 +7,7 @@
 
 import ServiceError from '@/classes/ServiceError.js'
 import { onRequest, onResponse, setResponse } from '@/libs/service.js'
-import { connect, disconnect, tables, getCount } from '@/libs/db.js'
+import { tables, getCount } from '@/libs/db.js'
 import { checkAuthorization } from '@/libs/token.js'
 import { fileTypes } from '@/libs/assets.js'
 import { removeFileData } from '../../file/_lib.js'
@@ -25,9 +25,6 @@ export default async (req, _ctx) => {
     const file_id = Number(req.params.file)
     if (!id) throw new ServiceError('에셋 ID 값이 없습니다.', { status: 204 })
     if (!file_id) throw new ServiceError('파일 ID 값이 없습니다.', { status: 204 })
-
-    // connect db
-    connect({ readwrite: true })
 
     // check auth
     const auth = checkAuthorization(req)
@@ -64,10 +61,6 @@ export default async (req, _ctx) => {
       text: _e.statusText || _e.message,
       url: `${req.method} ${req.url}`,
     }))
-  }
-  finally
-  {
-    disconnect()
   }
 
   // trigger response event

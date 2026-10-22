@@ -8,7 +8,7 @@ import ServiceError from '@/classes/ServiceError.js'
 import { pref } from '@/classes/Preference.js'
 import { getQuery } from '@/libs/server.js'
 import { onRequest, onResponse, setResponse } from '@/libs/service.js'
-import { connect, disconnect, tables, getCount, getItems } from '@/libs/db.js'
+import { tables, getCount, getItems } from '@/libs/db.js'
 import { TOKEN_TYPE } from '@/libs/assets.js'
 import { checkAuthorization, jwtToToken, decodeToken } from '@/libs/token.js'
 import { dateFormat } from '@/libs/strings.js'
@@ -27,9 +27,6 @@ export default async (req, _ctx) => {
     let where = ''
     let values = {}
     let limit = ''
-
-    // connect db
-    connect({ readonly: true })
 
     // check auth
     checkAuthorization(req)
@@ -111,10 +108,6 @@ export default async (req, _ctx) => {
         }))
         break
     }
-  }
-  finally
-  {
-    disconnect()
   }
 
   // trigger response event

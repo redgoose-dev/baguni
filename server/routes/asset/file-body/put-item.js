@@ -8,7 +8,7 @@
 import ServiceError from '@/classes/ServiceError.js'
 import { pref } from '@/classes/Preference.js'
 import { onRequest, onResponse, setResponse, getFormData } from '@/libs/service.js'
-import { connect, disconnect, tables, getCount, getItem } from '@/libs/db.js'
+import { tables, getCount, getItem } from '@/libs/db.js'
 import { checkAuthorization } from '@/libs/token.js'
 import { fileTypes, allowFileTypes } from '@/libs/assets.js'
 import { parseJSON } from '@/libs/objects.js'
@@ -35,9 +35,6 @@ export default async (req, _ctx) => {
     {
       throw new ServiceError('첨부파일이 없거나 잘못된 형식입니다.', { status: 400 })
     }
-
-    // connect db
-    connect({ readwrite: true })
 
     // check auth
     const auth = checkAuthorization(req)
@@ -97,10 +94,6 @@ export default async (req, _ctx) => {
       text: _e.statusText || _e.message,
       url: `${req.method} ${req.url}`,
     }))
-  }
-  finally
-  {
-    disconnect()
   }
 
   // trigger response event
