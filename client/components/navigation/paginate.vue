@@ -6,11 +6,11 @@
     :disabled="disabledFirstArrow"
     :class="[ 'paginate-item', 'paginate-item--far' ]"
     @click="onFirstPage">
-    <Icon name="chevrons-left"/>
+    <Icon name="chevron-first"/>
   </button>
   <button
     type="button"
-    :title="!(pageBlock <= 0) ? `${range}페이지 이전으로 이동` : ''"
+    :title="!(pageBlock <= 0) ? '이전 페이지 묶음으로 이동' : ''"
     :disabled="pageBlock <= 0"
     :class="[ 'paginate-item', 'paginate-item--range' ]"
     @click="onPrevRange">
@@ -46,7 +46,7 @@
   </template>
   <button
     type="button"
-    :title="!(pageBlock >= pageBlockTotal) ? `${range}페이지 다음으로 이동` : ''"
+    :title="!(pageBlock >= pageBlockTotal) ? '다음 페이지 묶음으로 이동' : ''"
     :disabled="pageBlock >= pageBlockTotal"
     :class="[ 'paginate-item', 'paginate-item--range' ]"
     @click="onNextRange">
@@ -58,7 +58,7 @@
     :disabled="disabledLastArrow"
     :class="[ 'paginate-item', 'paginate-item--far' ]"
     @click="onLastPage">
-    <Icon name="chevrons-right"/>
+    <Icon name="chevron-last"/>
   </button>
 </nav>
 </template>
@@ -106,18 +106,16 @@ const disabledLastArrow = computed(() => {
 
 function onPrevRange()
 {
-  if (page.value > 1)
+  if (pageBlock.value > 0)
   {
-    let n = page.value - range.value
-    go((n > 1) ? n : 1)
+    go(pageBlock.value * range.value)
   }
 }
 function onNextRange()
 {
   if (pageBlock.value < pageBlockTotal.value)
   {
-    let n = page.value + range.value
-    go(n > pageCount.value ? pageCount.value : n)
+    go((pageBlock.value + 1) * range.value + 1)
   }
 }
 

@@ -17,7 +17,7 @@
             { key: 'space', label: '공백', icon: 'space' },
             { key: 'link', label: '링크', icon: 'link-2' },
             { key: 'image', label: '이미지', icon: 'image' },
-            { key: 'iframe', label: '아이프레임', icon: 'youtube' },
+            { key: 'iframe', label: '아이프레임', icon: 'scan-square' },
           ]"
           @select="onSelectMarkdownTools"/>
       </Dropdown>

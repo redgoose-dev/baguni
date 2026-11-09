@@ -1,12 +1,12 @@
-import * as lucide from 'lucide-vue-next'
+import * as lucide from '@lucide/vue'
 
 const icons = {
   'arrow-big-left': lucide.ArrowBigLeft,
   'bone': lucide.Bone,
   'bookmark': lucide.Bookmark,
   'check': lucide.Check,
-  'chevrons-left': lucide.ChevronsLeft,
-  'chevrons-right': lucide.ChevronsRight,
+  'chevron-first': lucide.ChevronFirst,
+  'chevron-last': lucide.ChevronLast,
   'chevron-left': lucide.ChevronLeft,
   'chevron-right': lucide.ChevronRight,
   'chevron-down': lucide.ChevronDown,
@@ -46,6 +46,7 @@ const icons = {
   'menu': lucide.Menu,
   'more-horizontal': lucide.MoreHorizontal,
   'plus': lucide.Plus,
+  'scan-square': lucide.ScanSquare,
   'search': lucide.Search,
   'share-2': lucide.Share2,
   'space': lucide.Space,
@@ -60,7 +61,6 @@ const icons = {
   'user-round': lucide.UserRound,
   'user-round-cog': lucide.UserRoundCog,
   'user-round-plus': lucide.UserRoundPlus,
-  'youtube': lucide.Youtube,
   'x': lucide.X,
   'zoom-in': lucide.ZoomIn,
   'zoom-out': lucide.ZoomOut,

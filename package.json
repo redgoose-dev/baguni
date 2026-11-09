@@ -1,6 +1,6 @@
 {
   "name": "baguni",
-  "version": "1.4.10",
+  "version": "1.4.11",
   "private": false,
   "type": "module",
   "license": "MIT",
@@ -27,24 +27,24 @@
   "dependencies": {
     "@types/bun": "latest",
     "bcryptjs": "^3.0.3",
-    "image-size": "^2.0.4",
+    "image-size": "^2.1.0",
     "jsonwebtoken": "^9.0.3",
     "minimist": "^1.2.8",
     "sharp": "^0.35.5"
   },
   "devDependencies": {
+    "@lucide/vue": "^1.70.0",
     "@redgoose/json-editor": "^1.2.7",
     "@vitejs/plugin-vue": "^6.0.10",
-    "concurrently": "^10.0.6",
+    "concurrently": "^10.0.7",
     "image-resize": "^1.4.1",
-    "lucide-vue-next": "^1.0.0",
-    "marked": "^18.1.1",
+    "marked": "^18.1.3",
     "ofetch": "^1.5.1",
     "pinia": "^4.1.0",
-    "sass": "^1.106.1",
+    "sass": "^1.108.1",
     "terser": "^5.51.2",
-    "vite": "^8.3.5",
-    "vue": "^3.5.44",
+    "vite": "^8.3.6",
+    "vue": "^3.5.45",
     "vue-advanced-cropper": "^2.8.9",
     "vue-router": "^5.4.0"
   }

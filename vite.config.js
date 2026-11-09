@@ -1,12 +1,8 @@
 import { defineConfig, loadEnv } from 'vite'
-import { fileURLToPath } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 
-const envDir = fileURLToPath(new URL('.', import.meta.url))
-
-const config = defineConfig(({ mode }) => {
-  // Vite 설정 평가 시에는 .env가 아직 자동 로드되지 않는다.
-  const env = loadEnv(mode, envDir, '')
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
   const port = Number(env.PORT || 80)
   const portClient = Number(env.VITE_PORT || 81)
   return {
@@ -85,5 +81,3 @@ const config = defineConfig(({ mode }) => {
     ],
   }
 })
-
-export default config
